@@ -5,27 +5,21 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>GuitarX</title>
-    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Google Fonts -->
     <link
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
         rel="stylesheet" />
-    <!-- Material Symbols Outlined -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet" />
-    <!-- Custom Theme CSS -->
     <link href="/GuitarX/view/css/theme.css" rel="stylesheet" />
 </head>
 
 <body>
 
-    <!-- ===== TOP HEADER ===== -->
     <header class="site-header sticky-top">
         <div class="container-max-custom px-desktop-custom">
             <div class="header-inner">
 
-                <!-- LOGO -->
                 <a class="site-logo" href="/GuitarX/index.php">
                     <div class="logo-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44" width="44" height="44" fill="none">
@@ -46,7 +40,6 @@
                     </div>
                 </a>
 
-                <!-- SEARCH BAR -->
                 <div class="header-search">
                     <div class="search-wrap">
                         <span class="search-icon material-symbols-outlined">search</span>
@@ -55,9 +48,7 @@
                     </div>
                 </div>
 
-                <!-- ACTIONS -->
                 <div class="header-actions">
-                    <!-- Wishlist -->
                     <button class="hdr-action-btn" title="Yêu thích">
                         <span class="hdr-action-icon">
                             <span class="material-symbols-outlined">favorite</span>
@@ -66,7 +57,6 @@
                         <span class="hdr-action-label">Yêu thích</span>
                     </button>
 
-                    <!-- Account -->
                     <button class="hdr-action-btn" title="Tài khoản">
                         <span class="hdr-action-icon">
                             <span class="material-symbols-outlined">person</span>
@@ -74,7 +64,6 @@
                         <span class="hdr-action-label">Tài khoản</span>
                     </button>
 
-                    <!-- Cart -->
                     <button class="hdr-cart-btn" title="Giỏ hàng">
                         <span class="hdr-action-icon">
                             <span class="material-symbols-outlined">shopping_cart</span>
@@ -87,11 +76,9 @@
                     </button>
                 </div>
 
-            </div><!-- /.header-inner -->
-        </div>
+            </div></div>
     </header>
 
-    <!-- ===== CATEGORY NAV ===== -->
     <nav class="category-nav d-none d-md-block">
         <div class="container-max-custom px-desktop-custom">
             <div class="category-nav-inner">
@@ -100,12 +87,21 @@
                     Danh mục
                 </button>
                 <div class="cat-links">
-                    <a class="cat-link" href="#">Guitar Cổ điển</a>
-                    <a class="cat-link" href="#">Guitar Điện</a>
-                    <a class="cat-link" href="#">Guitar Thùng</a>
-                    <a class="cat-link" href="#">Bass Guitars</a>
-                    <a class="cat-link" href="#">Ukulele</a>
-                    <a class="cat-link" href="#">Phụ kiện</a>
+                    <?php if (!empty($categories)): ?>
+                        <?php foreach ($categories as $cat): ?>
+                            <a class="cat-link" href="/GuitarX/index.php?act=sanpham&id=<?php echo $cat['Category_ID']; ?>">
+                                <?php echo htmlspecialchars($cat['CategoryName']); ?>
+                            </a>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <a class="cat-link" href="#">Acoustic Guitars</a>
+                        <a class="cat-link" href="#">Electric Guitars</a>
+                        <a class="cat-link" href="#">Classic Guitars</a>
+                        <a class="cat-link" href="#">Bass Guitars</a>
+                        <a class="cat-link" href="#">Ukulele</a>
+                        <a class="cat-link" href="#">Phụ kiện</a>
+                    <?php endif; ?>
+
                     <a class="cat-link cat-link--hot" href="#">Săn Sale chớp nhoáng 🔥</a>
                 </div>
                 <div class="cat-contact ms-auto">

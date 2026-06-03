@@ -1,11 +1,8 @@
 <main class="w-100">
-    <!-- ===== HERO CAROUSEL ===== -->
     <section class="hero-carousel position-relative w-100 overflow-hidden bg-primary-custom" style="height: 600px;">
 
-        <!-- ── Slide Track ── -->
         <div class="hero-track" id="heroTrack">
 
-            <!-- Slide 1 — guitar.jpg (original) -->
             <div class="hero-slide active">
                 <img alt="Hero Guitar" class="hero-slide-img" src="/GuitarX/view/image/guitar.jpg" />
                 <div class="position-absolute inset-0 hero-gradient-overlay d-flex align-items-center w-100 h-100">
@@ -28,7 +25,6 @@
                 </div>
             </div>
 
-            <!-- Slide 2 — bannerguitar1.jpg -->
             <div class="hero-slide">
                 <img alt="Banner Guitar 1" class="hero-slide-img" src="/GuitarX/view/image/bannerguitar1.jpg" />
                 <div class="position-absolute inset-0 hero-gradient-overlay d-flex align-items-center w-100 h-100">
@@ -51,7 +47,6 @@
                 </div>
             </div>
 
-            <!-- Slide 3 — bannerguitar2.jpg -->
             <div class="hero-slide">
                 <img alt="Banner Guitar 2" class="hero-slide-img" src="/GuitarX/view/image/bannerguitar2.jpg" />
                 <div class="position-absolute inset-0 hero-gradient-overlay d-flex align-items-center w-100 h-100">
@@ -73,17 +68,13 @@
                 </div>
             </div>
 
-        </div><!-- /hero-track -->
-
-        <!-- ── Arrow Buttons ── -->
-        <button class="hero-arrow hero-arrow--prev" id="heroPrev" aria-label="Slide trước">
+        </div><button class="hero-arrow hero-arrow--prev" id="heroPrev" aria-label="Slide trước">
             <span class="material-symbols-outlined">chevron_left</span>
         </button>
         <button class="hero-arrow hero-arrow--next" id="heroNext" aria-label="Slide tiếp">
             <span class="material-symbols-outlined">chevron_right</span>
         </button>
 
-        <!-- ── Dot Indicators ── -->
         <div class="hero-dots" id="heroDots">
             <button class="hero-dot active" data-slide="0" aria-label="Slide 1"></button>
             <button class="hero-dot" data-slide="1" aria-label="Slide 2"></button>
@@ -92,13 +83,10 @@
 
     </section>
 
-    <!-- ── Carousel Styles ── -->
     <style>
     .hero-carousel {
         position: relative;
     }
-
-    /* Track holds all slides side-by-side via CSS transitions */
     .hero-track {
         display: flex;
         width: 100%;
@@ -107,7 +95,6 @@
         inset: 0;
         transition: transform 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
-
     .hero-slide {
         min-width: 100%;
         height: 600px;
@@ -115,7 +102,6 @@
         overflow: hidden;
         flex-shrink: 0;
     }
-
     .hero-slide-img {
         position: absolute;
         inset: 0;
@@ -124,24 +110,18 @@
         object-fit: cover;
         transition: transform 8s ease;
     }
-
     .hero-slide.active .hero-slide-img {
         transform: scale(1.06);
     }
-
-    /* Content animation */
     .hero-content {
         opacity: 0;
         transform: translateY(28px);
         transition: opacity 0.55s ease 0.35s, transform 0.55s ease 0.35s;
     }
-
     .hero-slide.active .hero-content {
         opacity: 1;
         transform: translateY(0);
     }
-
-    /* Arrow buttons */
     .hero-arrow {
         position: absolute;
         top: 50%;
@@ -160,26 +140,20 @@
         backdrop-filter: blur(8px);
         transition: background 0.25s ease, transform 0.2s ease, border-color 0.25s ease;
     }
-
     .hero-arrow:hover {
         background: rgba(230, 57, 70, 0.55);
         border-color: var(--color-secondary);
         transform: translateY(-50%) scale(1.1);
     }
-
     .hero-arrow .material-symbols-outlined {
         font-size: 30px;
     }
-
     .hero-arrow--prev {
         left: 1.5rem;
     }
-
     .hero-arrow--next {
         right: 1.5rem;
     }
-
-    /* Dot indicators */
     .hero-dots {
         position: absolute;
         bottom: 1.5rem;
@@ -189,7 +163,6 @@
         gap: 10px;
         z-index: 20;
     }
-
     .hero-dot {
         width: 10px;
         height: 10px;
@@ -200,7 +173,6 @@
         padding: 0;
         transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease, width 0.3s ease;
     }
-
     .hero-dot.active {
         background: #fff;
         border-color: #fff;
@@ -209,7 +181,6 @@
     }
     </style>
 
-    <!-- ── Carousel Script ── -->
     <script>
     (function() {
         const track = document.getElementById('heroTrack');
@@ -261,7 +232,6 @@
             });
         });
 
-        // Pause on hover
         track.addEventListener('mouseenter', function() {
             clearInterval(timer);
         });
@@ -271,7 +241,6 @@
     })();
     </script>
 
-    <!-- ===== FLASH SALE BANNER ===== -->
     <section class="w-100 flash-sale-pattern py-4 text-white">
         <div
             class="container-max-custom px-desktop-custom d-flex flex-column flex-md-row align-items-center justify-content-between gap-4">
@@ -306,113 +275,65 @@
         </div>
     </section>
 
-    <!-- ===== FEATURED GUITARS ===== -->
     <section class="container-max-custom px-desktop-custom py-5">
         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-end mb-4 gap-3">
             <div>
                 <div class="bg-secondary-custom mb-2" style="width: 48px; height: 4px;"></div>
-                <h2 class="font-headline-md text-dark text-uppercase mb-1">GUITAR NỔI BẬT</h2>
-                <p class="text-muted font-body-md mb-0">Lựa chọn hoàn hảo cho mọi phong cách chơi</p>
+                <h2 class="font-headline-md text-dark text-uppercase mb-1">SẢN PHẨM NỔI BẬT</h2>
+                <p class="text-muted font-body-md mb-0">Lựa chọn hoàn hảo cho mọi phong cách riêng</p>
             </div>
             <a class="text-primary-custom fw-bold text-decoration-none d-flex align-items-center gap-1 link-hover-effect"
-                href="#">
+                href="/GuitarX/index.php?act=sanpham">
                 Xem tất cả nhạc cụ <span class="material-symbols-outlined transition-transform">arrow_forward</span>
             </a>
         </div>
 
         <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
-            <!-- Card 1: Martin -->
-            <div class="col">
-                <div class="product-card h-100 position-relative d-flex flex-column justify-content-between">
-                    <span
-                        class="position-absolute top-0 end-0 m-3 badge bg-secondary-custom text-white px-2 py-1 font-label-sm rounded-1 z-1">BEST
-                        SELLER</span>
-                    <div>
-                        <div class="product-img-wrapper bg-surface-container-low rounded mb-3">
-                            <img alt="Martin Guitar" src="/GuitarX/view/image/aucosticmartin.jpg" />
+            
+            <?php if (!empty($featuredProducts)): ?>
+                <?php foreach ($featuredProducts as $prod): ?>
+                    <div class="col">
+                        <div class="product-card h-100 position-relative d-flex flex-column justify-content-between">
+                            <?php if ($prod['Product_ID'] % 2 == 0): ?>
+                                <span class="position-absolute top-0 end-0 m-3 badge bg-secondary-custom text-white px-2 py-1 font-label-sm rounded-1 z-1">BEST SELLER</span>
+                            <?php endif; ?>
+                            
+                            <div>
+                                <div class="product-img-wrapper bg-surface-container-low rounded mb-3">
+                                    <a href="/GuitarX/index.php?act=chitiet&id=<?php echo $prod['Product_ID']; ?>">
+                                        <img alt="<?php echo htmlspecialchars($prod['ProductName']); ?>" src="/GuitarX/view/image/<?php echo htmlspecialchars($prod['Image']); ?>" />
+                                    </a>
+                                </div>
+                                <p class="text-muted font-label-sm text-uppercase fw-bold mb-1 tracking-wider"><?php echo htmlspecialchars($prod['Brand']); ?></p>
+                                <h3 class="font-body-md fw-bold text-dark mb-2">
+                                    <a href="/GuitarX/index.php?act=chitiet&id=<?php echo $prod['Product_ID']; ?>" class="text-decoration-none text-dark link-hover-red">
+                                        <?php echo htmlspecialchars($prod['ProductName']); ?>
+                                    </a>
+                                </h3>
+                            </div>
+                            <div>
+                                <div class="d-flex align-items-center gap-2 mb-3">
+                                    <span class="text-secondary-custom font-headline-sm mb-0"><?php echo number_format($prod['Price'], 0, ',', '.'); ?>₫</span>
+                                </div>
+                                <a href="/GuitarX/index.php?act=chitiet&id=<?php echo $prod['Product_ID']; ?>" class="btn btn-add-cart-custom w-100 text-center text-decoration-none d-block pt-2">XEM CHI TIẾT</a>
+                            </div>
                         </div>
-                        <p class="text-muted font-label-sm text-uppercase fw-bold mb-1 tracking-wider">MARTIN</p>
-                        <h3 class="font-body-md fw-bold text-dark mb-2">Martin D-28 Standard Dreadnought Acoustic</h3>
                     </div>
-                    <div>
-                        <div class="d-flex align-items-center gap-2 mb-3">
-                            <span class="text-secondary-custom font-headline-sm mb-0">85.000.000₫</span>
-                            <span class="text-muted text-decoration-line-through small opacity-50">92.000.000₫</span>
-                        </div>
-                        <button class="btn btn-add-cart-custom w-100">THÊM VÀO GIỎ HÀNG</button>
-                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <div class="col-12 text-center py-4">
+                    <p class="text-muted">Không tìm thấy sản phẩm nổi bật nào trong hệ thống.</p>
                 </div>
-            </div>
+            <?php endif; ?>
 
-            <!-- Card 2: Yamaha -->
-            <div class="col">
-                <div class="product-card h-100 d-flex flex-column justify-content-between">
-                    <div>
-                        <div class="product-img-wrapper bg-surface-container-low rounded mb-3">
-                            <img alt="Yamaha Classic" src="/GuitarX/view/image/classicyamaha.jpg" />
-                        </div>
-                        <p class="text-muted font-label-sm text-uppercase fw-bold mb-1 tracking-wider">YAMAHA</p>
-                        <h3 class="font-body-md fw-bold text-dark mb-2">Yamaha CG192C Classical Guitar Solid Cedar</h3>
-                    </div>
-                    <div>
-                        <div class="d-flex align-items-center gap-2 mb-3">
-                            <span class="text-secondary-custom font-headline-sm mb-0">14.500.000₫</span>
-                        </div>
-                        <button class="btn btn-add-cart-custom w-100">THÊM VÀO GIỎ HÀNG</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 3: Gibson -->
-            <div class="col">
-                <div class="product-card h-100 d-flex flex-column justify-content-between">
-                    <div>
-                        <div class="product-img-wrapper bg-surface-container-low rounded mb-3">
-                            <img alt="Vintage Electric" src="/GuitarX/view/image/elecvintage.jpg" />
-                        </div>
-                        <p class="text-muted font-label-sm text-uppercase fw-bold mb-1 tracking-wider">GIBSON</p>
-                        <h3 class="font-body-md fw-bold text-dark mb-2">Gibson Custom Shop '59 Les Paul Vintage</h3>
-                    </div>
-                    <div>
-                        <div class="d-flex align-items-center gap-2 mb-3">
-                            <span class="text-secondary-custom font-headline-sm mb-0">165.000.000₫</span>
-                        </div>
-                        <button class="btn btn-add-cart-custom w-100">THÊM VÀO GIỎ HÀNG</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 4: Washburn -->
-            <div class="col">
-                <div class="product-card h-100 position-relative d-flex flex-column justify-content-between">
-                    <span
-                        class="position-absolute top-0 end-0 m-3 badge bg-primary-custom text-white px-2 py-1 font-label-sm rounded-1 z-1">GIỚI
-                        HẠN</span>
-                    <div>
-                        <div class="product-img-wrapper bg-surface-container-low rounded mb-3">
-                            <img alt="Washburn Bella" src="/GuitarX/view/image/washburnbella.jpg" />
-                        </div>
-                        <p class="text-muted font-label-sm text-uppercase fw-bold mb-1 tracking-wider">WASHBURN</p>
-                        <h3 class="font-body-md fw-bold text-dark mb-2">Washburn Bella Tono Allure SC56V</h3>
-                    </div>
-                    <div>
-                        <div class="d-flex align-items-center gap-2 mb-3">
-                            <span class="text-secondary-custom font-headline-sm mb-0">12.800.000₫</span>
-                        </div>
-                        <button class="btn btn-add-cart-custom w-100">THÊM VÀO GIỎ HÀNG</button>
-                    </div>
-                </div>
-            </div>
         </div>
     </section>
 
-    <!-- ===== OUR PARTNERS ===== -->
     <section class="bg-surface-container-low py-5">
         <div class="container-max-custom px-desktop-custom">
             <div class="text-center mb-5">
                 <h2 class="font-headline-md text-dark text-uppercase">THƯƠNG HIỆU ĐỒNG HÀNH</h2>
-                <p class="text-muted font-body-md mb-0">Nhà phân phối chính hãng các thương hiệu guitar hàng đầu thế
-                    giới</p>
+                <p class="text-muted font-body-md mb-0">Nhà phân phối chính hãng các thương hiệu guitar hàng đầu thế giới</p>
             </div>
             <div class="row row-cols-2 row-cols-md-3 row-cols-lg-6 g-3">
                 <div class="col">
@@ -455,7 +376,6 @@
         </div>
     </section>
 
-    <!-- ===== NEWSLETTER / JOIN COMMUNITY ===== -->
     <section class="container-max-custom px-desktop-custom py-5">
         <div class="bg-primary-custom rounded-3 overflow-hidden row m-0 align-items-stretch" style="min-height: 400px;">
             <div class="col-12 col-lg-6 p-5 d-flex flex-column justify-content-center text-white">

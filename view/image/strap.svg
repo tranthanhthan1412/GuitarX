@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f8f9fa"/>
+      <stop offset="100%" style="stop-color:#e9ecef"/>
+    </linearGradient>
+    <linearGradient id="leather" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B5E3C"/>
+      <stop offset="50%" style="stop-color:#6D4C2E"/>
+      <stop offset="100%" style="stop-color:#8B5E3C"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg)" rx="12"/>
+  <!-- Strap body -->
+  <path d="M 80 80 Q 120 200 320 320" stroke="url(#leather)" stroke-width="40" fill="none" stroke-linecap="round"/>
+  <path d="M 80 80 Q 120 200 320 320" stroke="#5D3A1A" stroke-width="40" fill="none" stroke-linecap="round" opacity="0.15"/>
+  <!-- Stitching -->
+  <path d="M 80 80 Q 120 200 320 320" stroke="#D4A76A" stroke-width="1.5" fill="none" stroke-dasharray="8 6" stroke-linecap="round" transform="translate(-8,-8)"/>
+  <path d="M 80 80 Q 120 200 320 320" stroke="#D4A76A" stroke-width="1.5" fill="none" stroke-dasharray="8 6" stroke-linecap="round" transform="translate(8,8)"/>
+  <!-- Buckle ends -->
+  <circle cx="80" cy="80" r="12" fill="#B8860B" stroke="#8B6914" stroke-width="2"/>
+  <circle cx="320" cy="320" r="12" fill="#B8860B" stroke="#8B6914" stroke-width="2"/>
+  <text x="200" y="380" text-anchor="middle" font-family="Inter,sans-serif" font-size="16" fill="#636e72" font-weight="600">Dây đeo đàn</text>
+</svg>

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f8f9fa"/>
+      <stop offset="100%" style="stop-color:#e9ecef"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg)" rx="12"/>
+  <!-- Tuner body -->
+  <rect x="140" y="120" width="120" height="80" rx="10" fill="#2d3436" stroke="#636e72" stroke-width="2"/>
+  <!-- Screen -->
+  <rect x="155" y="132" width="90" height="50" rx="6" fill="#00b894" opacity="0.85"/>
+  <!-- Needle -->
+  <line x1="200" y1="175" x2="200" y2="140" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+  <!-- Clip -->
+  <path d="M 170 200 Q 170 260 200 280 Q 230 260 230 200" fill="none" stroke="#2d3436" stroke-width="8" stroke-linecap="round"/>
+  <text x="200" y="340" text-anchor="middle" font-family="Inter,sans-serif" font-size="16" fill="#636e72" font-weight="600">Máy lên dây</text>
+</svg>
