@@ -1,115 +1,121 @@
-<!-- ===== FOOTER ===== -->
-<footer class="bg-primary-custom text-white pt-5 pb-3 mt-0">
+<!-- Footer -->
+<footer class="bg-surface-container-highest border-t py-5 mt-5">
     <div class="container-max-custom px-desktop-custom">
-        <div class="row g-5 pb-4">
+        <div class="row g-4 row-cols-1 row-cols-md-2 row-cols-lg-4">
             <!-- Brand Column -->
-            <div class="col-12 col-md-4">
-                <a class="font-display-lg fw-bold text-white text-decoration-none d-inline-block mb-3" href="index.php">VIET MUSIC</a>
-                <p class="font-body-md text-white opacity-75 mb-4">
-                    Vietnam's premier destination for professional guitars and musical instruments. Serving musicians since 2005.
-                </p>
-                <div class="d-flex gap-3">
-                    <a href="#" class="btn btn-sm bg-white bg-opacity-10 text-white border-0 rounded-circle d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
-                        <span class="material-symbols-outlined" style="font-size:18px;">public</span>
-                    </a>
-                    <a href="#" class="btn btn-sm bg-white bg-opacity-10 text-white border-0 rounded-circle d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
-                        <span class="material-symbols-outlined" style="font-size:18px;">mail</span>
-                    </a>
-                    <a href="#" class="btn btn-sm bg-white bg-opacity-10 text-white border-0 rounded-circle d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
-                        <span class="material-symbols-outlined" style="font-size:18px;">phone</span>
-                    </a>
+            <div class="space-y-4">
+                <a class="font-headline-md text-primary-custom fw-bold text-decoration-none d-block mb-3" href="#">VIET MUSIC</a>
+                <p class="text-muted font-body-md leading-relaxed">Viet Music is Vietnam's leading destination for premium musical instruments. Since 2010, we've provided artists with the tools to express their soul.</p>
+                <div class="d-flex gap-2">
+                    <button class="btn social-btn rounded-circle bg-white text-primary-custom d-flex align-items-center justify-content-center"><span class="material-symbols-outlined">public</span></button>
+                    <button class="btn social-btn rounded-circle bg-white text-primary-custom d-flex align-items-center justify-content-center"><span class="material-symbols-outlined">alternate_email</span></button>
+                    <button class="btn social-btn rounded-circle bg-white text-primary-custom d-flex align-items-center justify-content-center"><span class="material-symbols-outlined">play_circle</span></button>
                 </div>
             </div>
-
+            
             <!-- Quick Links -->
-            <div class="col-6 col-md-2">
-                <h4 class="font-label-md text-uppercase text-white opacity-50 tracking-wider mb-3">Shop</h4>
-                <ul class="list-unstyled mb-0">
-                    <li class="mb-2"><a href="#" class="text-white text-decoration-none opacity-75 font-body-md footer-link">Acoustic Guitars</a></li>
-                    <li class="mb-2"><a href="#" class="text-white text-decoration-none opacity-75 font-body-md footer-link">Electric Guitars</a></li>
-                    <li class="mb-2"><a href="#" class="text-white text-decoration-none opacity-75 font-body-md footer-link">Classical Guitars</a></li>
-                    <li class="mb-2"><a href="#" class="text-white text-decoration-none opacity-75 font-body-md footer-link">Bass Guitars</a></li>
-                    <li class="mb-2"><a href="#" class="text-white text-decoration-none opacity-75 font-body-md footer-link">Accessories</a></li>
+            <div>
+                <h4 class="font-label-md text-uppercase mb-4 tracking-wider fw-bold">Information</h4>
+                <ul class="list-unstyled space-y-2">
+                    <li class="mb-2"><a class="text-muted text-decoration-none hover-secondary-custom" href="#">About Us</a></li>
+                    <li class="mb-2"><a class="text-muted text-decoration-none hover-secondary-custom" href="#">Store Locations</a></li>
+                    <li class="mb-2"><a class="text-muted text-decoration-none hover-secondary-custom" href="#">Career Opportunities</a></li>
+                    <li class="mb-2"><a class="text-muted text-decoration-none hover-secondary-custom" href="#">Press Kit</a></li>
                 </ul>
             </div>
-
-            <!-- Support -->
-            <div class="col-6 col-md-2">
-                <h4 class="font-label-md text-uppercase text-white opacity-50 tracking-wider mb-3">Support</h4>
-                <ul class="list-unstyled mb-0">
-                    <li class="mb-2"><a href="#" class="text-white text-decoration-none opacity-75 font-body-md footer-link">Contact Us</a></li>
-                    <li class="mb-2"><a href="#" class="text-white text-decoration-none opacity-75 font-body-md footer-link">Shipping Policy</a></li>
-                    <li class="mb-2"><a href="#" class="text-white text-decoration-none opacity-75 font-body-md footer-link">Returns</a></li>
-                    <li class="mb-2"><a href="#" class="text-white text-decoration-none opacity-75 font-body-md footer-link">Warranty</a></li>
-                    <li class="mb-2"><a href="#" class="text-white text-decoration-none opacity-75 font-body-md footer-link">FAQ</a></li>
+            
+            <!-- Customer Service -->
+            <div>
+                <h4 class="font-label-md text-uppercase mb-4 tracking-wider fw-bold">Support</h4>
+                <ul class="list-unstyled space-y-2">
+                    <li class="mb-2"><a class="text-muted text-decoration-none hover-secondary-custom" href="#">Shipping & Returns</a></li>
+                    <li class="mb-2"><a class="text-muted text-decoration-none hover-secondary-custom" href="#">Warranty Policy</a></li>
+                    <li class="mb-2"><a class="text-muted text-decoration-none hover-secondary-custom" href="#">Maintenance Services</a></li>
+                    <li class="mb-2"><a class="text-muted text-decoration-none hover-secondary-custom" href="#">Contact Service Center</a></li>
                 </ul>
             </div>
-
+            
             <!-- Contact Info -->
-            <div class="col-12 col-md-4">
-                <h4 class="font-label-md text-uppercase text-white opacity-50 tracking-wider mb-3">Visit Us</h4>
-                <div class="d-flex gap-2 mb-2 align-items-start">
-                    <span class="material-symbols-outlined opacity-75" style="font-size:18px;margin-top:2px;">location_on</span>
-                    <p class="text-white opacity-75 font-body-md mb-0">123 Nguyen Hue Street, District 1,<br>Ho Chi Minh City, Vietnam</p>
-                </div>
-                <div class="d-flex gap-2 mb-2 align-items-center">
-                    <span class="material-symbols-outlined opacity-75" style="font-size:18px;">call</span>
-                    <a href="tel:+84901234567" class="text-white opacity-75 text-decoration-none font-body-md footer-link">+84 90 123 4567</a>
-                </div>
-                <div class="d-flex gap-2 align-items-center">
-                    <span class="material-symbols-outlined opacity-75" style="font-size:18px;">schedule</span>
-                    <span class="text-white opacity-75 font-body-md">Mon–Sat: 9:00 – 20:00</span>
+            <div>
+                <h4 class="font-label-md text-uppercase mb-4 tracking-wider fw-bold">Visit Us</h4>
+                <div class="space-y-3">
+                    <div class="d-flex gap-3 mb-3">
+                        <span class="material-symbols-outlined text-primary-custom">location_on</span>
+                        <p class="text-muted font-body-md mb-0">290 An Duong Vuong, Ward 4, District 5, HCMC, Vietnam</p>
+                    </div>
+                    <div class="d-flex gap-3 mb-3">
+                        <span class="material-symbols-outlined text-primary-custom">call</span>
+                        <p class="text-muted font-body-md mb-0">1900 6717</p>
+                    </div>
+                    <div class="d-flex gap-3 mb-4">
+                        <span class="material-symbols-outlined text-primary-custom">mail</span>
+                        <p class="text-muted font-body-md mb-0">info@vietmusic.vn</p>
+                    </div>
+                    <div>
+                        <img alt="BCT Certificate" class="img-fluid opacity-70 grayscale-img cursor-pointer" style="height: 40px;" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0u_FXHHRs2AZp_6djDT51JpjLrvxucvFP9lGBBkSpZl9Cq6NkjFxa9Nww6uJIabTeVBZhPQ1bIMC5ET7HoP0lPyQY-t79uuxrYlgNUFJ9IDbTwqantc-8ilL7_BbLyJadBH_kLmDEXMvHc8kZDKkNnEQHIXNtySwWb-9x7Pw8WLnsqCoM7LfWRzmStwyLJqx4y8_yhlsxjONBhcsc8giDgoPpa3fhCbycWAp0fdCoYkF5PoR_wRCQeQoVGpcepjR99Ku_B1Ima5Q"/>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <!-- Divider -->
-        <div class="border-top border-white border-opacity-10 pt-3 d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
-            <p class="text-white opacity-50 font-label-sm mb-0">© <?php echo date('Y'); ?> VIET MUSIC. All rights reserved.</p>
-            <div class="d-flex gap-3">
-                <a href="#" class="text-white opacity-50 text-decoration-none font-label-sm footer-link">Privacy Policy</a>
-                <a href="#" class="text-white opacity-50 text-decoration-none font-label-sm footer-link">Terms of Use</a>
+        
+        <hr class="my-4 text-muted">
+        
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center text-muted font-label-sm">
+            <p class="mb-2 mb-md-0">© 2024 VIET MUSIC. All Rights Reserved.</p>
+            <div class="d-flex gap-4">
+                <a class="text-muted text-decoration-none hover-secondary-custom" href="#">Privacy Policy</a>
+                <a class="text-muted text-decoration-none hover-secondary-custom" href="#">Terms of Service</a>
+                <a class="text-muted text-decoration-none hover-secondary-custom" href="#">Cookie Settings</a>
             </div>
         </div>
     </div>
 </footer>
 
-<style>
-.footer-link { transition: opacity 0.2s ease; }
-.footer-link:hover { opacity: 1 !important; }
-</style>
+<!-- Chat FAB -->
+<div class="position-fixed bottom-0 end-0 m-4 z-3">
+    <button class="btn btn-chat-fab rounded-circle shadow-lg d-flex align-items-center justify-content-center position-relative group-fab">
+        <span class="material-symbols-outlined fs-3 text-white">forum</span>
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger-custom border border-white d-flex align-items-center justify-content-center" style="width: 24px; height: 24px; font-size: 10px; font-weight: bold;">1</span>
+        <div class="fab-tooltip position-absolute bg-white text-dark px-3 py-2 rounded-3 shadow font-bold text-nowrap">Chat with a Specialist</div>
+    </button>
+</div>
 
-<!-- Bootstrap 5 JS -->
+<!-- Bootstrap 5 JS Bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- Flash-sale countdown timer -->
 <script>
-(function () {
-    // Set a 3-hour countdown from page load
-    const endTime = Date.now() + 3 * 60 * 60 * 1000;
+    // Simple countdown logic for Flash Sale
+    function updateTimer() {
+        const h = document.getElementById('hours');
+        const m = document.getElementById('minutes');
+        const s = document.getElementById('seconds');
+        
+        if(!h || !m || !s) return;
+        
+        let hours = parseInt(h.innerText);
+        let mins = parseInt(m.innerText);
+        let secs = parseInt(s.innerText);
 
-    function pad(n) { return String(n).padStart(2, '0'); }
-
-    function tick() {
-        const diff = Math.max(0, endTime - Date.now());
-        const h = Math.floor(diff / 3600000);
-        const m = Math.floor((diff % 3600000) / 60000);
-        const s = Math.floor((diff % 60000) / 1000);
-
-        const elH = document.getElementById('hours');
-        const elM = document.getElementById('minutes');
-        const elS = document.getElementById('seconds');
-
-        if (elH) elH.textContent = pad(h);
-        if (elM) elM.textContent = pad(m);
-        if (elS) elS.textContent = pad(s);
-
-        if (diff > 0) setTimeout(tick, 1000);
+        setInterval(() => {
+            secs--;
+            if (secs < 0) {
+                secs = 59;
+                mins--;
+            }
+            if (mins < 0) {
+                mins = 59;
+                hours--;
+            }
+            if (hours < 0) {
+                hours = 2; mins = 45; secs = 12; // Reset for demo
+            }
+            
+            h.innerText = hours.toString().padStart(2, '0');
+            m.innerText = mins.toString().padStart(2, '0');
+            s.innerText = secs.toString().padStart(2, '0');
+        }, 1000);
     }
-
-    tick();
-})();
+    updateTimer();
 </script>
-
 </body>
 </html>

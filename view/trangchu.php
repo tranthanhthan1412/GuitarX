@@ -228,7 +228,7 @@
             <div class="d-flex align-items-center gap-3">
                 <span class="material-symbols-outlined display-5">bolt</span>
                 <div>
-                    <h2 class="font-headline-md mb-0">MIDNIGHT FLASH SALE</h2>
+                    <h2 class="font-headline-md mb-0">ƯU ĐÃI ĐẾN 40% - GUITAR CHỌN LỌC</h2>
                     <p class="mb-0 text-white-50 font-label-md text-uppercase tracking-wider">Up to 40% OFF - Selected Guitars</p>
                 </div>
             </div>
@@ -247,7 +247,7 @@
                         <span class="text-white-50 uppercase fw-bold" style="font-size: 10px;">Secs</span>
                     </div>
                 </div>
-                <button class="btn btn-light text-danger-custom fw-bold px-4 py-2 shadow-sm">SHOP SALE</button>
+                <button class="btn btn-light text-danger-custom fw-bold px-4 py-2 shadow-sm">CỪA HÀNG ƯU ĐÃI</button>
             </div>
         </div>
     </section>
@@ -257,11 +257,11 @@
         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-end mb-4 gap-3">
             <div>
                 <div class="bg-secondary-custom mb-2" style="width: 48px; height: 4px;"></div>
-                <h2 class="font-headline-md text-dark text-uppercase mb-1">FEATURED GUITARS</h2>
-                <p class="text-muted font-body-md mb-0">Hand-picked excellence for every playing style</p>
+                <h2 class="font-headline-md text-dark text-uppercase mb-1">GUITAR NỔI BẬT</h2>
+                <p class="text-muted font-body-md mb-0">Lựa chọn hoàn hảo cho mọi phong cách chơi</p>
             </div>
             <a class="text-primary-custom fw-bold text-decoration-none d-flex align-items-center gap-1 link-hover-effect" href="#">
-                View All Instruments <span class="material-symbols-outlined transition-transform">arrow_forward</span>
+                Xem tất cả nhạc cụ <span class="material-symbols-outlined transition-transform">arrow_forward</span>
             </a>
         </div>
 
@@ -351,8 +351,8 @@
     <section class="bg-surface-container-low py-5">
         <div class="container-max-custom px-desktop-custom">
             <div class="text-center mb-5">
-                <h2 class="font-headline-md text-dark text-uppercase">OUR PARTNERS</h2>
-                <p class="text-muted font-body-md mb-0">Authorized dealer for the world's finest instrument manufacturers</p>
+                <h2 class="font-headline-md text-dark text-uppercase">THƯƠNG HIỆU ĐỒNG HÀNH</h2>
+                <p class="text-muted font-body-md mb-0">Nhà phân phối chính hãng các thương hiệu guitar hàng đầu thế giới</p>
             </div>
             <div class="row row-cols-2 row-cols-md-3 row-cols-lg-6 g-3">
                 <div class="col">
