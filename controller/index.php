@@ -13,6 +13,11 @@ switch ($act) {
         include_once __DIR__ . "/../view/footer.php";
         break;
 
+    case 'login':
+        // taikhoan.php đã tự gọi header và footer ở bên trong nên không cần bao bọc lại
+        include_once __DIR__ . "/../view/taikhoan.php";
+        break;
+
     case 'home':
     default:
         include_once __DIR__ . "/../view/header.php";

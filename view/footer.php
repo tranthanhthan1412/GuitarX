@@ -92,15 +92,42 @@
 </footer>
 
 <!-- Chat FAB -->
+<style>
+    .btn-chat-fab {
+        width: 60px;
+        height: 60px;
+        background-color: #e63946;
+        border: none;
+        transition: all 0.3s ease;
+    }
+    .btn-chat-fab:hover {
+        background-color: #c9222f;
+        transform: scale(1.05);
+    }
+    .fab-tooltip {
+        right: 100%;
+        margin-right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        pointer-events: none;
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+    .btn-chat-fab:hover .fab-tooltip {
+        opacity: 1;
+        visibility: visible;
+        margin-right: 18px;
+    }
+</style>
 <div class="position-fixed bottom-0 end-0 m-4 z-3">
-    <button
-        class="btn btn-chat-fab rounded-circle shadow-lg d-flex align-items-center justify-content-center position-relative group-fab">
+    <button class="btn btn-chat-fab rounded-circle shadow-lg d-flex align-items-center justify-content-center position-relative group-fab">
         <span class="material-symbols-outlined fs-3 text-white">forum</span>
-        <span
-            class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger-custom border border-white d-flex align-items-center justify-content-center"
-            style="width: 24px; height: 24px; font-size: 10px; font-weight: bold;">1</span>
-        <div class="fab-tooltip position-absolute bg-white text-dark px-3 py-2 rounded-3 shadow font-bold text-nowrap">
-            Chat with a Specialist</div>
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger border border-white d-flex align-items-center justify-content-center" style="width: 24px; height: 24px; font-size: 10px; font-weight: bold;">1</span>
+        <div class="fab-tooltip position-absolute bg-white text-dark px-3 py-2 rounded-3 shadow font-bold text-nowrap" style="font-size: 14px; font-weight: 600;">
+            Chat với tư vấn viên
+        </div>
     </button>
 </div>
 

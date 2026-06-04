@@ -1,3 +1,8 @@
+<?php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -57,12 +62,32 @@
                         <span class="hdr-action-label">Yêu thích</span>
                     </button>
 
-                    <button class="hdr-action-btn" title="Tài khoản">
-                        <span class="hdr-action-icon">
-                            <span class="material-symbols-outlined">person</span>
-                        </span>
-                        <span class="hdr-action-label">Tài khoản</span>
-                    </button>
+                    <?php if(isset($_SESSION['user_id'])): ?>
+                        <div class="dropdown">
+                            <button class="hdr-action-btn border-0 bg-transparent p-0 d-flex flex-column align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Tài khoản">
+                                <span class="hdr-action-icon">
+                                    <span class="material-symbols-outlined text-primary-custom">person</span>
+                                </span>
+                                <span class="hdr-action-label text-truncate" style="max-width: 80px;"><?php echo htmlspecialchars($_SESSION['username']); ?></span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
+                                <li><h6 class="dropdown-header">Xin chào, <?php echo htmlspecialchars($_SESSION['username']); ?></h6></li>
+                                <?php if($_SESSION['role'] === 'admin'): ?>
+                                    <li><a class="dropdown-item" href="/GuitarX/admin/index.php"><span class="material-symbols-outlined align-middle fs-5 me-2">admin_panel_settings</span>Trang Quản Trị</a></li>
+                                <?php endif; ?>
+                                <li><a class="dropdown-item" href="#"><span class="material-symbols-outlined align-middle fs-5 me-2">receipt_long</span>Đơn hàng của tôi</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="/GuitarX/controller/user.php?act=logout"><span class="material-symbols-outlined align-middle fs-5 me-2">logout</span>Đăng xuất</a></li>
+                            </ul>
+                        </div>
+                    <?php else: ?>
+                        <a href="/GuitarX/index.php?act=login" class="hdr-action-btn text-decoration-none" title="Đăng nhập">
+                            <span class="hdr-action-icon">
+                                <span class="material-symbols-outlined">person</span>
+                            </span>
+                            <span class="hdr-action-label">Đăng nhập</span>
+                        </a>
+                    <?php endif; ?>
 
                     <button class="hdr-cart-btn" title="Giỏ hàng">
                         <span class="hdr-action-icon">

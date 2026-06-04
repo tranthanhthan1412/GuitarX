@@ -193,6 +193,17 @@ class Database {
     // Hàm tự động nạp dữ liệu mẫu để Giai đoạn 1 hiển thị lên được giao diện luôn
     private function seedDataDataForPhase1() {
         
+        // 0. Kiểm tra bảng USER rỗng thì chèn tài khoản admin mặc định
+        $check_user = $this->conn->query("SELECT COUNT(*) FROM `USER`")->fetchColumn();
+        if ($check_user == 0) {
+            // Mật khẩu là 123456 (để thô cho tiện lúc demo, sau này có thể dùng mã hóa password_hash)
+            $this->conn->exec("
+                INSERT INTO `USER` (`UserName`, `PassWord`, `Role`) VALUES
+                ('admin', '123456', 'admin'),
+                ('khachhang', '123456', 'customer');
+            ");
+        }
+
         // 1. Kiểm tra bảng CATEGORIES rỗng thì chèn danh mục
         $check_cat = $this->conn->query("SELECT COUNT(*) FROM `CATEGORIES`")->fetchColumn();
         if ($check_cat == 0) {
