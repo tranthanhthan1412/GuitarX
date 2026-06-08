@@ -10,31 +10,96 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - GuitarX</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet">
+    <link href="../view/css/theme.css" rel="stylesheet">
+    <style>
+    /* Biến thành link để nhấn vào refresh */
+    .site-logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .logo-icon {
+        filter: drop-shadow(0 2px 6px rgba(230, 57, 70, 0.45));
+    }
+
+    .admin-nav-links .cat-link {
+        color: rgba(255, 255, 255, 0.75) !important;
+        border-bottom: 3px solid transparent;
+        padding: 0 1rem;
+        text-decoration: none;
+        font-family: var(--font-display);
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .admin-nav-links .cat-link:hover,
+    .admin-nav-links .cat-link.active {
+        color: var(--color-secondary) !important;
+        border-bottom-color: var(--color-secondary) !important;
+    }
+    </style>
 </head>
+
 <body class="bg-light">
-    
+
     <!-- Navbar Admin -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand fw-bold text-danger" href="index.php">GuitarX Admin</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-toggle="collapse" data-bs-target="#adminNavbar">
+    <nav class="navbar navbar-expand-lg navbar-dark site-header">
+        <div class="container-fluid px-4">
+
+            <a class="site-logo" href="index.php">
+                <div class="logo-icon">
+                    <span class="material-symbols-outlined text-secondary-custom"
+                        style="font-size: 32px;">admin_panel_settings</span>
+                </div>
+                <div class="logo-text">
+                    <div class="logo-name">
+                        <span class="logo-main">Guitar</span>
+                        <span class="logo-accent">X</span>
+                    </div>
+                    <span class="logo-tagline">ADMIN SYSTEM</span>
+                </div>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNavbar">
                 <span class="navbar-toggler-icon"></span>
             </button>
+
             <div class="collapse navbar-collapse" id="adminNavbar">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link" href="index.php?act=quanlysanpham">Sản Phẩm</a></li>
-                    <li class="nav-item"><a class="nav-link" href="index.php?act=quanlydanhmuc">Danh Mục</a></li>
-                    <li class="nav-item"><a class="nav-link" href="index.php?act=quanlydonhang">Đơn Hàng</a></li>
-                </ul>
-                <div class="d-flex text-white align-items-center">
-                    <span class="me-3">Xin chào, <strong><?php echo htmlspecialchars($_SESSION['username']); ?></strong></span>
-                    <a href="../controller/user.php?act=logout" class="btn btn-outline-light btn-sm">Đăng xuất</a>
+                <div class="admin-nav-links navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3">
+                    <?php $act = $_GET['act'] ?? ''; ?>
+                    <a class="nav-link cat-link <?= $act == 'quanlysanpham' ? 'active' : '' ?>"
+                        href="index.php?act=quanlysanpham">Sản Phẩm</a>
+                    <a class="cat-link nav-link <?= $act == 'quanlydanhmuc' ? 'active' : '' ?>"
+                        href="index.php?act=quanlydanhmuc">Danh Mục</a>
+                    <a class="cat-link nav-link <?= $act == 'quanlydonhang' ? 'active' : '' ?>"
+                        href="index.php?act=quanlydonhang">Đơn Hàng</a>
+                </div>
+
+                <div class="header-actions d-flex align-items-center gap-3">
+                    <div class="d-flex align-items-center text-white gap-2">
+                        <span class="material-symbols-outlined">person</span>
+                        <span
+                            style="font-family: var(--font-display); font-size: 0.85rem;"><strong><?= htmlspecialchars($_SESSION['username']) ?></strong></span>
+                    </div>
+
+                    <a href="../controller/user.php?act=logout" class="hdr-cart-btn text-decoration-none">
+                        <span class="material-symbols-outlined">logout</span>
+                        <div class="hdr-cart-text">
+                            <span class="hdr-cart-label">ĐĂNG XUẤT</span>
+                        </div>
+                    </a>
                 </div>
             </div>
         </div>
@@ -67,4 +132,5 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
