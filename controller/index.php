@@ -187,6 +187,17 @@ switch ($act) {
                 $orderId = $orderModel->createOrder($_SESSION['user_id'], $cartDetails, $address, $city, $paymentMethodId);
                 
                 if ($orderId) {
+                    // Gửi email hóa đơn
+                    require_once __DIR__ . "/../model/m_mail.php";
+                    $mailService = new MailService();
+                    $customerEmail = $_SESSION['email'] ?? '';
+                    $customerName = $_SESSION['username'] ?? 'Khách hàng';
+                    $fullAddress = $address . ', ' . $city;
+                    
+                    if (!empty($customerEmail)) {
+                        $mailService->sendInvoiceEmail($customerEmail, $customerName, $orderId, $cartDetails, $totalAmount, $fullAddress);
+                    }
+
                     unset($_SESSION['cart']);
                     header("Location: /GuitarX/index.php?act=camon&id=" . $orderId);
                     exit();

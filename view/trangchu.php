@@ -376,27 +376,92 @@
         </div>
     </section>
 
-    <section class="container-max-custom px-desktop-custom py-5">
-        <div class="bg-primary-custom rounded-3 overflow-hidden row m-0 align-items-stretch" style="min-height: 400px;">
-            <div class="col-12 col-lg-6 p-5 d-flex flex-column justify-content-center text-white">
-                <h2 class="font-display-lg mb-4 fw-bold">Gia nhập cộng đồng</h2>
-                <p class="font-body-lg mb-4 opacity-75">Đăng ký để tham gia các lớp học chuyên sâu độc quyền, nhận mẹo
-                    bảo dưỡng đàn và là người đầu tiên tiếp cận các phiên bản giới hạn.</p>
-                <div class="row g-3">
-                    <div class="col-12 col-sm-8">
-                        <input
-                            class="form-control bg-white bg-opacity-10 border-white border-opacity-25 text-white py-3 px-4 shadow-none"
-                            placeholder="Nhập email của bạn" type="email" style="border-radius: 4px;" />
+<style>
+/* Community Section Styling */
+.community-section {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+    position: relative;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+.community-section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(circle at 30% 50%, rgba(230, 57, 70, 0.15), transparent 60%);
+    pointer-events: none;
+}
+.community-title {
+    color: #ffffff;
+    text-shadow: 0 2px 10px rgba(230, 57, 70, 0.3);
+}
+.community-input {
+    background: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease;
+}
+.community-input:focus {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-color: var(--color-secondary, #e63946) !important;
+    box-shadow: 0 0 15px rgba(230, 57, 70, 0.2) !important;
+}
+.community-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+.community-btn {
+    border-radius: 8px !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    background-color: var(--color-secondary, #e63946);
+    color: white;
+    border: none;
+}
+.community-btn:hover {
+    background-color: #c9222f;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(230, 57, 70, 0.4);
+}
+.community-image-wrapper {
+    position: relative;
+}
+.community-image-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(90deg, #1a1a1a 0%, transparent 40%);
+    z-index: 2;
+}
+</style>
+
+    <section class="container-max-custom px-desktop-custom py-5 mb-5">
+        <div class="community-section rounded-4 overflow-hidden row m-0 align-items-stretch" style="min-height: 450px;">
+            <div class="col-12 col-lg-6 p-5 p-lg-5 d-flex flex-column justify-content-center position-relative z-1">
+                <div class="ps-lg-4">
+                    <div class="d-inline-flex align-items-center gap-2 px-3 py-2 rounded-pill bg-white bg-opacity-10 text-white mb-4" style="backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.1); width: max-content;">
+                        <span class="material-symbols-outlined fs-5" style="color: var(--color-secondary, #e63946);">star</span>
+                        <span class="font-label-sm fw-bold tracking-wider text-uppercase">Tham gia ngay</span>
                     </div>
-                    <div class="col-12 col-sm-4">
-                        <button class="btn btn-secondary-custom w-100 h-100 py-3 fw-bold text-nowrap"
-                            style="border-radius: 4px;">Đăng ký</button>
+                    
+                    <h2 class="community-title font-display-lg mb-4 fw-bold">Gia nhập cộng đồng<br><span style="color: var(--color-secondary, #e63946);">GuitarX</span></h2>
+                    <p class="font-body-lg mb-5 text-white opacity-75 leading-relaxed" style="max-width: 450px;">Đăng ký để tham gia các lớp học chuyên sâu độc quyền, nhận mẹo bảo dưỡng đàn và là người đầu tiên tiếp cận các phiên bản giới hạn.</p>
+                    
+                    <div class="row g-3 align-items-center">
+                        <div class="col-12 col-sm-8">
+                            <input class="form-control community-input py-3 px-4 shadow-none font-body-md" placeholder="Nhập địa chỉ email của bạn..." type="email" />
+                        </div>
+                        <div class="col-12 col-sm-4">
+                            <button class="btn community-btn w-100 h-100 py-3 fw-bold font-label-md text-nowrap d-flex align-items-center justify-content-center gap-2">
+                                ĐĂNG KÝ <span class="material-symbols-outlined fs-5">arrow_forward</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-lg-6 p-0 position-relative d-none d-lg-block">
-                <img alt="Newsletter Image" class="position-absolute w-100 h-100 object-fit-cover"
-                    src="/GuitarX/view/image/acoustic.jpg" />
+            <div class="col-12 col-lg-6 p-0 community-image-wrapper d-none d-lg-block">
+                <div class="community-image-overlay"></div>
+                <img alt="Newsletter Image" class="position-absolute w-100 h-100 object-fit-cover" src="/GuitarX/view/image/acoustic.jpg" style="filter: brightness(0.8);" />
             </div>
         </div>
     </section>

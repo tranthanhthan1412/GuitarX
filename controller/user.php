@@ -28,6 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         // Đăng nhập thành công
         $_SESSION['user_id'] = $userData['User_ID'];
         $_SESSION['username'] = $userData['UserName'];
+        $_SESSION['email'] = $userData['Email'] ?? '';
         $_SESSION['role'] = $userData['Role'];
 
         // Nếu đăng nhập từ form admin mà không phải admin thì từ chối (hoặc có thể vẫn cho vào nhưng ở trang index)
@@ -64,26 +65,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         exit();
     }
 
-    $isRegistered = $userModel->register($username, $password, $email, $phone);
-
-    if ($isRegistered) {
-        // Đăng ký thành công, tự động đăng nhập luôn
+    if ($userModel->register($username, $password, $email, $phone)) {
+        // Đăng ký xong tự động đăng nhập luôn
         $userData = $userModel->checkLogin($username, $password);
         if ($userData) {
             $_SESSION['user_id'] = $userData['User_ID'];
             $_SESSION['username'] = $userData['UserName'];
+            $_SESSION['email'] = $userData['Email'] ?? '';
             $_SESSION['role'] = $userData['Role'];
-            header("Location: ../index.php");
-        } else {
-            header("Location: ../index.php?act=login&msg=registered");
         }
+        header("Location: ../index.php");
+        exit();
     } else {
         // Đăng ký thất bại do user đã tồn tại
         header("Location: ../index.php?act=dangky&error=exists");
+        exit();
     }
-    exit();
 }
-
 // Xử lý logic Đăng xuất
 if (isset($_GET['act']) && $_GET['act'] == 'logout') {
     session_unset();

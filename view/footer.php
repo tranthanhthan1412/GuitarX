@@ -1,95 +1,146 @@
+<style>
+/* Premium Footer Styling */
+.footer-premium {
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+    border-top: 4px solid var(--color-secondary, #e63946);
+    position: relative;
+    overflow: hidden;
+}
+.footer-premium::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: radial-gradient(circle at 80% 20%, rgba(230, 57, 70, 0.05), transparent 40%);
+    pointer-events: none;
+}
+.footer-title {
+    color: #ffffff;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding-bottom: 10px;
+}
+.footer-title::after {
+    content: '';
+    position: absolute;
+    left: 0; bottom: 0;
+    width: 40px; height: 3px;
+    background-color: var(--color-secondary, #e63946);
+    border-radius: 2px;
+}
+.footer-link {
+    color: #a0a0a0;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+.footer-link:hover {
+    color: var(--color-secondary, #e63946);
+    transform: translateX(5px);
+}
+.social-btn-premium {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background-color: #2a2a2a;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    transition: all 0.3s ease;
+}
+.social-btn-premium:hover {
+    background-color: var(--color-secondary, #e63946);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(230, 57, 70, 0.3);
+}
+.footer-bottom {
+    background-color: #111111;
+    border-top: 1px solid #2a2a2a;
+}
+.footer-contact-item {
+    transition: all 0.3s ease;
+}
+.footer-contact-item:hover {
+    color: #ffffff;
+}
+</style>
+
 <!-- Footer -->
-<footer class="bg-surface-container-highest border-t py-5 mt-5">
-    <div class="container-max-custom px-desktop-custom">
-        <div class="row g-4 row-cols-1 row-cols-md-2 row-cols-lg-4">
+<footer class="footer-premium py-5 mt-5">
+    <div class="container-max-custom px-desktop-custom position-relative z-1">
+        <div class="row g-5">
             <!-- Brand Column -->
-            <div class="space-y-4">
-                <a class="font-headline-md text-primary-custom fw-bold text-decoration-none d-block mb-3"
-                    href="#">GuitarX</a>
-                <p class="text-muted font-body-md leading-relaxed">Điểm đến hàng đầu Việt Nam về guitar và nhạc cụ
-                    chuyên nghiệp. Đồng hành cùng các nghệ sĩ từ năm 2005.</p>
+            <div class="col-12 col-md-6 col-lg-4">
+                <a class="font-headline-lg text-white fw-bold text-decoration-none d-block mb-3" href="#">GuitarX</a>
+                <p class="font-body-md leading-relaxed mb-4" style="color: #a0a0a0;">Điểm đến hàng đầu Việt Nam về guitar và nhạc cụ chuyên nghiệp. Đồng hành cùng các nghệ sĩ từ năm 2005.</p>
                 <div class="d-flex gap-2">
-                    <button
-                        class="btn social-btn rounded-circle bg-white text-primary-custom d-flex align-items-center justify-content-center"><span
-                            class="material-symbols-outlined">public</span></button>
-                    <button
-                        class="btn social-btn rounded-circle bg-white text-primary-custom d-flex align-items-center justify-content-center"><span
-                            class="material-symbols-outlined">alternate_email</span></button>
-                    <button
-                        class="btn social-btn rounded-circle bg-white text-primary-custom d-flex align-items-center justify-content-center"><span
-                            class="material-symbols-outlined">play_circle</span></button>
+                    <button class="social-btn-premium"><span class="material-symbols-outlined fs-5">public</span></button>
+                    <button class="social-btn-premium"><span class="material-symbols-outlined fs-5">alternate_email</span></button>
+                    <button class="social-btn-premium"><span class="material-symbols-outlined fs-5">play_circle</span></button>
                 </div>
             </div>
 
             <!-- Quick Links -->
-            <div>
-                <h4 class="font-label-md text-uppercase mb-4 tracking-wider fw-bold">Thông tin</h4>
-                <ul class="list-unstyled space-y-2">
-                    <li class="mb-2"><a class="text-muted text-decoration-none hover-secondary-custom" href="#">Về chúng
-                            tôi</a></li>
-                    <li class="mb-2"><a class="text-muted text-decoration-none hover-secondary-custom" href="#">Địa
-                            chỉ</a></li>
-                    <li class="mb-2"><a class="text-muted text-decoration-none hover-secondary-custom" href="#">Tin
-                            tức</a>
-                    </li>
-                    <li class="mb-2"><a class="text-muted text-decoration-none hover-secondary-custom" href="#"></a>
-                    </li>
+            <div class="col-12 col-md-6 col-lg-2">
+                <h4 class="footer-title font-label-md text-uppercase">Thông tin</h4>
+                <ul class="list-unstyled space-y-3 m-0 p-0">
+                    <li class="mb-2"><a class="footer-link font-body-sm" href="#">Về chúng tôi</a></li>
+                    <li class="mb-2"><a class="footer-link font-body-sm" href="#">Hệ thống cửa hàng</a></li>
+                    <li class="mb-2"><a class="footer-link font-body-sm" href="#">Tin tức & Sự kiện</a></li>
+                    <li class="mb-2"><a class="footer-link font-body-sm" href="#">Góc nghệ sĩ</a></li>
                 </ul>
             </div>
 
             <!-- Customer Service -->
-            <div>
-                <h4 class="font-label-md text-uppercase mb-4 tracking-wider fw-bold">Hỗ trợ khách hàng</h4>
-                <ul class="list-unstyled space-y-2">
-                    <li class="mb-2"><a class="text-muted text-decoration-none hover-secondary-custom" href="#">Giao
-                            hàng và hoàn trả</a></li>
-                    <li class="mb-2"><a class="text-muted text-decoration-none hover-secondary-custom" href="#">Chính
-                            sách bảo hành</a></li>
-                    <li class="mb-2"><a class="text-muted text-decoration-none hover-secondary-custom" href="#">Dịch vụ
-                            bảo trì</a></li>
-                    <li class="mb-2"><a class="text-muted text-decoration-none hover-secondary-custom" href="#">Liên hệ
-                            trung tâm dịch vụ</a></li>
+            <div class="col-12 col-md-6 col-lg-3">
+                <h4 class="footer-title font-label-md text-uppercase">Hỗ trợ khách hàng</h4>
+                <ul class="list-unstyled space-y-3 m-0 p-0">
+                    <li class="mb-2"><a class="footer-link font-body-sm" href="#">Chính sách đổi trả</a></li>
+                    <li class="mb-2"><a class="footer-link font-body-sm" href="#">Chính sách bảo hành</a></li>
+                    <li class="mb-2"><a class="footer-link font-body-sm" href="#">Hướng dẫn mua hàng</a></li>
+                    <li class="mb-2"><a class="footer-link font-body-sm" href="#">Tra cứu đơn hàng</a></li>
                 </ul>
             </div>
 
             <!-- Contact Info -->
-            <div>
-                <h4 class="font-label-md text-uppercase mb-4 tracking-wider fw-bold">Liên hệ</h4>
+            <div class="col-12 col-md-6 col-lg-3">
+                <h4 class="footer-title font-label-md text-uppercase">Liên hệ</h4>
                 <div class="space-y-3">
-                    <div class="d-flex gap-3 mb-3">
-                        <span class="material-symbols-outlined text-primary-custom">location_on</span>
-                        <p class="text-muted font-body-md mb-0">290 An Duong Vuong, Ward 4, District 5, HCMC, Vietnam
-                        </p>
+                    <div class="d-flex gap-3 footer-contact-item mb-3">
+                        <span class="material-symbols-outlined text-secondary-custom">location_on</span>
+                        <p class="font-body-sm mb-0">290 An Dương Vương, Phường 4, Quận 5, TP.HCM</p>
                     </div>
-                    <div class="d-flex gap-3 mb-3">
-                        <span class="material-symbols-outlined text-primary-custom">call</span>
-                        <p class="text-muted font-body-md mb-0">1900 6717</p>
+                    <div class="d-flex gap-3 footer-contact-item mb-3">
+                        <span class="material-symbols-outlined text-secondary-custom">call</span>
+                        <p class="font-body-sm mb-0">Hotline: 1900 6717</p>
                     </div>
-                    <div class="d-flex gap-3 mb-4">
-                        <span class="material-symbols-outlined text-primary-custom">mail</span>
-                        <p class="text-muted font-body-md mb-0">info@vietmusic.vn</p>
+                    <div class="d-flex gap-3 footer-contact-item mb-4">
+                        <span class="material-symbols-outlined text-secondary-custom">mail</span>
+                        <p class="font-body-sm mb-0">info@guitarx.vn</p>
                     </div>
                     <div>
-                        <img alt="BCT Certificate" class="img-fluid opacity-70 grayscale-img cursor-pointer"
-                            style="height: 40px;"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0u_FXHHRs2AZp_6djDT51JpjLrvxucvFP9lGBBkSpZl9Cq6NkjFxa9Nww6uJIabTeVBZhPQ1bIMC5ET7HoP0lPyQY-t79uuxrYlgNUFJ9IDbTwqantc-8ilL7_BbLyJadBH_kLmDEXMvHc8kZDKkNnEQHIXNtySwWb-9x7Pw8WLnsqCoM7LfWRzmStwyLJqx4y8_yhlsxjONBhcsc8giDgoPpa3fhCbycWAp0fdCoYkF5PoR_wRCQeQoVGpcepjR99Ku_B1Ima5Q" />
+                        <img alt="BCT Certificate" class="img-fluid opacity-75 hover-opacity-100 transition-all cursor-pointer" style="height: 45px;" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0u_FXHHRs2AZp_6djDT51JpjLrvxucvFP9lGBBkSpZl9Cq6NkjFxa9Nww6uJIabTeVBZhPQ1bIMC5ET7HoP0lPyQY-t79uuxrYlgNUFJ9IDbTwqantc-8ilL7_BbLyJadBH_kLmDEXMvHc8kZDKkNnEQHIXNtySwWb-9x7Pw8WLnsqCoM7LfWRzmStwyLJqx4y8_yhlsxjONBhcsc8giDgoPpa3fhCbycWAp0fdCoYkF5PoR_wRCQeQoVGpcepjR99Ku_B1Ima5Q" />
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+</footer>
 
-        <hr class="my-4 text-muted">
-
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center text-muted font-label-sm">
-            <p class="mb-2 mb-md-0">© 2026 GuitarX. All Rights Reserved.</p>
+<div class="footer-bottom py-3">
+    <div class="container-max-custom px-desktop-custom">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
+            <p class="mb-2 mb-md-0 font-label-sm" style="color: #666;">© 2026 GuitarX. Nền tảng bán lẻ nhạc cụ số 1 Việt Nam.</p>
             <div class="d-flex gap-4">
-                <a class="text-muted text-decoration-none hover-secondary-custom" href="#">Privacy Policy</a>
-                <a class="text-muted text-decoration-none hover-secondary-custom" href="#">Terms of Service</a>
-                <a class="text-muted text-decoration-none hover-secondary-custom" href="#">Cookie Settings</a>
+                <a class="footer-link font-label-sm" style="color: #666;" href="#">Điều khoản sử dụng</a>
+                <a class="footer-link font-label-sm" style="color: #666;" href="#">Chính sách bảo mật</a>
             </div>
         </div>
     </div>
-</footer>
+</div>
 
 <!-- Chat FAB -->
 <style>
