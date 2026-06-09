@@ -3,6 +3,16 @@
 
 $act = isset($_GET['act']) ? $_GET['act'] : 'home';
 
+// Khởi tạo FavoriteModel dùng chung
+require_once __DIR__ . "/../model/m_favorite.php";
+$favoriteModel = new FavoriteModel($db);
+$userFavorites = [];
+$favoriteCount = 0;
+if (isset($_SESSION['user_id'])) {
+    $userFavorites = $favoriteModel->getUserFavoriteIds($_SESSION['user_id']);
+    $favoriteCount = count($userFavorites);
+}
+
 switch ($act) {
     case 'sanpham':
         require_once __DIR__ . "/../model/m_sanpham.php";
@@ -58,6 +68,54 @@ switch ($act) {
         }
         include_once __DIR__ . "/../view/footer.php";
         break;
+
+    case 'timkiem':
+        require_once __DIR__ . "/../model/m_sanpham.php";
+        $productModel = new ProductModel($db);
+
+        $keyword = isset($_GET['keyword']) ? trim($_GET['keyword']) : '';
+        $productsList = $productModel->searchProducts($keyword);
+        $titleName = "Kết quả tìm kiếm: " . htmlspecialchars($keyword);
+
+        include_once __DIR__ . "/../view/header.php";
+        $sanphamFile = __DIR__ . "/../view/sanpham.php";
+        if (file_exists($sanphamFile)) {
+            include_once $sanphamFile;
+        }
+        include_once __DIR__ . "/../view/footer.php";
+        break;
+
+    case 'yeuthich':
+        if (!isset($_SESSION['user_id'])) {
+            header("Location: /GuitarX/index.php?act=login");
+            exit();
+        }
+        $productsList = $favoriteModel->getFavoriteProducts($_SESSION['user_id']);
+        $titleName = "Sản phẩm yêu thích";
+
+        include_once __DIR__ . "/../view/header.php";
+        $sanphamFile = __DIR__ . "/../view/sanpham.php";
+        if (file_exists($sanphamFile)) {
+            include_once $sanphamFile;
+        }
+        include_once __DIR__ . "/../view/footer.php";
+        break;
+
+    case 'toggle_favorite':
+        header('Content-Type: application/json');
+        if (!isset($_SESSION['user_id'])) {
+            echo json_encode(['success' => false, 'message' => 'Vui lòng đăng nhập.', 'require_login' => true]);
+            exit();
+        }
+        $productId = isset($_POST['product_id']) ? intval($_POST['product_id']) : 0;
+        if ($productId > 0) {
+            $isAdded = $favoriteModel->toggleFavorite($_SESSION['user_id'], $productId);
+            $count = $favoriteModel->getFavoriteCount($_SESSION['user_id']);
+            echo json_encode(['success' => true, 'is_added' => $isAdded, 'count' => $count]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Sản phẩm không hợp lệ.']);
+        }
+        exit();
 
     case 'login':
         // taikhoan.php đã tự gọi header và footer ở bên trong nên không cần bao bọc lại
@@ -153,6 +211,56 @@ switch ($act) {
         exit();
         break;
 
+    case 'apply_voucher':
+        header('Content-Type: application/json');
+        if (!isset($_SESSION['user_id'])) {
+            echo json_encode(['success' => false, 'message' => 'Vui lòng đăng nhập.']);
+            exit();
+        }
+        $code = trim($_POST['code'] ?? '');
+        if (empty($code)) {
+            echo json_encode(['success' => false, 'message' => 'Vui lòng nhập mã giảm giá.']);
+            exit();
+        }
+        require_once __DIR__ . "/../model/m_voucher.php";
+        $voucherModel = new VoucherModel($db);
+        $v = $voucherModel->getVoucherByCode($code);
+        
+        if (!$v) {
+            echo json_encode(['success' => false, 'message' => 'Mã giảm giá không tồn tại.']);
+            exit();
+        }
+        if ($v['quantity'] <= 0) {
+            echo json_encode(['success' => false, 'message' => 'Mã giảm giá đã hết lượt sử dụng.']);
+            exit();
+        }
+        if (!empty($v['expiry_date']) && strtotime($v['expiry_date']) < strtotime(date('Y-m-d'))) {
+            echo json_encode(['success' => false, 'message' => 'Mã giảm giá đã hết hạn.']);
+            exit();
+        }
+        
+        $_SESSION['applied_voucher'] = [
+            'id' => $v['Vouchers_ID'],
+            'code' => $v['Code'],
+            'discount_value' => $v['discount_value']
+        ];
+        
+        echo json_encode([
+            'success' => true,
+            'message' => 'Áp dụng mã giảm giá thành công.',
+            'code' => $v['Code'],
+            'discount' => $v['discount_value']
+        ]);
+        exit();
+
+    case 'remove_voucher':
+        header('Content-Type: application/json');
+        if (isset($_SESSION['applied_voucher'])) {
+            unset($_SESSION['applied_voucher']);
+        }
+        echo json_encode(['success' => true]);
+        exit();
+
     case 'thanhtoan':
         if (!isset($_SESSION['user_id'])) {
             header("Location: /GuitarX/index.php?act=login");
@@ -184,7 +292,17 @@ switch ($act) {
             if (empty($address) || empty($city) || $paymentMethodId <= 0) {
                 $error = 'Vui lòng điền đầy đủ thông tin giao hàng và chọn phương thức thanh toán.';
             } else {
-                $orderId = $orderModel->createOrder($_SESSION['user_id'], $cartDetails, $address, $city, $paymentMethodId);
+                $voucherId = null;
+                $voucherCode = null;
+                $discountValue = 0;
+                
+                if (isset($_SESSION['applied_voucher'])) {
+                    $voucherId = $_SESSION['applied_voucher']['id'];
+                    $voucherCode = $_SESSION['applied_voucher']['code'];
+                    $discountValue = $_SESSION['applied_voucher']['discount_value'];
+                }
+
+                $orderId = $orderModel->createOrder($_SESSION['user_id'], $cartDetails, $address, $city, $paymentMethodId, $voucherId);
                 
                 if ($orderId) {
                     // Gửi email hóa đơn
@@ -195,14 +313,15 @@ switch ($act) {
                     $fullAddress = $address . ', ' . $city;
                     
                     if (!empty($customerEmail)) {
-                        $mailService->sendInvoiceEmail($customerEmail, $customerName, $orderId, $cartDetails, $totalAmount, $fullAddress);
+                        $mailService->sendInvoiceEmail($customerEmail, $customerName, $orderId, $cartDetails, $totalAmount, $fullAddress, $voucherCode, $discountValue);
                     }
 
                     unset($_SESSION['cart']);
+                    unset($_SESSION['applied_voucher']);
                     header("Location: /GuitarX/index.php?act=camon&id=" . $orderId);
                     exit();
                 } else {
-                    $error = 'Có lỗi xảy ra hoặc sản phẩm đã hết hàng. Vui lòng thử lại sau.';
+                    $error = 'Có lỗi xảy ra hoặc sản phẩm/voucher đã hết. Vui lòng thử lại sau.';
                 }
             }
         }

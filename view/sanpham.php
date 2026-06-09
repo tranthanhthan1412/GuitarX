@@ -73,6 +73,15 @@
                                     <?php if ($prod['Product_ID'] % 2 == 0): ?>
                                         <span class="position-absolute top-0 end-0 m-3 badge bg-secondary-custom text-white px-2 py-1 font-label-sm rounded-1 z-1">BEST SELLER</span>
                                     <?php endif; ?>
+
+                                    <?php 
+                                    $isFav = isset($userFavorites) && in_array($prod['Product_ID'], $userFavorites); 
+                                    $fillValue = $isFav ? 1 : 0;
+                                    $colorClass = $isFav ? 'text-danger' : '';
+                                    ?>
+                                    <button class="btn btn-light rounded-circle shadow-sm position-absolute p-2 z-2 d-flex align-items-center justify-content-center" style="top: 10px; left: 10px; width: 36px; height: 36px;" onclick="toggleFavorite(<?php echo $prod['Product_ID']; ?>, this, event)" title="Yêu thích">
+                                        <span class="material-symbols-outlined <?php echo $colorClass; ?>" style="font-variation-settings: 'FILL' <?php echo $fillValue; ?>, 'wght' 400, 'GRAD' 0, 'opsz' 24; font-size: 20px;">favorite</span>
+                                    </button>
                                     
                                     <div>
                                         <div class="product-img-wrapper bg-surface-container-low rounded mb-3">

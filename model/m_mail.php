@@ -27,7 +27,7 @@ class MailService {
         }
     }
 
-    public function sendInvoiceEmail($customerEmail, $customerName, $orderId, $cartDetails, $totalAmount, $address) {
+    public function sendInvoiceEmail($customerEmail, $customerName, $orderId, $cartDetails, $totalAmount, $address, $voucherCode = null, $discountValue = 0) {
         try {
             $this->mail->setFrom('no-reply@guitarx.vn', 'GuitarX - Nhạc Cụ Chính Hãng');
             $this->mail->addAddress($customerEmail, $customerName);
@@ -90,8 +90,18 @@ class MailService {
                         </table>
 
                         <div style='text-align: right; background-color: #f9f9f9; padding: 20px; border-radius: 8px;'>
-                            <p style='color: #555; margin: 5px 0;'>Phí giao hàng: <strong>Miễn phí</strong></p>
-                            <h2 style='color: #e63946; margin: 10px 0 0 0; font-size: 24px;'>Tổng cộng: " . number_format($totalAmount, 0, ',', '.') . "₫</h2>
+                            <p style='color: #555; margin: 5px 0;'>Phí giao hàng: <strong>Miễn phí</strong></p>";
+                            
+            if ($discountValue > 0) {
+                $finalTotal = max(0, $totalAmount - $discountValue);
+                $body .= "  <p style='color: #555; margin: 5px 0;'>Tạm tính: <strong>" . number_format($totalAmount, 0, ',', '.') . "₫</strong></p>
+                            <p style='color: #555; margin: 5px 0;'>Giảm giá (Mã {$voucherCode}): <strong style='color: #e63946;'>-" . number_format($discountValue, 0, ',', '.') . "₫</strong></p>
+                            <h2 style='color: #e63946; margin: 10px 0 0 0; font-size: 24px;'>Tổng thanh toán: " . number_format($finalTotal, 0, ',', '.') . "₫</h2>";
+            } else {
+                $body .= "  <h2 style='color: #e63946; margin: 10px 0 0 0; font-size: 24px;'>Tổng cộng: " . number_format($totalAmount, 0, ',', '.') . "₫</h2>";
+            }
+
+            $body .= "
                         </div>
                     </div>
 

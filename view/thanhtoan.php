@@ -69,9 +69,34 @@
                             <?php endforeach; ?>
                         </div>
 
+                        <!-- Voucher Code Input -->
+                        <div class="mb-4 pb-3 border-bottom">
+                            <label class="form-label font-label-sm fw-bold text-dark">Mã giảm giá</label>
+                            <div class="input-group">
+                                <input type="text" id="voucherCodeInput" class="form-control shadow-none" placeholder="Nhập mã voucher..." value="<?php echo htmlspecialchars($_SESSION['applied_voucher']['code'] ?? ''); ?>" <?php echo isset($_SESSION['applied_voucher']) ? 'readonly' : ''; ?>>
+                                <button class="btn btn-outline-secondary" type="button" id="btnApplyVoucher" style="display: <?php echo isset($_SESSION['applied_voucher']) ? 'none' : 'block'; ?>;">Áp dụng</button>
+                                <button class="btn btn-danger" type="button" id="btnRemoveVoucher" style="display: <?php echo isset($_SESSION['applied_voucher']) ? 'block' : 'none'; ?>;">Hủy</button>
+                            </div>
+                            <div id="voucherFeedback" class="form-text mt-1" style="display: none;"></div>
+                        </div>
+
+                        <?php 
+                        $discount = 0;
+                        $appliedVoucherCode = '';
+                        if (isset($_SESSION['applied_voucher'])) {
+                            $discount = $_SESSION['applied_voucher']['discount_value'];
+                            $appliedVoucherCode = $_SESSION['applied_voucher']['code'];
+                        }
+                        $finalTotal = max(0, $totalAmount - $discount);
+                        ?>
+
                         <div class="d-flex justify-content-between mb-3">
                             <span class="font-body-md text-muted">Tạm tính:</span>
                             <span class="font-body-md fw-bold"><?php echo number_format($totalAmount, 0, ',', '.'); ?>₫</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3" id="discountRow" style="display: <?php echo $discount > 0 ? 'flex' : 'none'; ?> !important;">
+                            <span class="font-body-md text-muted">Giảm giá <span id="lblVoucherCode"><?php echo $appliedVoucherCode ? "($appliedVoucherCode)" : ""; ?></span>:</span>
+                            <span class="font-body-md fw-bold text-danger" id="lblDiscount">-<?php echo number_format($discount, 0, ',', '.'); ?>₫</span>
                         </div>
                         <div class="d-flex justify-content-between mb-3 pb-3 border-bottom">
                             <span class="font-body-md text-muted">Phí giao hàng:</span>
@@ -79,8 +104,8 @@
                         </div>
                         
                         <div class="d-flex justify-content-between mb-4">
-                            <span class="font-headline-sm fw-bold">Tổng cộng:</span>
-                            <span class="font-display-sm fw-bold text-danger fs-4"><?php echo number_format($totalAmount, 0, ',', '.'); ?>₫</span>
+                            <span class="font-headline-sm fw-bold">Tổng thanh toán:</span>
+                            <span class="font-display-sm fw-bold text-danger fs-4" id="lblFinalTotal"><?php echo number_format($finalTotal, 0, ',', '.'); ?>₫</span>
                         </div>
 
                         <button type="submit" class="btn btn-secondary-custom w-100 py-3 font-headline-sm rounded-2 shadow-sm d-flex align-items-center justify-content-center gap-2">
@@ -93,3 +118,92 @@
         </form>
     </div>
 </main>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const btnApply = document.getElementById('btnApplyVoucher');
+    const btnRemove = document.getElementById('btnRemoveVoucher');
+    const txtInput = document.getElementById('voucherCodeInput');
+    const feedback = document.getElementById('voucherFeedback');
+    const discountRow = document.getElementById('discountRow');
+    const lblVoucherCode = document.getElementById('lblVoucherCode');
+    const lblDiscount = document.getElementById('lblDiscount');
+    const lblFinalTotal = document.getElementById('lblFinalTotal');
+    const baseTotal = <?php echo $totalAmount; ?>;
+
+    if (btnApply) {
+        btnApply.addEventListener('click', function() {
+            const code = txtInput.value.trim();
+            if (!code) {
+                feedback.className = "form-text text-danger mt-1";
+                feedback.innerText = "Vui lòng nhập mã giảm giá.";
+                feedback.style.display = "block";
+                return;
+            }
+
+            feedback.style.display = "none";
+            
+            fetch('/GuitarX/index.php?act=apply_voucher', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'code=' + encodeURIComponent(code)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    feedback.className = "form-text text-success mt-1 fw-bold";
+                    feedback.innerText = data.message;
+                    feedback.style.display = "block";
+
+                    txtInput.setAttribute('readonly', 'true');
+                    btnApply.style.display = 'none';
+                    btnRemove.style.display = 'block';
+
+                    const discount = parseFloat(data.discount);
+                    const finalTotal = Math.max(0, baseTotal - discount);
+                    
+                    discountRow.style.setProperty('display', 'flex', 'important');
+                    lblVoucherCode.innerText = '(' + data.code + ')';
+                    lblDiscount.innerText = '-' + discount.toLocaleString('vi-VN') + '₫';
+                    lblFinalTotal.innerText = finalTotal.toLocaleString('vi-VN') + '₫';
+                } else {
+                    feedback.className = "form-text text-danger mt-1";
+                    feedback.innerText = data.message;
+                    feedback.style.display = "block";
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                feedback.className = "form-text text-danger mt-1";
+                feedback.innerText = "Có lỗi xảy ra khi áp dụng mã giảm giá.";
+                feedback.style.display = "block";
+            });
+        });
+    }
+
+    if (btnRemove) {
+        btnRemove.addEventListener('click', function() {
+            fetch('/GuitarX/index.php?act=remove_voucher', {
+                method: 'POST'
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    feedback.style.display = "none";
+                    txtInput.value = '';
+                    txtInput.removeAttribute('readonly');
+                    btnApply.style.display = 'block';
+                    btnRemove.style.display = 'none';
+
+                    discountRow.style.setProperty('display', 'none', 'important');
+                    lblFinalTotal.innerText = baseTotal.toLocaleString('vi-VN') + '₫';
+                }
+            })
+            .catch(err => {
+                console.error(err);
+            });
+        });
+    }
+});
+</script>

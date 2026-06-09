@@ -25,7 +25,15 @@ $catName = isset($product['Category_ID']) ? $productModel->getCategoryName($prod
         <div class="row g-5 mb-5">
             <!-- Cột trái: Ảnh sản phẩm -->
             <div class="col-12 col-md-6">
-                <div class="card border-0 shadow-sm rounded-3 overflow-hidden bg-white p-3 d-flex align-items-center justify-content-center" style="min-height: 400px;">
+                <div class="card border-0 shadow-sm rounded-3 overflow-hidden bg-white p-3 d-flex align-items-center justify-content-center position-relative" style="min-height: 400px;">
+                    <?php 
+                    $isFavMain = isset($userFavorites) && in_array($product['Product_ID'], $userFavorites); 
+                    $fillValueMain = $isFavMain ? 1 : 0;
+                    $colorClassMain = $isFavMain ? 'text-danger' : '';
+                    ?>
+                    <button class="btn btn-light rounded-circle shadow-sm position-absolute p-2 z-2 d-flex align-items-center justify-content-center" style="top: 15px; left: 15px; width: 44px; height: 44px;" onclick="toggleFavorite(<?php echo $product['Product_ID']; ?>, this, event)" title="Yêu thích">
+                        <span class="material-symbols-outlined <?php echo $colorClassMain; ?>" style="font-variation-settings: 'FILL' <?php echo $fillValueMain; ?>, 'wght' 400, 'GRAD' 0, 'opsz' 24; font-size: 24px;">favorite</span>
+                    </button>
                     <div class="product-detail-img-wrap w-100 overflow-hidden rounded-2">
                         <img src="/GuitarX/view/image/<?php echo htmlspecialchars($product['Image']); ?>" 
                              alt="<?php echo htmlspecialchars($product['ProductName']); ?>" 
@@ -149,6 +157,14 @@ $catName = isset($product['Category_ID']) ? $productModel->getCategoryName($prod
                     <?php foreach ($relatedProducts as $related): ?>
                         <div class="col">
                             <div class="product-card h-100 position-relative d-flex flex-column justify-content-between shadow-sm">
+                                <?php 
+                                $isFavRelated = isset($userFavorites) && in_array($related['Product_ID'], $userFavorites); 
+                                $fillValueRelated = $isFavRelated ? 1 : 0;
+                                $colorClassRelated = $isFavRelated ? 'text-danger' : '';
+                                ?>
+                                <button class="btn btn-light rounded-circle shadow-sm position-absolute p-2 z-2 d-flex align-items-center justify-content-center" style="top: 10px; left: 10px; width: 36px; height: 36px;" onclick="toggleFavorite(<?php echo $related['Product_ID']; ?>, this, event)" title="Yêu thích">
+                                    <span class="material-symbols-outlined <?php echo $colorClassRelated; ?>" style="font-variation-settings: 'FILL' <?php echo $fillValueRelated; ?>, 'wght' 400, 'GRAD' 0, 'opsz' 24; font-size: 20px;">favorite</span>
+                                </button>
                                 <div>
                                     <div class="product-img-wrapper bg-surface-container-low rounded mb-3">
                                         <a href="/GuitarX/index.php?act=chitiet&id=<?php echo $related['Product_ID']; ?>">

@@ -76,18 +76,25 @@
                     <div class="card border-0 shadow-sm rounded-3 bg-white p-4 sticky-top" style="top: 100px;">
                         <h3 class="font-headline-sm fw-bold border-bottom pb-3 mb-4 text-uppercase">Tóm tắt đơn hàng</h3>
                         
+                        <?php 
+                        $discount = 0;
+                        if (isset($_SESSION['applied_voucher'])) {
+                            $discount = $_SESSION['applied_voucher']['discount_value'];
+                        }
+                        $finalTotal = max(0, $totalAmount - $discount);
+                        ?>
                         <div class="d-flex justify-content-between mb-3">
                             <span class="font-body-md text-muted">Tạm tính:</span>
                             <span class="font-body-md fw-bold"><?php echo number_format($totalAmount, 0, ',', '.'); ?>₫</span>
                         </div>
                         <div class="d-flex justify-content-between mb-3 pb-3 border-bottom">
                             <span class="font-body-md text-muted">Giảm giá:</span>
-                            <span class="font-body-md fw-bold text-success">0₫</span>
+                            <span class="font-body-md fw-bold text-success">-<?php echo number_format($discount, 0, ',', '.'); ?>₫</span>
                         </div>
                         
                         <div class="d-flex justify-content-between mb-4">
-                            <span class="font-headline-sm fw-bold">Tổng cộng:</span>
-                            <span class="font-display-sm fw-bold text-secondary-custom fs-4"><?php echo number_format($totalAmount, 0, ',', '.'); ?>₫</span>
+                            <span class="font-headline-sm fw-bold">Tổng thanh toán:</span>
+                            <span class="font-display-sm fw-bold text-secondary-custom fs-4"><?php echo number_format($finalTotal, 0, ',', '.'); ?>₫</span>
                         </div>
 
                         <a href="/GuitarX/index.php?act=thanhtoan" class="btn btn-secondary-custom w-100 py-3 font-headline-sm rounded-2 shadow-sm text-center text-decoration-none d-block">

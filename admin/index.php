@@ -85,6 +85,10 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                         href="index.php?act=quanlydanhmuc">Danh Mục</a>
                     <a class="cat-link nav-link <?= $act == 'quanlydonhang' ? 'active' : '' ?>"
                         href="index.php?act=quanlydonhang">Đơn Hàng</a>
+                    <a class="cat-link nav-link <?= $act == 'quanlyuser' ? 'active' : '' ?>"
+                        href="index.php?act=quanlyuser">Người Dùng</a>
+                    <a class="cat-link nav-link <?= $act == 'quanlyvoucher' ? 'active' : '' ?>"
+                        href="index.php?act=quanlyvoucher">Voucher</a>
                 </div>
 
                 <div class="header-actions d-flex align-items-center gap-3">
@@ -118,6 +122,12 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                 break;
             case 'quanlydonhang':
                 include 'quanlydonhang.php';
+                break;
+            case 'quanlyuser':
+                include 'quanlyuser.php';
+                break;
+            case 'quanlyvoucher':
+                include 'quanlyvoucher.php';
                 break;
             case 'dashboard':
             default:

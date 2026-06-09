@@ -46,21 +46,22 @@ if (session_status() == PHP_SESSION_NONE) {
                 </a>
 
                 <div class="header-search">
-                    <div class="search-wrap">
+                    <form action="/GuitarX/index.php" method="GET" class="search-wrap mb-0">
+                        <input type="hidden" name="act" value="timkiem">
                         <span class="search-icon material-symbols-outlined">search</span>
-                        <input type="text" class="search-input" placeholder="Nhập tên sản phẩm cần tìm..." />
-                        <button class="search-btn">Tìm kiếm</button>
-                    </div>
+                        <input type="text" name="keyword" class="search-input" placeholder="Nhập tên sản phẩm cần tìm..." value="<?php echo isset($_GET['keyword']) ? htmlspecialchars($_GET['keyword']) : ''; ?>" required />
+                        <button type="submit" class="search-btn">Tìm kiếm</button>
+                    </form>
                 </div>
 
                 <div class="header-actions">
-                    <button class="hdr-action-btn" title="Yêu thích">
+                    <a href="/GuitarX/index.php?act=yeuthich" class="hdr-action-btn text-decoration-none" title="Yêu thích">
                         <span class="hdr-action-icon">
                             <span class="material-symbols-outlined">favorite</span>
-                            <span class="hdr-badge">0</span>
+                            <span class="hdr-badge" id="hdrFavoriteCount"><?php echo isset($favoriteCount) ? $favoriteCount : 0; ?></span>
                         </span>
                         <span class="hdr-action-label">Yêu thích</span>
-                    </button>
+                    </a>
 
                     <?php if(isset($_SESSION['user_id'])): ?>
                         <div class="dropdown">
@@ -144,3 +145,37 @@ if (session_status() == PHP_SESSION_NONE) {
             </div>
         </div>
     </nav>
+
+    <script>
+    function toggleFavorite(productId, btnElement, event) {
+        if(event) event.preventDefault();
+        fetch('/GuitarX/index.php?act=toggle_favorite', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'product_id=' + productId
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.require_login) {
+                window.location.href = '/GuitarX/index.php?act=login';
+                return;
+            }
+            if (data.success) {
+                document.getElementById('hdrFavoriteCount').innerText = data.count;
+                const icon = btnElement.querySelector('.material-symbols-outlined');
+                if (data.is_added) {
+                    btnElement.classList.add('active');
+                    icon.style.fontVariationSettings = "'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24";
+                    icon.classList.add('text-danger');
+                } else {
+                    btnElement.classList.remove('active');
+                    icon.style.fontVariationSettings = "'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24";
+                    icon.classList.remove('text-danger');
+                }
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(err => console.error(err));
+    }
+    </script>

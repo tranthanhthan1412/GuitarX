@@ -42,5 +42,21 @@ class UserModel {
         
         return $stmt->execute();
     }
+
+    // --- ADMIN METHODS ---
+    public function getAllUsers() {
+        $query = "SELECT `User_ID`, `UserName`, `Email`, `PhoneNumber`, `Role`, `Create_At` FROM `USER` ORDER BY `User_ID` DESC";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function changeUserRole($userId, $newRole) {
+        $query = "UPDATE `USER` SET `Role` = :role WHERE `User_ID` = :id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(":role", $newRole);
+        $stmt->bindParam(":id", $userId, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
 }
 ?>

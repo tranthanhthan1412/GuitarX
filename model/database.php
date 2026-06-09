@@ -181,6 +181,16 @@ class Database {
                 FOREIGN KEY (`Order_ID`) REFERENCES `ORDERS`(`Order_ID`) ON DELETE CASCADE,
                 FOREIGN KEY (`Product_ID`) REFERENCES `PRODUCTS`(`Product_ID`) ON DELETE CASCADE,
                 FOREIGN KEY (`ShippingAddress_ID`) REFERENCES `SHIPPING_ADDRESS`(`ShippingAddress_ID`) ON DELETE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+
+            // 14. Bảng sản phẩm yêu thích (Wishlist)
+            "CREATE TABLE IF NOT EXISTS `FAVORITES` (
+                `User_ID` INT NOT NULL,
+                `Product_ID` INT NOT NULL,
+                `Created_At` DATETIME DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (`User_ID`, `Product_ID`),
+                FOREIGN KEY (`User_ID`) REFERENCES `USER`(`User_ID`) ON DELETE CASCADE,
+                FOREIGN KEY (`Product_ID`) REFERENCES `PRODUCTS`(`Product_ID`) ON DELETE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
         ];
 
