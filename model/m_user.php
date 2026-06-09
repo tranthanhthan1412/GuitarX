@@ -17,5 +17,30 @@ class UserModel {
         
         return $stmt->fetch(PDO::FETCH_ASSOC); // Trả về false nếu không tìm thấy, ngược lại trả về mảng dữ liệu
     }
+
+    // Kiểm tra xem tên đăng nhập đã tồn tại chưa
+    public function checkUserExists($username) {
+        $query = "SELECT COUNT(*) FROM `USER` WHERE `UserName` = :username";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(":username", $username);
+        $stmt->execute();
+        return $stmt->fetchColumn() > 0;
+    }
+
+    // Đăng ký tài khoản mới
+    public function register($username, $password, $email, $phone) {
+        if ($this->checkUserExists($username)) {
+            return false; // Tên đăng nhập đã tồn tại
+        }
+        
+        $query = "INSERT INTO `USER` (`UserName`, `PassWord`, `Email`, `PhoneNumber`, `Role`) VALUES (:username, :password, :email, :phone, 'customer')";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(":username", $username);
+        $stmt->bindParam(":password", $password);
+        $stmt->bindParam(":email", $email);
+        $stmt->bindParam(":phone", $phone);
+        
+        return $stmt->execute();
+    }
 }
 ?>

@@ -46,7 +46,7 @@ if (isset($_SESSION['user_id'])) {
             </form>
             
             <div class="text-center mt-4 pt-3 border-top">
-                <p class="font-label-sm text-muted mb-0">Chưa có tài khoản? <a href="#" class="text-primary-custom text-decoration-none fw-bold">Đăng ký ngay</a></p>
+                <p class="font-label-sm text-muted mb-0">Chưa có tài khoản? <a href="/GuitarX/index.php?act=dangky" class="text-primary-custom text-decoration-none fw-bold">Đăng ký ngay</a></p>
             </div>
         </div>
     </div>

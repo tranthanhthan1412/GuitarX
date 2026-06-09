@@ -52,6 +52,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
     }
 }
 
+// Xử lý logic Đăng ký
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] == 'register') {
+    $username = trim($_POST['username'] ?? '');
+    $password = trim($_POST['password'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $phone = trim($_POST['phone'] ?? '');
+
+    if (empty($username) || empty($password) || empty($email)) {
+        header("Location: ../index.php?act=dangky&error=empty");
+        exit();
+    }
+
+    $isRegistered = $userModel->register($username, $password, $email, $phone);
+
+    if ($isRegistered) {
+        // Đăng ký thành công, tự động đăng nhập luôn
+        $userData = $userModel->checkLogin($username, $password);
+        if ($userData) {
+            $_SESSION['user_id'] = $userData['User_ID'];
+            $_SESSION['username'] = $userData['UserName'];
+            $_SESSION['role'] = $userData['Role'];
+            header("Location: ../index.php");
+        } else {
+            header("Location: ../index.php?act=login&msg=registered");
+        }
+    } else {
+        // Đăng ký thất bại do user đã tồn tại
+        header("Location: ../index.php?act=dangky&error=exists");
+    }
+    exit();
+}
+
 // Xử lý logic Đăng xuất
 if (isset($_GET['act']) && $_GET['act'] == 'logout') {
     session_unset();

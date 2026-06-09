@@ -188,6 +188,13 @@ class Database {
         foreach ($queries as $query) {
             $this->conn->exec($query);
         }
+
+        // Tự động bổ sung cột Email nếu bảng USER đã được tạo từ trước nhưng chưa có cột này
+        try {
+            $this->conn->exec("ALTER TABLE `USER` ADD COLUMN `Email` VARCHAR(255) DEFAULT NULL AFTER `PassWord`");
+        } catch (PDOException $e) {
+            // Bỏ qua lỗi nếu cột Email đã tồn tại
+        }
     }
 
     // Hàm tự động nạp dữ liệu mẫu để Giai đoạn 1 hiển thị lên được giao diện luôn
@@ -201,6 +208,16 @@ class Database {
                 INSERT INTO `USER` (`UserName`, `PassWord`, `Role`) VALUES
                 ('admin', '123456', 'admin'),
                 ('khachhang', '123456', 'customer');
+            ");
+        }
+
+        // 0.5. Kiểm tra bảng PAYMENT_METHOD rỗng thì chèn phương thức thanh toán
+        $check_pm = $this->conn->query("SELECT COUNT(*) FROM `PAYMENT_METHOD`")->fetchColumn();
+        if ($check_pm == 0) {
+            $this->conn->exec("
+                INSERT INTO `PAYMENT_METHOD` (`PayMent_ID`, `MethodName`) VALUES
+                (1, 'Thanh toán khi nhận hàng (COD)'),
+                (2, 'Chuyển khoản qua Ngân hàng / Momo');
             ");
         }
 

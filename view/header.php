@@ -75,7 +75,7 @@ if (session_status() == PHP_SESSION_NONE) {
                                 <?php if($_SESSION['role'] === 'admin'): ?>
                                     <li><a class="dropdown-item" href="/GuitarX/admin/index.php"><span class="material-symbols-outlined align-middle fs-5 me-2">admin_panel_settings</span>Trang Quản Trị</a></li>
                                 <?php endif; ?>
-                                <li><a class="dropdown-item" href="#"><span class="material-symbols-outlined align-middle fs-5 me-2">receipt_long</span>Đơn hàng của tôi</a></li>
+                                <li><a class="dropdown-item" href="/GuitarX/index.php?act=lichsudonhang"><span class="material-symbols-outlined align-middle fs-5 me-2">receipt_long</span>Đơn hàng của tôi</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item text-danger" href="/GuitarX/controller/user.php?act=logout"><span class="material-symbols-outlined align-middle fs-5 me-2">logout</span>Đăng xuất</a></li>
                             </ul>
@@ -89,16 +89,24 @@ if (session_status() == PHP_SESSION_NONE) {
                         </a>
                     <?php endif; ?>
 
-                    <button class="hdr-cart-btn" title="Giỏ hàng">
+                    <?php
+                        $cartItemCount = 0;
+                        if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
+                            foreach ($_SESSION['cart'] as $qty) {
+                                $cartItemCount += $qty;
+                            }
+                        }
+                    ?>
+                    <a href="/GuitarX/index.php?act=giohang" class="hdr-cart-btn text-decoration-none" title="Giỏ hàng">
                         <span class="hdr-action-icon">
                             <span class="material-symbols-outlined">shopping_cart</span>
-                            <span class="hdr-badge hdr-badge--red">0</span>
+                            <span class="hdr-badge hdr-badge--red"><?php echo $cartItemCount; ?></span>
                         </span>
                         <div class="hdr-cart-text">
                             <span class="hdr-cart-label">Giỏ hàng</span>
-                            <span class="hdr-cart-sub">0 sản phẩm</span>
+                            <span class="hdr-cart-sub"><?php echo $cartItemCount; ?> sản phẩm</span>
                         </div>
-                    </button>
+                    </a>
                 </div>
 
             </div></div>
