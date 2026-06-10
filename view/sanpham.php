@@ -160,32 +160,41 @@
                     </div>
                     <?php endif; ?>
                     <?php if (isset($totalPages) && $totalPages > 1): ?>
-                    <div class="d-flex justify-content-center mt-4 mb-2">
+                    <div class="d-flex justify-content-center align-items-center w-100 mt-4 mb-2">
                         <nav aria-label="Page navigation">
-                            <ul class="pagination pagination-sm m-0">
+                            <ul class="pagination pagination-sm m-0 d-flex justify-content-center align-items-center">
 
-                                <li class="page-item <?php echo ($currentPage <= 1) ? 'disabled' : ''; ?>">
-                                    <a class="page-link border-0 bg-light text-dark rounded-3 me-2 px-3"
-                                        href="index.php?act=sanpham&page=<?= $currentPage - 1 ?><?= isset($_GET['id']) ? '&id='.$_GET['id'] : '' ?><?= isset($_GET['sort']) ? '&sort='.$_GET['sort'] : '' ?>"
-                                        aria-label="Previous">
+                                <?php 
+                $prevDisabled = ($currentPage <= 1) ? 'disabled' : ''; 
+                // Giữ lại id danh mục nếu có để phân trang không bị mất lọc
+                $catParam = isset($_GET['id']) ? '&id=' . intval($_GET['id']) : '';
+            ?>
+                                <li class="page-item <?= $prevDisabled ?>">
+                                    <a class="page-link border-0 bg-light text-dark rounded-3 me-2 px-3 d-flex align-items-center justify-content-center"
+                                        href="index.php?act=sanpham&page=<?= $currentPage - 1 ?><?= $catParam ?>"
+                                        aria-label="Previous" style="height: 36px;">
                                         <span aria-hidden="true">&laquo;</span>
                                     </a>
                                 </li>
 
-                                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                                <li class="page-item <?php echo ($currentPage == $i) ? 'active' : ''; ?>">
-                                    <a class="page-link border-0 mx-1 rounded-3 fw-bold <?php echo ($currentPage == $i) ? 'bg-dark text-white' : 'bg-light text-muted'; ?>"
-                                        href="index.php?act=sanpham&page=<?= $i ?><?= isset($_GET['id']) ? '&id='.$_GET['id'] : '' ?><?= isset($_GET['sort']) ? '&sort='.$_GET['sort'] : '' ?>"
+                                <?php for ($i = 1; $i <= $totalPages; $i++): 
+                $itemActive = ($currentPage == $i) ? 'active' : '';
+                $linkClass = ($currentPage == $i) ? 'bg-dark text-white' : 'bg-light text-muted';
+            ?>
+                                <li class="page-item <?= $itemActive ?>">
+                                    <a class="page-link border-0 mx-1 rounded-3 fw-bold <?= $linkClass ?>"
+                                        href="index.php?act=sanpham&page=<?= $i ?><?= $catParam ?>"
                                         style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
                                         <?= $i ?>
                                     </a>
                                 </li>
                                 <?php endfor; ?>
 
-                                <li class="page-item <?php echo ($currentPage >= $totalPages) ? 'disabled' : ''; ?>">
-                                    <a class="page-link border-0 bg-light text-dark rounded-3 ms-2 px-3"
-                                        href="index.php?act=sanpham&page=<?= $currentPage + 1 ?><?= isset($_GET['id']) ? '&id='.$_GET['id'] : '' ?><?= isset($_GET['sort']) ? '&sort='.$_GET['sort'] : '' ?>"
-                                        aria-label="Next">
+                                <?php $nextDisabled = ($currentPage >= $totalPages) ? 'disabled' : ''; ?>
+                                <li class="page-item <?= $nextDisabled ?>">
+                                    <a class="page-link border-0 bg-light text-dark rounded-3 ms-2 px-3 d-flex align-items-center justify-content-center"
+                                        href="index.php?act=sanpham&page=<?= $currentPage + 1 ?><?= $catParam ?>"
+                                        aria-label="Next" style="height: 36px;">
                                         <span aria-hidden="true">&raquo;</span>
                                     </a>
                                 </li>

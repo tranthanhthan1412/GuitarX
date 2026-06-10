@@ -157,6 +157,21 @@ class ProductModel {
         return $stmt->execute();
     }
 
+        // model/m_sanpham.php
+
+// Hàm lấy sản phẩm phân trang dành riêng cho Admin (Sắp xếp theo ID mới nhất lên đầu)
+public function getAllProductsAdmin($page = 1, $limit = 6) {
+    $offset = ($page - 1) * $limit;
+    
+    // Admin thì cứ ID mới nhất xếp lên đầu cho dễ quản lý bro nhé
+    $query = "SELECT * FROM `PRODUCTS` ORDER BY `Product_ID` DESC LIMIT :offset, :limit";
+    
+    $stmt = $this->db->prepare($query);
+    $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+    $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
     
 }
 ?>
