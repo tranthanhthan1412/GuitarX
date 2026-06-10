@@ -7,20 +7,63 @@ class ProductModel {
     }
 
     // Lấy tất cả sản phẩm
-    public function getAllProducts() {
-        $query = "SELECT * FROM `PRODUCTS` ORDER BY `Product_ID` DESC";
+    public function getAllProducts($sortType = 'new', $page = 1, $limit = 6) {
+        $offset = ($page - 1) * $limit;
+        $query = "SELECT * FROM `PRODUCTS`";
+    
+        switch ($sortType) {
+            case 'price-asc': $query .= " ORDER BY `Price` ASC"; break;
+            case 'price-desc': $query .= " ORDER BY `Price` DESC"; break;
+            case 'new': default: $query .= " ORDER BY `Product_ID` DESC"; break;
+        }
+    
+        // Thêm LIMIT và OFFSET vào cuối câu SQL
+        $query .= " LIMIT :offset, :limit";
+    
         $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    // 2. Hàm đếm tổng số sản phẩm của toàn bộ cửa hàng
+    public function countAllProducts() {
+        $query = "SELECT COUNT(*) as total FROM `PRODUCTS`";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row['total'];
+    }
+
+    // 3. Sửa hàm getProductsByCategory hỗ trợ phân trang và sắp xếp
+    public function getProductsByCategory($catId, $sortType = 'new', $page = 1, $limit = 6) {
+        $offset = ($page - 1) * $limit;
+        $query = "SELECT * FROM `PRODUCTS` WHERE `Category_ID` = :catId";
+    
+        switch ($sortType) {
+            case 'price-asc': $query .= " ORDER BY `Price` ASC"; break;
+            case 'price-desc': $query .= " ORDER BY `Price` DESC"; break;
+            case 'new': default: $query .= " ORDER BY `Product_ID` DESC"; break;
+        }
+    
+        $query .= " LIMIT :offset, :limit";
+    
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':catId', (int)$catId, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Lấy sản phẩm theo danh mục
-    public function getProductsByCategory($categoryId) {
-        $query = "SELECT * FROM `PRODUCTS` WHERE `Category_ID` = :categoryId ORDER BY `Product_ID` DESC";
+    // 4. Hàm đếm tổng số sản phẩm thuộc một danh mục cụ thể
+    public function countProductsByCategory($catId) {
+        $query = "SELECT COUNT(*) as total FROM `PRODUCTS` WHERE `Category_ID` = :catId";
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(":categoryId", $categoryId, PDO::PARAM_INT);
+        $stmt->bindValue(':catId', (int)$catId, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row['total'];
     }
 
     // Lấy tên danh mục dựa vào ID
@@ -113,5 +156,7 @@ class ProductModel {
         $stmt->bindParam(":id", $id, PDO::PARAM_INT);
         return $stmt->execute();
     }
+
+    
 }
 ?>

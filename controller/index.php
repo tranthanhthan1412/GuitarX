@@ -14,18 +14,36 @@ if (isset($_SESSION['user_id'])) {
 }
 
 switch ($act) {
+    // controller/index.php (Sửa lại đoạn case 'sanpham')
+
+    // controller/index.php
+
     case 'sanpham':
         require_once __DIR__ . "/../model/m_sanpham.php";
         $productModel = new ProductModel($db);
 
         $catId = isset($_GET['id']) ? intval($_GET['id']) : 0;
+        $sort = isset($_GET['sort']) ? $_GET['sort'] : 'new';
+    
+        // === XỬ LÝ PHÂN TRANG ===
+        $limit = 6; // Hiện 6 cây mỗi trang
+        $currentPage = isset($_GET['page']) ? intval($_GET['page']) : 1;
+        if ($currentPage < 1) $currentPage = 1;
+
         if ($catId > 0) {
-            $productsList = $productModel->getProductsByCategory($catId);
+            // Lấy sản phẩm theo trang và đếm tổng theo danh mục
+            $productsList = $productModel->getProductsByCategory($catId, $sort, $currentPage, $limit);
+            $totalProducts = $productModel->countProductsByCategory($catId);
             $titleName = $productModel->getCategoryName($catId);
         } else {
-            $productsList = $productModel->getAllProducts();
+            // Lấy tất cả sản phẩm theo trang và đếm tổng toàn bộ
+            $productsList = $productModel->getAllProducts($sort, $currentPage, $limit);
+            $totalProducts = $productModel->countAllProducts();
             $titleName = "Tất Cả Sản Phẩm";
         }
+
+        // Tính tổng số trang cần có (Dùng hàm ceil để làm tròn lên)
+        $totalPages = ceil($totalProducts / $limit);
 
         include_once __DIR__ . "/../view/header.php";
         $sanphamFile = __DIR__ . "/../view/sanpham.php";
