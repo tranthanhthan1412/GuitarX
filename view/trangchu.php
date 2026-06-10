@@ -243,7 +243,7 @@
 
     <section class="w-100 flash-sale-pattern py-4 text-white">
         <div
-            class="container-max-custom px-desktop-custom d-flex flex-column flex-md-row align-items-center justify-content-between gap-4">
+            class="container-max-custom px-desktop-custom d-flex flex-column flex-md-row align-items-center justify-content-between gap-4 position-relative" style="z-index: 10;">
             <div class="d-flex align-items-center gap-3">
                 <span class="material-symbols-outlined display-5">bolt</span>
                 <div>
@@ -270,7 +270,7 @@
                         <span class="text-white-50 uppercase fw-bold" style="font-size: 10px;">GIÂY</span>
                     </div>
                 </div>
-                <button class="btn btn-light text-danger-custom fw-bold px-4 py-2 shadow-sm">SĂN SALE NGAY</button>
+                <a href="/GuitarX/index.php?act=sansale" class="btn btn-light text-danger-custom fw-bold px-4 py-2 shadow-sm text-decoration-none">SĂN SALE NGAY</a>
             </div>
         </div>
     </section>
@@ -294,7 +294,9 @@
                 <?php foreach ($featuredProducts as $prod): ?>
                     <div class="col">
                         <div class="product-card h-100 position-relative d-flex flex-column justify-content-between">
-                            <?php if ($prod['Product_ID'] % 2 == 0): ?>
+                            <?php if (isset($prod['DiscountPercent']) && $prod['DiscountPercent'] > 0): ?>
+                                <span class="sale-badge">-<?php echo $prod['DiscountPercent']; ?>%</span>
+                            <?php elseif ($prod['Product_ID'] % 2 == 0): ?>
                                 <span class="position-absolute top-0 end-0 m-3 badge bg-secondary-custom text-white px-2 py-1 font-label-sm rounded-1 z-1">BEST SELLER</span>
                             <?php endif; ?>
                             
@@ -321,8 +323,15 @@
                                 </h3>
                             </div>
                             <div>
-                                <div class="d-flex align-items-center gap-2 mb-3">
-                                    <span class="text-secondary-custom font-headline-sm mb-0"><?php echo number_format($prod['Price'], 0, ',', '.'); ?>₫</span>
+                                <div class="d-flex align-items-center flex-wrap gap-2 mb-3">
+                                    <?php if (isset($prod['DiscountPercent']) && $prod['DiscountPercent'] > 0): 
+                                        $salePrice = $prod['Price'] - ($prod['Price'] * $prod['DiscountPercent'] / 100);
+                                    ?>
+                                        <span class="old-price"><?php echo number_format($prod['Price'], 0, ',', '.'); ?>₫</span>
+                                        <span class="new-price"><?php echo number_format($salePrice, 0, ',', '.'); ?>₫</span>
+                                    <?php else: ?>
+                                        <span class="text-secondary-custom font-headline-sm mb-0"><?php echo number_format($prod['Price'], 0, ',', '.'); ?>₫</span>
+                                    <?php endif; ?>
                                 </div>
                                 <a href="/GuitarX/index.php?act=chitiet&id=<?php echo $prod['Product_ID']; ?>" class="btn btn-add-cart-custom w-100 text-center text-decoration-none d-block pt-2">XEM CHI TIẾT</a>
                             </div>

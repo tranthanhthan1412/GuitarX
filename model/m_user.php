@@ -60,6 +60,7 @@ class UserModel {
             
             // Ép tên Rank lấy được vào mảng để file view admin/quanlyuser.php đọc được
             $user['RankName'] = $rankInfo['name'];
+            $user['RankClass'] = $rankInfo['class'];
         }
 
         return $users;
@@ -90,26 +91,26 @@ class UserModel {
         // 2. Logic phân hạng dựa trên số tiền chi tiêu của khách
         if ($totalSpent >= 30000000) { // Từ 30 triệu trở lên
             return [
-                'name' => 'Kim Cương',
-                'class' => 'bg-info text-dark fw-bold',
+                'name' => '💎 Kim Cương',
+                'class' => 'rank-badge rank-diamond',
                 'discount' => 10 // Giảm 10%
             ];
         } elseif ($totalSpent >= 15000000) { // Từ 15 triệu đến dưới 30 triệu
             return [
-                'name' => 'Vàng',
-                'class' => 'bg-warning text-dark fw-bold',
+                'name' => '⭐ Vàng',
+                'class' => 'rank-badge rank-gold',
                 'discount' => 5 // Giảm 5%
             ];
         } elseif ($totalSpent >= 5000000) { // Từ 5 triệu đến dưới 15 triệu
             return [
-                'name' => 'Bạc',
-                'class' => 'bg-secondary text-white',
+                'name' => '🛡️ Bạc',
+                'class' => 'rank-badge rank-silver',
                 'discount' => 2 // Giảm 2%
             ];
         } else { // Dưới 5 triệu
             return [
-                'name' => 'Thành viên mới',
-                'class' => 'bg-light text-muted border',
+                'name' => '🌱 Thành viên mới',
+                'class' => 'rank-badge rank-new',
                 'discount' => 0 // Không giảm
             ];
         }

@@ -1,5 +1,5 @@
-/* =============================================
-   GuitarX / VIET MUSIC — Custom Theme
+﻿/* =============================================
+   GuitarX / VIET MUSIC â€” Custom Theme
    ============================================= */
 
 /* ---- Google Fonts import (fallback) ---- */
@@ -54,7 +54,7 @@ body {
 }
 
 /* =============================================
-   COLOUR UTILITIES — backgrounds
+   COLOUR UTILITIES â€” backgrounds
    ============================================= */
 .bg-primary-custom {
   background-color: var(--color-primary) !important;
@@ -73,7 +73,7 @@ body {
 }
 
 /* =============================================
-   COLOUR UTILITIES — text
+   COLOUR UTILITIES â€” text
    ============================================= */
 .text-primary-custom {
   color: var(--color-primary) !important;
@@ -311,7 +311,7 @@ body {
 }
 
 /* =============================================
-   HEADER / NAV — REDESIGNED
+   HEADER / NAV â€” REDESIGNED
    ============================================= */
 
 /* Main header bar */
@@ -511,7 +511,7 @@ body {
 }
 
 /* =============================================
-   CATEGORY NAV — REDESIGNED
+   CATEGORY NAV â€” REDESIGNED
    ============================================= */
 .category-nav {
   background: #fff;
@@ -525,7 +525,7 @@ body {
   gap: 0;
 }
 
-/* "Danh mục" all-categories button */
+/* "Danh má»¥c" all-categories button */
 .cat-all-btn {
   display: flex;
   align-items: center;
@@ -581,10 +581,6 @@ body {
   color: var(--color-secondary);
   border-bottom-color: var(--color-secondary);
 }
-.cat-link--hot {
-  color: var(--color-secondary);
-  font-weight: 700;
-}
 .cat-link--hot:hover {
   color: var(--color-secondary-dark);
   border-bottom-color: var(--color-secondary-dark);
@@ -609,62 +605,38 @@ body {
   font-weight: 700;
 }
 
-/* =============================================
-   HERO SECTION
-   ============================================= */
+/* HERO SECTION */
 .hero-gradient-overlay {
-  background: linear-gradient(
-    90deg,
-    rgba(26, 26, 46, 0.88) 0%,
-    rgba(26, 26, 46, 0.55) 55%,
-    transparent 100%
-  );
+  background: linear-gradient(90deg, rgba(26, 26, 46, 0.88) 0%, rgba(26, 26, 46, 0.55) 55%, transparent 100%);
 }
 
-/* =============================================
-   FLASH SALE BANNER
-   ============================================= */
+/* FLASH SALE BANNER */
 .flash-sale-pattern {
-  background: linear-gradient(
-    135deg,
-    var(--color-secondary) 0%,
-    #b5172a 50%,
-    #8b0000 100%
-  );
+  background: linear-gradient(135deg, var(--color-secondary) 0%, #b5172a 50%, #8b0000 100%);
   position: relative;
   overflow: hidden;
 }
 .flash-sale-pattern::before {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
-  background-image: repeating-linear-gradient(
-    45deg,
-    rgba(255, 255, 255, 0.04) 0,
-    rgba(255, 255, 255, 0.04) 1px,
-    transparent 1px,
-    transparent 12px
-  );
+  pointer-events: none;
+  background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.04) 0, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 12px);
 }
 
-/* =============================================
-   PRODUCT CARDS
-   ============================================= */
+/* PRODUCT CARDS */
 .product-card {
   background: #fff;
   border: 1px solid #e8e8ed;
   border-radius: 12px;
   padding: 1.25rem;
-  transition:
-    box-shadow 0.25s ease,
-    transform 0.25s ease;
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
   overflow: hidden;
 }
 .product-card:hover {
   box-shadow: 0 12px 36px rgba(26, 26, 46, 0.12);
   transform: translateY(-4px);
 }
-
 .product-img-wrapper {
   width: 100%;
   aspect-ratio: 1 / 1;
@@ -685,9 +657,7 @@ body {
   transform: scale(1.06);
 }
 
-/* =============================================
-   PARTNER LOGOS
-   ============================================= */
+/* PARTNER LOGOS */
 .grayscale-img img {
   filter: grayscale(1) opacity(0.55);
   transition: filter 0.3s ease;
@@ -699,9 +669,7 @@ body {
   filter: grayscale(0) opacity(1);
 }
 
-/* =============================================
-   LINK HOVER EFFECT
-   ============================================= */
+/* LINK HOVER EFFECT */
 .link-hover-effect {
   transition: gap 0.2s ease;
 }
@@ -755,4 +723,79 @@ html {
   .font-headline-md {
     font-size: 1.1rem;
   }
+}
+
+/* =============================================
+   SALE BADGE & PRICING
+   ============================================= */
+.sale-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: var(--color-secondary);
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.8rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  box-shadow: 0 4px 10px rgba(230, 57, 70, 0.4);
+  z-index: 2;
+}
+
+.old-price {
+  text-decoration: line-through;
+  color: #888;
+  font-size: 0.85rem;
+  margin-right: 0.5rem;
+}
+
+.new-price {
+  color: var(--color-secondary);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+/* =============================================
+   CUSTOMER RANK BADGES
+   ============================================= */
+.rank-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0.25rem 0.75rem;
+  border-radius: 50px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.rank-diamond {
+  background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 10px rgba(79, 172, 254, 0.4);
+}
+
+.rank-gold {
+  background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 10px rgba(253, 160, 133, 0.4);
+}
+
+.rank-silver {
+  background: linear-gradient(135deg, #e2ebf0 0%, #cfd9df 100%);
+  color: #4a4a4a;
+  border: 1px solid #b0bec5;
+}
+
+.rank-new {
+  background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+  color: #6c757d;
+  border: 1px solid #dee2e6;
 }

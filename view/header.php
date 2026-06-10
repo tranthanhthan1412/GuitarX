@@ -85,24 +85,25 @@ if (isset($_SESSION['user_id'])) {
                             <span class="hdr-action-icon">
                                 <span class="material-symbols-outlined text-primary-custom">person</span>
                             </span>
-
-                            <div class="d-flex align-items-center gap-1 justify-content-center">
-                                <span class="hdr-action-label text-truncate"
-                                    style="max-width: 80px;"><?php echo htmlspecialchars($_SESSION['username']); ?></span>
-
-                                <?php if (isset($rankInfo)): ?>
-                                <span class="badge <?= $rankInfo['class'] ?>"
-                                    style="font-size: 9px; padding: 2px 4px; line-height: 1; font-weight: bold;">
-                                    <?= $rankInfo['name'] ?>
-                                </span>
-                                <?php endif; ?>
-                            </div>
+                            <span class="hdr-action-label text-truncate" style="max-width: 80px;">
+                                <?php echo htmlspecialchars($_SESSION['username']); ?>
+                            </span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
                             <li>
-                                <h6 class="dropdown-header">Xin chào,
-                                    <?php echo htmlspecialchars($_SESSION['username']); ?></h6>
+                                <div class="px-3 py-2">
+                                    <div class="d-flex align-items-center gap-2 mb-1">
+                                        <span class="material-symbols-outlined text-muted" style="font-size:18px;">person</span>
+                                        <strong><?php echo htmlspecialchars($_SESSION['username']); ?></strong>
+                                    </div>
+                                    <?php if (isset($rankInfo)): ?>
+                                    <span class="<?= htmlspecialchars($rankInfo['class']) ?>">
+                                        <?= htmlspecialchars($rankInfo['name']) ?>
+                                    </span>
+                                    <?php endif; ?>
+                                </div>
                             </li>
+                            <li><hr class="dropdown-divider m-0"></li>
                             <?php if($_SESSION['role'] === 'admin'): ?>
                             <li><a class="dropdown-item" href="/GuitarX/admin/index.php"><span
                                         class="material-symbols-outlined align-middle fs-5 me-2">admin_panel_settings</span>Trang
@@ -177,7 +178,7 @@ if (isset($_SESSION['user_id'])) {
                     <a class="cat-link" href="#">Phụ kiện</a>
                     <?php endif; ?>
 
-                    <a class="cat-link cat-link--hot" href="#">Săn Sale chớp nhoáng 🔥</a>
+                    <a class="cat-link cat-link--hot" href="/GuitarX/index.php?act=sansale">Săn Sale chớp nhoáng 🔥</a>
                 </div>
                 <div class="cat-contact ms-auto">
                     <span class="material-symbols-outlined" style="font-size:16px;color:#e63946;">call</span>

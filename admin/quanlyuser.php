@@ -36,23 +36,7 @@ function getRoleBadge($role) {
     }
 }
 
-// Thêm hàm định dạng màu sắc cho từng hạng thành viên
-function getRankBadge($rankName) {
-    if (empty($rankName)) {
-        return '<span class="badge bg-dark px-2 py-1.5 rounded-pill">Đồng</span>';
-    }
-    
-    // Kiểm tra chuỗi chứa tên hạng để gán màu tương ứng
-    if (strpos($rankName, 'Kim Cương') !== false) {
-        return '<span class="badge bg-info text-dark fw-bold px-2 py-1.5 rounded-pill">💎 ' . htmlspecialchars($rankName) . '</span>';
-    } elseif (strpos($rankName, 'Vàng') !== false) {
-        return '<span class="badge bg-warning text-dark fw-bold px-2 py-1.5 rounded-pill">⭐ ' . htmlspecialchars($rankName) . '</span>';
-    } elseif (strpos($rankName, 'Bạc') !== false) {
-        return '<span class="badge bg-secondary px-2 py-1.5 rounded-pill">🛡️ ' . htmlspecialchars($rankName) . '</span>';
-    }
-    
-    return '<span class="badge bg-dark px-2 py-1.5 rounded-pill">' . htmlspecialchars($rankName) . '</span>';
-}
+// Đã xóa hàm getRankBadge cũ, giờ dùng trực tiếp class từ m_user.php
 ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -104,7 +88,7 @@ function getRankBadge($rankName) {
                         <td><?= date('d/m/Y H:i', strtotime($u['Create_At'])) ?></td>
                         <td><?= getRoleBadge($u['Role']) ?></td>
 
-                        <td><?= getRankBadge($u['RankName'] ?? '') ?></td>
+                        <td><span class="<?= htmlspecialchars($u['RankClass'] ?? 'rank-badge rank-new') ?>"><?= htmlspecialchars($u['RankName'] ?? '🌱 Thành viên mới') ?></span></td>
 
                         <td class="text-end pe-4">
                             <form action="index.php?act=quanlyuser" method="POST"

@@ -90,7 +90,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                     <a class="cat-link nav-link <?= $act == 'quanlyvoucher' ? 'active' : '' ?>"
                         href="index.php?act=quanlyvoucher">Voucher</a>
                     <a class="cat-link nav-link <?= $act == 'quanlySanSale' ? 'active' : '' ?>"
-                        href="index.php?act=quanlySanSale">Sản Phẩm Khuyến Mãi</a>
+                        href="index.php?act=quanlySanSale">🔥 Sale Chớp Nhoáng</a>
                 </div>
 
                 <div class="header-actions d-flex align-items-center gap-3">
@@ -130,6 +130,9 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                 break;
             case 'quanlyvoucher':
                 include 'quanlyvoucher.php';
+                break;
+            case 'quanlySanSale':
+                include 'quanlysansale.php';
                 break;
             case 'dashboard':
             default:

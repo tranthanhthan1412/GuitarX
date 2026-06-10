@@ -79,8 +79,10 @@ class Database {
                 `Brand` VARCHAR(100) DEFAULT NULL,
                 `DateImport` DATE DEFAULT NULL,
                 `Category_ID` INT NULL,
+                `DiscountPercent` INT DEFAULT 0,
                 CONSTRAINT `CH_Product_Price` CHECK (`Price` >= 0),
                 CONSTRAINT `CH_Product_Count` CHECK (`Count` >= 0),
+                CONSTRAINT `CH_Product_Discount` CHECK (`DiscountPercent` BETWEEN 0 AND 100),
                 FOREIGN KEY (`Category_ID`) REFERENCES `CATEGORIES`(`Category_ID`) ON DELETE SET NULL
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
@@ -199,6 +201,13 @@ class Database {
             $this->conn->exec($query);
         }
 
+        // Tự động bổ sung cột DiscountPercent nếu bảng PRODUCTS đã được tạo từ trước
+        try {
+            $this->conn->exec("ALTER TABLE `PRODUCTS` ADD COLUMN `DiscountPercent` INT DEFAULT 0 AFTER `Category_ID`");
+        } catch (PDOException $e) {
+            // Bỏ qua lỗi nếu cột DiscountPercent đã tồn tại
+        }
+
         // Tự động bổ sung cột Email nếu bảng USER đã được tạo từ trước nhưng chưa có cột này
         try {
             $this->conn->exec("ALTER TABLE `USER` ADD COLUMN `Email` VARCHAR(255) DEFAULT NULL AFTER `PassWord`");
@@ -249,23 +258,23 @@ class Database {
         $check_prod = $this->conn->query("SELECT COUNT(*) FROM `PRODUCTS`")->fetchColumn();
         if ($check_prod == 0) {
             $this->conn->exec("
-                INSERT INTO `PRODUCTS` (`ProductName`, `Image`, `Description`, `Price`, `Count`, `Brand`, `DateImport`, `Category_ID`) VALUES
-                ('Đàn Guitar Acoustic Yamaha FS800', 'Yamaha.jpg', 'Dòng âm thanh chuẩn mực, thích hợp cho mọi đối tượng học bấm ngón.', 3500000.00, 12, 'Yamaha', '2026-04-10', 1),
-                ('Đàn Guitar Electric Ibanez GRG170DX', 'Ibanez.jpg', 'Đàn điện lý tưởng cho rock/metal với độ nhạy cao và cần đàn mượt.', 5800000.00, 8, 'Ibanez', '2026-04-12', 2),
-                ('Đàn Guitar Acoustic Washburn WD10S', 'Washburn.jpg', 'Mặt trước bằng gỗ thông nguyên tấm mang lại âm thanh cực ấm.', 4200000.00, 15, 'Washburn', '2026-04-15', 1),
-                ('Đàn Guitar Electric Fender Player Strat', 'Fender.jpg', 'Dòng đàn huyền thoại mang âm hưởng rực rỡ chuẩn California.', 18500000.00, 5, 'Fender', '2026-04-18', 2),
-                ('Đàn Guitar Classic Gibson Master', 'Gibson.jpg', 'Sản phẩm cao cấp dành cho giới biểu diễn chuyên nghiệp.', 24000000.00, 3, 'Gibson', '2026-04-20', 3),
-                ('Đàn Guitar Acoustic Taylor 114e', 'Taylor.jpg', 'Đỉnh cao guitar thùng với hệ thống thiết bị khuyếch đại âm thanh ES2.', 21000000.00, 4, 'Taylor', '2026-04-22', 1),
-                ('Đàn Ukulele Soprano Yamaha GL1', 'ukulele_soprano.png', 'Guitalele kết hợp hoàn hảo giữa guitar và ukulele, âm thanh trong trẻo, nhỏ gọn dễ mang theo.', 1800000.00, 20, 'Yamaha', '2026-05-01', 5),
-                ('Đàn Ukulele Tenor Kala KA-T', 'ukulele_tenor.png', 'Ukulele tenor cao cấp với thân gỗ mahogany nguyên khối, âm vang ấm áp và phong phú.', 2500000.00, 15, 'Kala', '2026-05-05', 5),
-                ('Đàn Bass Fender Player Jazz Bass', 'bass_4string.png', 'Bass 4 dây huyền thoại với pickup đôi single-coil, âm thanh linh hoạt từ jazz đến funk.', 19500000.00, 6, 'Fender', '2026-05-08', 4),
-                ('Đàn Bass Ibanez SR505E 5 Dây', 'bass_5string.png', 'Bass 5 dây hiện đại với hệ thống active EQ 3 band, thân gỗ mahogany, cần đàn mỏng dễ chơi.', 14500000.00, 7, 'Ibanez', '2026-05-10', 4),
-                ('Capo Guitar Dunlop Trigger', 'capo.png', 'Capo kẹp nhanh chất liệu nhôm cao cấp, lực kẹp đều, không làm lệch dây. Tương thích guitar acoustic và electric.', 350000.00, 50, 'Dunlop', '2026-05-12', 6),
-                ('Dây Đàn Guitar Acoustic D Addario EJ16', 'daydan.png', 'Bộ dây phosphor bronze sáng và ấm, gauge 12-53. Lựa chọn hàng đầu của các nghệ sĩ chuyên nghiệp toàn cầu.', 180000.00, 100, 'D''Addario', '2026-05-14', 6),
-                ('Máy Lên Dây Korg Pitchclip 2', 'tuner.svg', 'Tuner clip-on nhỏ gọn, màn hình LED rõ ràng, phát hiện cao độ nhanh và chính xác. Pin AAA dùng hơn 200 giờ.', 420000.00, 35, 'Korg', '2026-05-15', 6),
-                ('Bộ Phím Gảy Fender Premium Picks (12 cái)', 'picks.svg', 'Bộ 12 pick guitar cao cấp đa độ dày (0.5mm–1.14mm), chất liệu celluloid mềm mại, grip tốt khi chơi.', 120000.00, 80, 'Fender', '2026-05-16', 6),
-                ('Dây Đeo Đàn Da Bò Thật Levy s', 'strap.svg', 'Dây đeo guitar da bò nguyên miếng, mềm mại và bền bỉ. Điều chỉnh chiều dài linh hoạt, phong cách vintage.', 650000.00, 25, 'Levy''s', '2026-05-18', 6),
-                ('Bao Đàn Guitar Acoustic 3 Lớp', 'guitarbag.svg', 'Bao đàn chống sốc 3 lớp dày 15mm, chống nước, có ngăn phụ kiện. Dây kéo YKK chắc chắn, quai đeo êm vai.', 450000.00, 30, 'GuitarX', '2026-05-20', 6);
+                INSERT INTO `PRODUCTS` (`ProductName`, `Image`, `Description`, `Price`, `Count`, `Brand`, `DateImport`, `Category_ID`, `DiscountPercent`) VALUES
+                ('Đàn Guitar Acoustic Yamaha FS800', 'Yamaha.jpg', 'Dòng âm thanh chuẩn mực, thích hợp cho mọi đối tượng học bấm ngón.', 3500000.00, 12, 'Yamaha', '2026-04-10', 1, 15),
+                ('Đàn Guitar Electric Ibanez GRG170DX', 'Ibanez.jpg', 'Đàn điện lý tưởng cho rock/metal với độ nhạy cao và cần đàn mượt.', 5800000.00, 8, 'Ibanez', '2026-04-12', 2, 0),
+                ('Đàn Guitar Acoustic Washburn WD10S', 'Washburn.jpg', 'Mặt trước bằng gỗ thông nguyên tấm mang lại âm thanh cực ấm.', 4200000.00, 15, 'Washburn', '2026-04-15', 1, 10),
+                ('Đàn Guitar Electric Fender Player Strat', 'Fender.jpg', 'Dòng đàn huyền thoại mang âm hưởng rực rỡ chuẩn California.', 18500000.00, 5, 'Fender', '2026-04-18', 2, 0),
+                ('Đàn Guitar Classic Gibson Master', 'Gibson.jpg', 'Sản phẩm cao cấp dành cho giới biểu diễn chuyên nghiệp.', 24000000.00, 3, 'Gibson', '2026-04-20', 3, 5),
+                ('Đàn Guitar Acoustic Taylor 114e', 'Taylor.jpg', 'Đỉnh cao guitar thùng với hệ thống thiết bị khuyếch đại âm thanh ES2.', 21000000.00, 4, 'Taylor', '2026-04-22', 1, 0),
+                ('Đàn Ukulele Soprano Yamaha GL1', 'ukulele_soprano.png', 'Guitalele kết hợp hoàn hảo giữa guitar và ukulele, âm thanh trong trẻo, nhỏ gọn dễ mang theo.', 1800000.00, 20, 'Yamaha', '2026-05-01', 5, 20),
+                ('Đàn Ukulele Tenor Kala KA-T', 'ukulele_tenor.png', 'Ukulele tenor cao cấp với thân gỗ mahogany nguyên khối, âm vang ấm áp và phong phú.', 2500000.00, 15, 'Kala', '2026-05-05', 5, 0),
+                ('Đàn Bass Fender Player Jazz Bass', 'bass_4string.png', 'Bass 4 dây huyền thoại với pickup đôi single-coil, âm thanh linh hoạt từ jazz đến funk.', 19500000.00, 6, 'Fender', '2026-05-08', 4, 10),
+                ('Đàn Bass Ibanez SR505E 5 Dây', 'bass_5string.png', 'Bass 5 dây hiện đại với hệ thống active EQ 3 band, thân gỗ mahogany, cần đàn mỏng dễ chơi.', 14500000.00, 7, 'Ibanez', '2026-05-10', 4, 0),
+                ('Capo Guitar Dunlop Trigger', 'capo.png', 'Capo kẹp nhanh chất liệu nhôm cao cấp, lực kẹp đều, không làm lệch dây. Tương thích guitar acoustic và electric.', 350000.00, 50, 'Dunlop', '2026-05-12', 6, 25),
+                ('Dây Đàn Guitar Acoustic D Addario EJ16', 'daydan.png', 'Bộ dây phosphor bronze sáng và ấm, gauge 12-53. Lựa chọn hàng đầu của các nghệ sĩ chuyên nghiệp toàn cầu.', 180000.00, 100, 'D''Addario', '2026-05-14', 6, 0),
+                ('Máy Lên Dây Korg Pitchclip 2', 'tuner.svg', 'Tuner clip-on nhỏ gọn, màn hình LED rõ ràng, phát hiện cao độ nhanh và chính xác. Pin AAA dùng hơn 200 giờ.', 420000.00, 35, 'Korg', '2026-05-15', 6, 15),
+                ('Bộ Phím Gảy Fender Premium Picks (12 cái)', 'picks.svg', 'Bộ 12 pick guitar cao cấp đa độ dày (0.5mm–1.14mm), chất liệu celluloid mềm mại, grip tốt khi chơi.', 120000.00, 80, 'Fender', '2026-05-16', 6, 0),
+                ('Dây Đeo Đàn Da Bò Thật Levy s', 'strap.svg', 'Dây đeo guitar da bò nguyên miếng, mềm mại và bền bỉ. Điều chỉnh chiều dài linh hoạt, phong cách vintage.', 650000.00, 25, 'Levy''s', '2026-05-18', 6, 10),
+                ('Bao Đàn Guitar Acoustic 3 Lớp', 'guitarbag.svg', 'Bao đàn chống sốc 3 lớp dày 15mm, chống nước, có ngăn phụ kiện. Dây kéo YKK chắc chắn, quai đeo êm vai.', 450000.00, 30, 'GuitarX', '2026-05-20', 6, 0);
             ");
         }
     }

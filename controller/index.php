@@ -3,6 +3,12 @@
 
 $act = isset($_GET['act']) ? $_GET['act'] : 'home';
 
+// Đảm bảo $db luôn tồn tại (Tránh lỗi Undefined variable khi truy cập trực tiếp file này)
+if (!isset($db)) {
+    require_once __DIR__ . '/../model/database.php';
+    $db = (new Database())->getConnection();
+}
+
 // Khởi tạo FavoriteModel dùng chung
 require_once __DIR__ . "/../model/m_favorite.php";
 $favoriteModel = new FavoriteModel($db);
@@ -447,6 +453,18 @@ switch ($act) {
         if (file_exists($lichsuFile)) {
             include_once $lichsuFile;
         }
+        include_once __DIR__ . "/../view/footer.php";
+        break;
+
+    case 'sansale':
+        require_once __DIR__ . "/../model/m_sanpham.php";
+        $productModel = new ProductModel($db);
+        $sort = isset($_GET['sort']) ? $_GET['sort'] : 'discount';
+        $minDiscount = isset($_GET['discount']) ? intval($_GET['discount']) : 0;
+        $saleProducts = $productModel->getSaleProducts($sort, $minDiscount);
+
+        include_once __DIR__ . "/../view/header.php";
+        include_once __DIR__ . "/../view/sansale.php";
         include_once __DIR__ . "/../view/footer.php";
         break;
 

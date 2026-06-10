@@ -122,11 +122,28 @@ if (!isset($album) && isset($product['Product_ID'])) {
                     </div>
 
                     <div class="bg-white p-4 rounded-3 shadow-sm mb-4 border-start border-danger-custom border-4">
-                        <span class="text-muted font-label-md d-block text-uppercase fw-bold mb-1">Giá bán lẻ đề
-                            xuất</span>
-                        <span class="text-secondary-custom font-display-lg fs-1 fw-bold">
-                            <?php echo number_format($product['Price'], 0, ',', '.'); ?>₫
-                        </span>
+                        <?php if (isset($product['DiscountPercent']) && $product['DiscountPercent'] > 0): 
+                            $salePrice = $product['Price'] - ($product['Price'] * $product['DiscountPercent'] / 100);
+                            $savings = $product['Price'] - $salePrice;
+                        ?>
+                            <div class="d-flex align-items-center mb-1 gap-2">
+                                <span class="text-muted font-label-md d-block text-uppercase fw-bold">Giá gốc:</span>
+                                <span class="old-price text-muted" style="text-decoration: line-through;"><?php echo number_format($product['Price'], 0, ',', '.'); ?>₫</span>
+                                <span class="badge bg-secondary-custom text-white fw-bold" style="font-size: 0.85rem;">-<?php echo $product['DiscountPercent']; ?>%</span>
+                            </div>
+                            <span class="text-secondary-custom font-display-lg fs-1 fw-bold">
+                                <?php echo number_format($salePrice, 0, ',', '.'); ?>₫
+                            </span>
+                            <div class="mt-2 text-success fw-bold font-label-md">
+                                Tiết kiệm được: <?php echo number_format($savings, 0, ',', '.'); ?>₫
+                            </div>
+                        <?php else: ?>
+                            <span class="text-muted font-label-md d-block text-uppercase fw-bold mb-1">Giá bán lẻ đề
+                                xuất</span>
+                            <span class="text-secondary-custom font-display-lg fs-1 fw-bold">
+                                <?php echo number_format($product['Price'], 0, ',', '.'); ?>₫
+                            </span>
+                        <?php endif; ?>
                     </div>
 
                     <div class="mb-4">
@@ -286,6 +303,11 @@ if (!isset($album) && isset($product['Product_ID'])) {
                 <div class="col">
                     <div
                         class="product-card h-100 position-relative d-flex flex-column justify-content-between shadow-sm">
+                        <?php if (isset($related['DiscountPercent']) && $related['DiscountPercent'] > 0): ?>
+                            <span class="sale-badge">-<?php echo $related['DiscountPercent']; ?>%</span>
+                        <?php elseif ($related['Product_ID'] % 2 == 0): ?>
+                            <span class="position-absolute top-0 end-0 m-3 badge bg-secondary-custom text-white px-2 py-1 font-label-sm rounded-1 z-1">BEST SELLER</span>
+                        <?php endif; ?>
                         <?php 
                                 $isFavRelated = isset($userFavorites) && in_array($related['Product_ID'], $userFavorites); 
                                 $fillValueRelated = $isFavRelated ? 1 : 0;
@@ -316,9 +338,15 @@ if (!isset($album) && isset($product['Product_ID'])) {
                             </h3>
                         </div>
                         <div>
-                            <div class="d-flex align-items-center gap-2 mb-3">
-                                <span
-                                    class="text-secondary-custom font-headline-sm mb-0"><?php echo number_format($related['Price'], 0, ',', '.'); ?>₫</span>
+                            <div class="d-flex align-items-center flex-wrap gap-2 mb-3">
+                                <?php if (isset($related['DiscountPercent']) && $related['DiscountPercent'] > 0): 
+                                    $relatedSalePrice = $related['Price'] - ($related['Price'] * $related['DiscountPercent'] / 100);
+                                ?>
+                                    <span class="old-price"><?php echo number_format($related['Price'], 0, ',', '.'); ?>₫</span>
+                                    <span class="new-price"><?php echo number_format($relatedSalePrice, 0, ',', '.'); ?>₫</span>
+                                <?php else: ?>
+                                    <span class="text-secondary-custom font-headline-sm mb-0"><?php echo number_format($related['Price'], 0, ',', '.'); ?>₫</span>
+                                <?php endif; ?>
                             </div>
                             <a href="/GuitarX/index.php?act=chitiet&id=<?php echo $related['Product_ID']; ?>"
                                 class="btn btn-add-cart-custom w-100 text-center text-decoration-none d-block pt-2">XEM

@@ -103,9 +103,9 @@ class ProductModel {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function addProduct($name, $image, $desc, $price, $count, $brand, $categoryId) {
-        $query = "INSERT INTO `PRODUCTS` (`ProductName`, `Image`, `Description`, `Price`, `Count`, `Brand`, `DateImport`, `Category_ID`) 
-                  VALUES (:name, :image, :desc, :price, :count, :brand, CURDATE(), :categoryId)";
+    public function addProduct($name, $image, $desc, $price, $count, $brand, $categoryId, $discountPercent = 0) {
+        $query = "INSERT INTO `PRODUCTS` (`ProductName`, `Image`, `Description`, `Price`, `Count`, `Brand`, `DateImport`, `Category_ID`, `DiscountPercent`) 
+                  VALUES (:name, :image, :desc, :price, :count, :brand, CURDATE(), :categoryId, :discountPercent)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(":name", $name);
         $stmt->bindParam(":image", $image);
@@ -114,15 +114,16 @@ class ProductModel {
         $stmt->bindParam(":count", $count);
         $stmt->bindParam(":brand", $brand);
         $stmt->bindParam(":categoryId", $categoryId, PDO::PARAM_INT);
+        $stmt->bindParam(":discountPercent", $discountPercent, PDO::PARAM_INT);
         return $stmt->execute();
     }
 
-    public function updateProduct($id, $name, $image, $desc, $price, $count, $brand, $categoryId) {
+    public function updateProduct($id, $name, $image, $desc, $price, $count, $brand, $categoryId, $discountPercent = 0) {
         if (!empty($image)) {
-            $query = "UPDATE `PRODUCTS` SET `ProductName` = :name, `Image` = :image, `Description` = :desc, `Price` = :price, `Count` = :count, `Brand` = :brand, `Category_ID` = :categoryId WHERE `Product_ID` = :id";
+            $query = "UPDATE `PRODUCTS` SET `ProductName` = :name, `Image` = :image, `Description` = :desc, `Price` = :price, `Count` = :count, `Brand` = :brand, `Category_ID` = :categoryId, `DiscountPercent` = :discountPercent WHERE `Product_ID` = :id";
         } else {
             // Cập nhật không thay đổi ảnh
-            $query = "UPDATE `PRODUCTS` SET `ProductName` = :name, `Description` = :desc, `Price` = :price, `Count` = :count, `Brand` = :brand, `Category_ID` = :categoryId WHERE `Product_ID` = :id";
+            $query = "UPDATE `PRODUCTS` SET `ProductName` = :name, `Description` = :desc, `Price` = :price, `Count` = :count, `Brand` = :brand, `Category_ID` = :categoryId, `DiscountPercent` = :discountPercent WHERE `Product_ID` = :id";
         }
         
         $stmt = $this->db->prepare($query);
@@ -136,6 +137,7 @@ class ProductModel {
         $stmt->bindParam(":count", $count);
         $stmt->bindParam(":brand", $brand);
         $stmt->bindParam(":categoryId", $categoryId, PDO::PARAM_INT);
+        $stmt->bindParam(":discountPercent", $discountPercent, PDO::PARAM_INT);
         return $stmt->execute();
     }
 
@@ -204,6 +206,20 @@ public function addReview($productId, $userId, $rating, $comment) {
     $sql = "INSERT INTO `REVIEW` (`Product_ID`, `User_ID`, `Rating`, `Comment`) VALUES (?, ?, ?, ?)";
     $stmt = $this->db->prepare($sql);
     return $stmt->execute([$productId, $userId, $rating, $comment]);
+}
+
+// Lấy tất cả sản phẩm đang sale (DiscountPercent > 0)
+public function getSaleProducts($sortType = 'discount', $minDiscount = 0) {
+    $query = "SELECT * FROM `PRODUCTS` WHERE `DiscountPercent` > :minDiscount";
+    switch ($sortType) {
+        case 'price-asc':  $query .= " ORDER BY `Price` ASC"; break;
+        case 'price-desc': $query .= " ORDER BY `Price` DESC"; break;
+        default: $query .= " ORDER BY `DiscountPercent` DESC, `Product_ID` DESC"; break;
+    }
+    $stmt = $this->db->prepare($query);
+    $stmt->bindValue(':minDiscount', (int)$minDiscount, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 }
 ?>

@@ -14,7 +14,7 @@ class CartModel {
         }
 
         foreach ($cartSession as $productId => $quantity) {
-            $query = "SELECT `Product_ID`, `ProductName`, `Image`, `Price`, `Count` 
+            $query = "SELECT `Product_ID`, `ProductName`, `Image`, `Price`, `Count`, `DiscountPercent` 
                       FROM `PRODUCTS` WHERE `Product_ID` = :id LIMIT 1";
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(":id", $productId, PDO::PARAM_INT);
@@ -25,13 +25,18 @@ class CartModel {
                 // Đảm bảo số lượng không vượt quá số lượng tồn kho
                 $actualQty = min((int)$quantity, (int)$product['Count']);
                 
+                // Tính giá đã giảm
+                $discountPercent = isset($product['DiscountPercent']) ? (int)$product['DiscountPercent'] : 0;
+                $actualPrice = $product['Price'] - ($product['Price'] * $discountPercent / 100);
+
                 $cartDetails[] = [
                     'Product_ID' => $product['Product_ID'],
                     'ProductName' => $product['ProductName'],
                     'Image' => $product['Image'],
-                    'Price' => $product['Price'],
+                    'OriginalPrice' => $product['Price'],
+                    'Price' => $actualPrice,
                     'Quantity' => $actualQty,
-                    'Subtotal' => $product['Price'] * $actualQty,
+                    'Subtotal' => $actualPrice * $actualQty,
                     'MaxCount' => $product['Count']
                 ];
             }

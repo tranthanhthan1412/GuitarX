@@ -21,10 +21,8 @@
                             <label class="form-label font-label-sm fw-bold d-flex align-items-center gap-2">
                                 Họ và tên người nhận
                                 <?php if (isset($userRank) && !empty($userRank['name'])): ?>
-                                <span
-                                    class="badge <?php echo $userRank['class']; ?> px-2 py-1 font-label-sm rounded-pill">
-                                    <i
-                                        class="material-symbols-outlined align-middle fs-6 me-1">military_tech</i><?php echo $userRank['name']; ?>
+                                <span class="<?php echo htmlspecialchars($userRank['class']); ?>">
+                                    <?php echo htmlspecialchars($userRank['name']); ?>
                                 </span>
                                 <?php endif; ?>
                             </label>
