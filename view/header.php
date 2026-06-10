@@ -2,6 +2,16 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
+if (isset($_SESSION['user_id'])) {
+    // Nếu chưa khởi tạo đối tượng $userModel từ controller/index đổ ra, ta sẽ khởi tạo trực tiếp tại đây
+    if (!isset($userModel)) {
+        require_once "model/m_user.php";
+        // Khởi tạo model và truyền biến kết nối database của hệ thống vào (thường tên là $db hoặc $conn)
+        $userModel = new UserModel($db); 
+    }
+    // Gọi hàm tính rank đã viết sẵn trong m_user.php
+    $rankInfo = $userModel->getCustomerRank($_SESSION['user_id']);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -49,45 +59,75 @@ if (session_status() == PHP_SESSION_NONE) {
                     <form action="/GuitarX/index.php" method="GET" class="search-wrap mb-0">
                         <input type="hidden" name="act" value="timkiem">
                         <span class="search-icon material-symbols-outlined">search</span>
-                        <input type="text" name="keyword" class="search-input" placeholder="Nhập tên sản phẩm cần tìm..." value="<?php echo isset($_GET['keyword']) ? htmlspecialchars($_GET['keyword']) : ''; ?>" required />
+                        <input type="text" name="keyword" class="search-input"
+                            placeholder="Nhập tên sản phẩm cần tìm..."
+                            value="<?php echo isset($_GET['keyword']) ? htmlspecialchars($_GET['keyword']) : ''; ?>"
+                            required />
                         <button type="submit" class="search-btn">Tìm kiếm</button>
                     </form>
                 </div>
 
                 <div class="header-actions">
-                    <a href="/GuitarX/index.php?act=yeuthich" class="hdr-action-btn text-decoration-none" title="Yêu thích">
+                    <a href="/GuitarX/index.php?act=yeuthich" class="hdr-action-btn text-decoration-none"
+                        title="Yêu thích">
                         <span class="hdr-action-icon">
                             <span class="material-symbols-outlined">favorite</span>
-                            <span class="hdr-badge" id="hdrFavoriteCount"><?php echo isset($favoriteCount) ? $favoriteCount : 0; ?></span>
+                            <span class="hdr-badge"
+                                id="hdrFavoriteCount"><?php echo isset($favoriteCount) ? $favoriteCount : 0; ?></span>
                         </span>
                         <span class="hdr-action-label">Yêu thích</span>
                     </a>
 
                     <?php if(isset($_SESSION['user_id'])): ?>
-                        <div class="dropdown">
-                            <button class="hdr-action-btn border-0 bg-transparent p-0 d-flex flex-column align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Tài khoản">
-                                <span class="hdr-action-icon">
-                                    <span class="material-symbols-outlined text-primary-custom">person</span>
-                                </span>
-                                <span class="hdr-action-label text-truncate" style="max-width: 80px;"><?php echo htmlspecialchars($_SESSION['username']); ?></span>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
-                                <li><h6 class="dropdown-header">Xin chào, <?php echo htmlspecialchars($_SESSION['username']); ?></h6></li>
-                                <?php if($_SESSION['role'] === 'admin'): ?>
-                                    <li><a class="dropdown-item" href="/GuitarX/admin/index.php"><span class="material-symbols-outlined align-middle fs-5 me-2">admin_panel_settings</span>Trang Quản Trị</a></li>
-                                <?php endif; ?>
-                                <li><a class="dropdown-item" href="/GuitarX/index.php?act=lichsudonhang"><span class="material-symbols-outlined align-middle fs-5 me-2">receipt_long</span>Đơn hàng của tôi</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item text-danger" href="/GuitarX/controller/user.php?act=logout"><span class="material-symbols-outlined align-middle fs-5 me-2">logout</span>Đăng xuất</a></li>
-                            </ul>
-                        </div>
-                    <?php else: ?>
-                        <a href="/GuitarX/index.php?act=login" class="hdr-action-btn text-decoration-none" title="Đăng nhập">
+                    <div class="dropdown">
+                        <button class="hdr-action-btn border-0 bg-transparent p-0 d-flex flex-column align-items-center"
+                            type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Tài khoản">
                             <span class="hdr-action-icon">
-                                <span class="material-symbols-outlined">person</span>
+                                <span class="material-symbols-outlined text-primary-custom">person</span>
                             </span>
-                            <span class="hdr-action-label">Đăng nhập</span>
-                        </a>
+
+                            <div class="d-flex align-items-center gap-1 justify-content-center">
+                                <span class="hdr-action-label text-truncate"
+                                    style="max-width: 80px;"><?php echo htmlspecialchars($_SESSION['username']); ?></span>
+
+                                <?php if (isset($rankInfo)): ?>
+                                <span class="badge <?= $rankInfo['class'] ?>"
+                                    style="font-size: 9px; padding: 2px 4px; line-height: 1; font-weight: bold;">
+                                    <?= $rankInfo['name'] ?>
+                                </span>
+                                <?php endif; ?>
+                            </div>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
+                            <li>
+                                <h6 class="dropdown-header">Xin chào,
+                                    <?php echo htmlspecialchars($_SESSION['username']); ?></h6>
+                            </li>
+                            <?php if($_SESSION['role'] === 'admin'): ?>
+                            <li><a class="dropdown-item" href="/GuitarX/admin/index.php"><span
+                                        class="material-symbols-outlined align-middle fs-5 me-2">admin_panel_settings</span>Trang
+                                    Quản Trị</a></li>
+                            <?php endif; ?>
+                            <li><a class="dropdown-item" href="/GuitarX/index.php?act=lichsudonhang"><span
+                                        class="material-symbols-outlined align-middle fs-5 me-2">receipt_long</span>Đơn
+                                    hàng của tôi</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item text-danger"
+                                    href="/GuitarX/controller/user.php?act=logout"><span
+                                        class="material-symbols-outlined align-middle fs-5 me-2">logout</span>Đăng
+                                    xuất</a></li>
+                        </ul>
+                    </div>
+                    <?php else: ?>
+                    <a href="/GuitarX/index.php?act=login" class="hdr-action-btn text-decoration-none"
+                        title="Đăng nhập">
+                        <span class="hdr-action-icon">
+                            <span class="material-symbols-outlined">person</span>
+                        </span>
+                        <span class="hdr-action-label">Đăng nhập</span>
+                    </a>
                     <?php endif; ?>
 
                     <?php
@@ -110,7 +150,8 @@ if (session_status() == PHP_SESSION_NONE) {
                     </a>
                 </div>
 
-            </div></div>
+            </div>
+        </div>
     </header>
 
     <nav class="category-nav d-none d-md-block">
@@ -122,18 +163,18 @@ if (session_status() == PHP_SESSION_NONE) {
                 </button>
                 <div class="cat-links">
                     <?php if (!empty($categories)): ?>
-                        <?php foreach ($categories as $cat): ?>
-                            <a class="cat-link" href="/GuitarX/index.php?act=sanpham&id=<?php echo $cat['Category_ID']; ?>">
-                                <?php echo htmlspecialchars($cat['CategoryName']); ?>
-                            </a>
-                        <?php endforeach; ?>
+                    <?php foreach ($categories as $cat): ?>
+                    <a class="cat-link" href="/GuitarX/index.php?act=sanpham&id=<?php echo $cat['Category_ID']; ?>">
+                        <?php echo htmlspecialchars($cat['CategoryName']); ?>
+                    </a>
+                    <?php endforeach; ?>
                     <?php else: ?>
-                        <a class="cat-link" href="#">Acoustic Guitars</a>
-                        <a class="cat-link" href="#">Electric Guitars</a>
-                        <a class="cat-link" href="#">Classic Guitars</a>
-                        <a class="cat-link" href="#">Bass Guitars</a>
-                        <a class="cat-link" href="#">Ukulele</a>
-                        <a class="cat-link" href="#">Phụ kiện</a>
+                    <a class="cat-link" href="#">Acoustic Guitars</a>
+                    <a class="cat-link" href="#">Electric Guitars</a>
+                    <a class="cat-link" href="#">Classic Guitars</a>
+                    <a class="cat-link" href="#">Bass Guitars</a>
+                    <a class="cat-link" href="#">Ukulele</a>
+                    <a class="cat-link" href="#">Phụ kiện</a>
                     <?php endif; ?>
 
                     <a class="cat-link cat-link--hot" href="#">Săn Sale chớp nhoáng 🔥</a>
@@ -148,34 +189,36 @@ if (session_status() == PHP_SESSION_NONE) {
 
     <script>
     function toggleFavorite(productId, btnElement, event) {
-        if(event) event.preventDefault();
+        if (event) event.preventDefault();
         fetch('/GuitarX/index.php?act=toggle_favorite', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: 'product_id=' + productId
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.require_login) {
-                window.location.href = '/GuitarX/index.php?act=login';
-                return;
-            }
-            if (data.success) {
-                document.getElementById('hdrFavoriteCount').innerText = data.count;
-                const icon = btnElement.querySelector('.material-symbols-outlined');
-                if (data.is_added) {
-                    btnElement.classList.add('active');
-                    icon.style.fontVariationSettings = "'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24";
-                    icon.classList.add('text-danger');
-                } else {
-                    btnElement.classList.remove('active');
-                    icon.style.fontVariationSettings = "'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24";
-                    icon.classList.remove('text-danger');
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'product_id=' + productId
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.require_login) {
+                    window.location.href = '/GuitarX/index.php?act=login';
+                    return;
                 }
-            } else {
-                alert(data.message);
-            }
-        })
-        .catch(err => console.error(err));
+                if (data.success) {
+                    document.getElementById('hdrFavoriteCount').innerText = data.count;
+                    const icon = btnElement.querySelector('.material-symbols-outlined');
+                    if (data.is_added) {
+                        btnElement.classList.add('active');
+                        icon.style.fontVariationSettings = "'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24";
+                        icon.classList.add('text-danger');
+                    } else {
+                        btnElement.classList.remove('active');
+                        icon.style.fontVariationSettings = "'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24";
+                        icon.classList.remove('text-danger');
+                    }
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(err => console.error(err));
     }
     </script>

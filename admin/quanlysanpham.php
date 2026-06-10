@@ -36,7 +36,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $category_id = trim($_POST['category_id'] ?? 0);
     $desc = trim($_POST['description'] ?? '');
     
-    // Upload Ảnh
+    // Đăng ký các định dạng ảnh được chấp nhận
+    $allowedTypes = array('jpg', 'png', 'jpeg', 'gif', 'webp');
+
+    // 1. Upload Ảnh Đại Diện Chính
     $imageName = "";
     if (isset($_FILES["image"]) && $_FILES["image"]["error"] == 0) {
         $fileName = basename($_FILES["image"]["name"]);
@@ -44,33 +47,73 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $newFileName = time() . '_' . preg_replace("/[^a-zA-Z0-9.]/", "_", $fileName);
         $targetFilePath = $targetDir . $newFileName;
         
-        $allowedTypes = array('jpg', 'png', 'jpeg', 'gif', 'webp');
         if (in_array($imageFileType, $allowedTypes)) {
             if (move_uploaded_file($_FILES["image"]["tmp_name"], $targetFilePath)) {
                 $imageName = $newFileName;
             } else {
-                $error = "Có lỗi xảy ra khi upload ảnh.";
+                $error = "Có lỗi xảy ra khi upload ảnh chính.";
             }
         } else {
-            $error = "Chỉ chấp nhận các định dạng JPG, JPEG, PNG, GIF, WEBP.";
+            $error = "Ảnh chính chỉ chấp nhận các định dạng JPG, JPEG, PNG, GIF, WEBP.";
         }
     }
 
+    // 2. Logic lưu thông tin sản phẩm và xử lý Album ảnh phụ kèm theo
     if (empty($error)) {
         if ($action === 'add') {
             if (empty($imageName)) {
                 $error = "Vui lòng chọn ảnh cho sản phẩm.";
             } else {
+                // Thêm sản phẩm chính để lấy ID tự tăng vừa sinh ra
                 if ($productModel->addProduct($name, $imageName, $desc, $price, $count, $brand, $category_id)) {
+                    $newProductId = $db->lastInsertId(); // Lấy ID của sản phẩm vừa thêm thành công
                     $message = "Đã thêm sản phẩm mới thành công.";
+
+                    // XỬ LÝ UPLOAD ALBUM ẢNH PHỤ (NẾU CÓ)
+                    if (isset($_FILES['album']) && !empty($_FILES['album']['name'][0])) {
+                        foreach ($_FILES['album']['name'] as $key => $val) {
+                            if ($_FILES['album']['error'][$key] == 0) {
+                                $subFileName = basename($_FILES['album']['name'][$key]);
+                                $subFileType = strtolower(pathinfo($subFileName, PATHINFO_EXTENSION));
+                                $newSubName = time() . '_album_' . $key . '_' . preg_replace("/[^a-zA-Z0-9.]/", "_", $subFileName);
+                                $subTargetPath = $targetDir . $newSubName;
+
+                                if (in_array($subFileType, $allowedTypes)) {
+                                    if (move_uploaded_file($_FILES['album']['tmp_name'][$key], $subTargetPath)) {
+                                        // Lưu vào bảng product_images
+                                        $productModel->addProductImage($newProductId, $newSubName);
+                                    }
+                                }
+                            }
+                        }
+                    }
                 } else {
                     $error = "Lỗi khi thêm sản phẩm vào CSDL.";
                 }
             }
         } elseif ($action === 'edit') {
-            // Nếu để trống ảnh khi sửa, hàm updateProduct của mày sẽ tự giữ lại ảnh cũ
+            // Cập nhật thông tin sản phẩm chính
             if ($productModel->updateProduct($id, $name, $imageName, $desc, $price, $count, $brand, $category_id)) {
                 $message = "Đã cập nhật thông tin sản phẩm thành công.";
+
+                // XỬ LÝ UPLOAD THÊM ẢNH PHỤ VÀO ALBUM KHI SỬA
+                if (isset($_FILES['album']) && !empty($_FILES['album']['name'][0])) {
+                    foreach ($_FILES['album']['name'] as $key => $val) {
+                        if ($_FILES['album']['error'][$key] == 0) {
+                            $subFileName = basename($_FILES['album']['name'][$key]);
+                            $subFileType = strtolower(pathinfo($subFileName, PATHINFO_EXTENSION));
+                            $newSubName = time() . '_album_edit_' . $key . '_' . preg_replace("/[^a-zA-Z0-9.]/", "_", $subFileName);
+                            $subTargetPath = $targetDir . $newSubName;
+
+                            if (in_array($subFileType, $allowedTypes)) {
+                                if (move_uploaded_file($_FILES['album']['tmp_name'][$key], $subTargetPath)) {
+                                    // Thêm ảnh phụ mới vào sản phẩm đang sửa
+                                    $productModel->addProductImage($id, $newSubName);
+                                }
+                            }
+                        }
+                    }
+                }
             } else {
                 $error = "Lỗi khi cập nhật CSDL.";
             }
@@ -87,11 +130,10 @@ if ($currentPage < 1) $currentPage = 1;
 $totalProducts = $productModel->countAllProducts();
 $totalPages = ceil($totalProducts / $limit);
 
-// Lấy sản phẩm theo trang (Gọi hàm phân trang dành riêng cho Admin)
+// Lấy sản phẩm theo trang
 if (method_exists($productModel, 'getAllProductsAdmin')) {
     $products = $productModel->getAllProductsAdmin($currentPage, $limit);
 } else {
-    // Phương án dự phòng nếu mày chưa kịp sửa file Model ở bước trước
     $products = $productModel->getAllProducts($currentPage, $limit); 
 }
 
@@ -184,7 +226,6 @@ $categories = $productModel->getAllCategories();
 <div class="d-flex justify-content-center mt-4 mb-4">
     <nav aria-label="Page navigation">
         <ul class="pagination pagination-sm m-0">
-
             <?php $prevDisabled = ($currentPage <= 1) ? 'disabled' : ''; ?>
             <li class="page-item <?php echo $prevDisabled; ?>">
                 <a class="page-link border-0 bg-light text-dark rounded-3 me-2 px-3"
@@ -213,7 +254,6 @@ $categories = $productModel->getAllCategories();
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>
-
         </ul>
     </nav>
 </div>
@@ -260,11 +300,19 @@ $categories = $productModel->getAllCategories();
                             <input type="number" class="form-control" name="count" id="productCount" min="0" required>
                         </div>
 
-                        <div class="col-12">
-                            <label class="form-label fw-bold">Hình ảnh sản phẩm</label>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Hình ảnh đại diện chính *</label>
                             <input type="file" class="form-control" name="image" id="productImage" accept="image/*">
-                            <small class="text-muted" id="imageHelp">Chọn ảnh tải lên. Nếu đang sửa, để trống để giữ ảnh
+                            <small class="text-muted" id="imageHelp">Chọn ảnh đại diện. Nếu sửa, để trống để giữ ảnh
                                 cũ.</small>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Album ảnh chi tiết phụ (Chọn nhiều ảnh)</label>
+                            <input type="file" class="form-control" name="album[]" id="productAlbum" accept="image/*"
+                                multiple>
+                            <small class="text-muted">Nhấn giữ Ctrl để chọn cùng lúc tối đa 3-4 ảnh phụ chi
+                                tiết.</small>
                         </div>
 
                         <div class="col-12">
@@ -283,7 +331,7 @@ $categories = $productModel->getAllCategories();
 </div>
 
 <script>
-// Mở modal Thêm mới (Sửa lại bộ bắt sự kiện khớp với ID modal mới)
+// Mở modal Thêm mới
 document.querySelector('[data-bs-target="#productModal"]').addEventListener('click', function() {
     document.getElementById('productModalLabel').innerText = 'Thêm Sản Phẩm Mới';
     document.getElementById('formAction').value = 'add';
@@ -295,6 +343,7 @@ document.querySelector('[data-bs-target="#productModal"]').addEventListener('cli
     document.getElementById('productCount').value = '';
     document.getElementById('productDesc').value = '';
     document.getElementById('productImage').required = true;
+    document.getElementById('productAlbum').value = ''; // Reset album file
     document.getElementById('btnSubmitForm').innerText = 'Thêm mới';
 });
 
@@ -310,6 +359,7 @@ function openEditModal(product) {
     document.getElementById('productCount').value = product.Count;
     document.getElementById('productDesc').value = product.Description;
     document.getElementById('productImage').required = false;
+    document.getElementById('productAlbum').value = ''; // Reset album file khi bấm sửa cây khác
     document.getElementById('btnSubmitForm').innerText = 'Lưu thay đổi';
 
     var myModal = new bootstrap.Modal(document.getElementById('productModal'));

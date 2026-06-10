@@ -89,6 +89,8 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                         href="index.php?act=quanlyuser">Người Dùng</a>
                     <a class="cat-link nav-link <?= $act == 'quanlyvoucher' ? 'active' : '' ?>"
                         href="index.php?act=quanlyvoucher">Voucher</a>
+                    <a class="cat-link nav-link <?= $act == 'quanlySanSale' ? 'active' : '' ?>"
+                        href="index.php?act=quanlySanSale">Sản Phẩm Khuyến Mãi</a>
                 </div>
 
                 <div class="header-actions d-flex align-items-center gap-3">

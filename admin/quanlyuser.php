@@ -25,6 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     }
 }
 
+// Lấy danh sách users (Lưu ý: Đảm bảo hàm getAllUsers() trong m_user.php đã được LEFT JOIN với bảng customer_rank như tao chỉ lúc nãy nhé)
 $users = $userModel->getAllUsers();
 
 function getRoleBadge($role) {
@@ -34,6 +35,24 @@ function getRoleBadge($role) {
         default: return '<span class="badge bg-secondary">Khách Hàng</span>';
     }
 }
+
+// Thêm hàm định dạng màu sắc cho từng hạng thành viên
+function getRankBadge($rankName) {
+    if (empty($rankName)) {
+        return '<span class="badge bg-dark px-2 py-1.5 rounded-pill">Đồng</span>';
+    }
+    
+    // Kiểm tra chuỗi chứa tên hạng để gán màu tương ứng
+    if (strpos($rankName, 'Kim Cương') !== false) {
+        return '<span class="badge bg-info text-dark fw-bold px-2 py-1.5 rounded-pill">💎 ' . htmlspecialchars($rankName) . '</span>';
+    } elseif (strpos($rankName, 'Vàng') !== false) {
+        return '<span class="badge bg-warning text-dark fw-bold px-2 py-1.5 rounded-pill">⭐ ' . htmlspecialchars($rankName) . '</span>';
+    } elseif (strpos($rankName, 'Bạc') !== false) {
+        return '<span class="badge bg-secondary px-2 py-1.5 rounded-pill">🛡️ ' . htmlspecialchars($rankName) . '</span>';
+    }
+    
+    return '<span class="badge bg-dark px-2 py-1.5 rounded-pill">' . htmlspecialchars($rankName) . '</span>';
+}
 ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -41,17 +60,17 @@ function getRoleBadge($role) {
 </div>
 
 <?php if ($message): ?>
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <?= $message ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <?= $message ?>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
 <?php endif; ?>
 
 <?php if ($error): ?>
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <?= $error ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <?= $error ?>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
 <?php endif; ?>
 
 <div class="card shadow-sm border-0">
@@ -66,35 +85,47 @@ function getRoleBadge($role) {
                         <th>Số Điện Thoại</th>
                         <th>Ngày Đăng Ký</th>
                         <th>Phân Quyền</th>
+                        <th>Hạng Thành Viên</th>
                         <th class="text-end pe-4">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($users)): ?>
-                        <tr><td colspan="7" class="text-center py-4 text-muted">Chưa có dữ liệu.</td></tr>
+                    <tr>
+                        <td colspan="8" class="text-center py-4 text-muted">Chưa có dữ liệu.</td>
+                    </tr>
                     <?php else: ?>
-                        <?php foreach ($users as $u): ?>
-                            <tr>
-                                <td class="ps-4 fw-bold text-muted">#<?= $u['User_ID'] ?></td>
-                                <td><span class="fw-bold text-dark"><?= htmlspecialchars($u['UserName']) ?></span></td>
-                                <td><?= htmlspecialchars($u['Email'] ?? 'N/A') ?></td>
-                                <td><?= htmlspecialchars($u['PhoneNumber'] ?? 'N/A') ?></td>
-                                <td><?= date('d/m/Y H:i', strtotime($u['Create_At'])) ?></td>
-                                <td><?= getRoleBadge($u['Role']) ?></td>
-                                <td class="text-end pe-4">
-                                    <form action="index.php?act=quanlyuser" method="POST" class="d-flex align-items-center justify-content-end m-0">
-                                        <input type="hidden" name="action" value="change_role">
-                                        <input type="hidden" name="user_id" value="<?= $u['User_ID'] ?>">
-                                        <select name="role" class="form-select form-select-sm me-2" style="width: 130px;" <?= $u['User_ID'] === $_SESSION['user_id'] ? 'disabled' : '' ?>>
-                                            <option value="customer" <?= $u['Role'] == 'customer' ? 'selected' : '' ?>>Khách Hàng</option>
-                                            <option value="admin" <?= $u['Role'] == 'admin' ? 'selected' : '' ?>>Quản Trị Viên</option>
-                                            <option value="banned" <?= $u['Role'] == 'banned' ? 'selected' : '' ?>>Khóa (Ban)</option>
-                                        </select>
-                                        <button type="submit" class="btn btn-sm btn-secondary-custom" <?= $u['User_ID'] === $_SESSION['user_id'] ? 'disabled' : '' ?>>Lưu</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
+                    <?php foreach ($users as $u): ?>
+                    <tr>
+                        <td class="ps-4 fw-bold text-muted">#<?= $u['User_ID'] ?></td>
+                        <td><span class="fw-bold text-dark"><?= htmlspecialchars($u['UserName']) ?></span></td>
+                        <td><?= htmlspecialchars($u['Email'] ?? 'N/A') ?></td>
+                        <td><?= htmlspecialchars($u['PhoneNumber'] ?? 'N/A') ?></td>
+                        <td><?= date('d/m/Y H:i', strtotime($u['Create_At'])) ?></td>
+                        <td><?= getRoleBadge($u['Role']) ?></td>
+
+                        <td><?= getRankBadge($u['RankName'] ?? '') ?></td>
+
+                        <td class="text-end pe-4">
+                            <form action="index.php?act=quanlyuser" method="POST"
+                                class="d-flex align-items-center justify-content-end m-0">
+                                <input type="hidden" name="action" value="change_role">
+                                <input type="hidden" name="user_id" value="<?= $u['User_ID'] ?>">
+                                <select name="role" class="form-select form-select-sm me-2" style="width: 130px;"
+                                    <?= $u['User_ID'] === $_SESSION['user_id'] ? 'disabled' : '' ?>>
+                                    <option value="customer" <?= $u['Role'] == 'customer' ? 'selected' : '' ?>>Khách
+                                        Hàng</option>
+                                    <option value="admin" <?= $u['Role'] == 'admin' ? 'selected' : '' ?>>Quản Trị Viên
+                                    </option>
+                                    <option value="banned" <?= $u['Role'] == 'banned' ? 'selected' : '' ?>>Khóa (Ban)
+                                    </option>
+                                </select>
+                                <button type="submit" class="btn btn-sm btn-secondary-custom"
+                                    <?= $u['User_ID'] === $_SESSION['user_id'] ? 'disabled' : '' ?>>Lưu</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
                     <?php endif; ?>
                 </tbody>
             </table>

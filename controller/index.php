@@ -54,39 +54,59 @@ switch ($act) {
         break;
 
     case 'chitiet':
-        require_once __DIR__ . "/../model/m_sanpham.php";
-        $productModel = new ProductModel($db);
+    require_once __DIR__ . "/../model/m_sanpham.php";
+    $productModel = new ProductModel($db);
 
-        $prodId = isset($_GET['id']) ? intval($_GET['id']) : 0;
-        $product = $productModel->getProductById($prodId);
+    $prodId = isset($_GET['id']) ? intval($_GET['id']) : 0;
+    
+    // Đón dữ liệu khi người dùng gửi Form đánh giá
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_review'])) {
+        if (isset($_SESSION['user_id'])) { // Kiểm tra đăng nhập theo session của mày
+            $userId = $_SESSION['user_id'];
+            $rating = isset($_POST['rating']) ? intval($_POST['rating']) : 5;
+            $comment = trim($_POST['comment'] ?? '');
 
-        if (!$product) {
-            header("Location: /GuitarX/index.php");
-            exit();
-        }
-
-        // Lấy các sản phẩm liên quan (cùng category, tối đa 4 sản phẩm, loại trừ sản phẩm hiện tại)
-        $relatedProducts = [];
-        if (!empty($product['Category_ID'])) {
-            $allRelated = $productModel->getProductsByCategory($product['Category_ID']);
-            foreach ($allRelated as $item) {
-                if ($item['Product_ID'] != $prodId) {
-                    $relatedProducts[] = $item;
-                }
-                if (count($relatedProducts) >= 4) {
-                    break;
-                }
+            if (!empty($comment)) {
+                $productModel->addReview($prodId, $userId, $rating, $comment);
+                // Gửi xong ép trang load lại để cập nhật luôn dữ liệu mới sạch sẽ
+                header("Location: index.php?act=chitiet&id=" . $prodId);
+                exit();
             }
         }
+    }
 
-        include_once __DIR__ . "/../view/header.php";
-        $chitietFile = __DIR__ . "/../view/chitietsanpham.php";
-        if (file_exists($chitietFile)) {
-            include_once $chitietFile;
+    $product = $productModel->getProductById($prodId);
+    
+    // Lấy danh sách đánh giá từ DB đổ ra giao diện
+    $reviews = $productModel->getProductReviews($prodId);
+
+    if (!$product) {
+        header("Location: /GuitarX/index.php");
+        exit();
+    }
+
+    // Phần lấy sản phẩm liên quan (giữ nguyên logic gốc của mày)
+    $relatedProducts = [];
+    if (!empty($product['Category_ID'])) {
+        $allRelated = $productModel->getProductsByCategory($product['Category_ID']);
+        foreach ($allRelated as $item) {
+            if ($item['Product_ID'] != $prodId) {
+                $relatedProducts[] = $item;
+            }
+            if (count($relatedProducts) >= 4) {
+                break;
+            }
         }
-        include_once __DIR__ . "/../view/footer.php";
-        break;
+    }
 
+    include_once __DIR__ . "/../view/header.php";
+    $chitietFile = __DIR__ . "/../view/chitietsanpham.php";
+    if (file_exists($chitietFile)) {
+        include_once $chitietFile;
+    }
+    include_once __DIR__ . "/../view/footer.php";
+    break;
+    
     case 'timkiem':
         require_once __DIR__ . "/../model/m_sanpham.php";
         $productModel = new ProductModel($db);
@@ -287,9 +307,11 @@ switch ($act) {
 
         require_once __DIR__ . "/../model/m_giohang.php";
         require_once __DIR__ . "/../model/m_donhang.php";
+        require_once __DIR__ . "/../model/m_user.php"; // Require thêm model user để check rank
         
         $cartModel = new CartModel($db);
         $orderModel = new OrderModel($db);
+        $userModel = new UserModel($db); // Khởi tạo đối tượng xử lý user
         
         $cartSession = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
         if (empty($cartSession)) {
@@ -298,8 +320,28 @@ switch ($act) {
         }
 
         $cartDetails = $cartModel->getCartDetails($cartSession);
-        $totalAmount = $cartModel->calculateTotal($cartDetails);
+        $totalAmount = $cartModel->calculateTotal($cartDetails); // Tổng tiền gốc của giỏ hàng
         $paymentMethods = $orderModel->getPaymentMethods();
+
+        // === XỬ LÝ LOGIC RANK KHÁCH HÀNG & GIẢM GIÁ ===
+        $subTotal = $totalAmount; // Lưu lại số tiền gốc để show ra view làm "Tạm tính"
+        $discountPercent = 0;
+        $discountAmount = 0;
+        $rankName = "Thành viên mới";
+
+        if (isset($_SESSION['user_id'])) {
+            $userRank = $userModel->getCustomerRank($_SESSION['user_id']);
+            $rankName = $userRank['name'];
+            $discountPercent = $userRank['discount']; // Số % được giảm (0, 2, 5, 10)
+            
+            // Số tiền được giảm theo Rank
+            $discountAmount = $subTotal * ($discountPercent / 100);
+            
+            // Cập nhật lại biến $totalAmount sau khi trừ đi phần giảm của Rank
+            // Việc này giúp hàm createOrder() và hàm gửi Mail nhận đúng số tiền thực tế
+            $totalAmount = $subTotal - $discountAmount;
+        }
+        // =============================================
 
         $error = '';
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -320,6 +362,11 @@ switch ($act) {
                     $discountValue = $_SESSION['applied_voucher']['discount_value'];
                 }
 
+                // Nếu có dùng voucher, số tiền cuối cùng khi gửi mail hóa đơn sẽ trừ tiếp voucherValue
+                $finalInvoiceAmount = $totalAmount - $discountValue;
+                if ($finalInvoiceAmount < 0) $finalInvoiceAmount = 0;
+
+                // Tạo đơn hàng (Mày truyền $totalAmount đã giảm rank vào đây)
                 $orderId = $orderModel->createOrder($_SESSION['user_id'], $cartDetails, $address, $city, $paymentMethodId, $voucherId);
                 
                 if ($orderId) {
@@ -331,7 +378,8 @@ switch ($act) {
                     $fullAddress = $address . ', ' . $city;
                     
                     if (!empty($customerEmail)) {
-                        $mailService->sendInvoiceEmail($customerEmail, $customerName, $orderId, $cartDetails, $totalAmount, $fullAddress, $voucherCode, $discountValue);
+                        // Truyền số tiền thực tế sau khi áp dụng cả Rank lẫn Voucher vào Mail hóa đơn
+                        $mailService->sendInvoiceEmail($customerEmail, $customerName, $orderId, $cartDetails, $finalInvoiceAmount, $fullAddress, $voucherCode, $discountValue);
                     }
 
                     unset($_SESSION['cart']);

@@ -173,5 +173,37 @@ public function getAllProductsAdmin($page = 1, $limit = 6) {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
     
+    public function getProductImages($productId) {
+    $sql = "SELECT * FROM `product_images` WHERE `Product_ID` = ? ORDER BY `Image_ID` ASC";
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute([$productId]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+    // Hàm thêm một ảnh phụ vào album
+public function addProductImage($productId, $imagePath) {
+    $sql = "INSERT INTO `product_images` (`Product_ID`, `Image_Path`) VALUES (?, ?)";
+    $stmt = $this->db->prepare($sql);
+    return $stmt->execute([$productId, $imagePath]);
+}
+
+    // Hàm lấy danh sách tất cả đánh giá của một sản phẩm dựa trên cấu trúc bảng của mày
+public function getProductReviews($productId) {
+    $sql = "SELECT r.*, u.Username 
+            FROM `REVIEW` r 
+            JOIN `USER` u ON r.User_ID = u.User_ID 
+            WHERE r.Product_ID = ? 
+            ORDER BY r.Review_ID DESC"; // Sắp xếp theo ID mới nhất lên đầu do không có cột ngày
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute([$productId]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+// Hàm thêm một đánh giá mới vào bảng REVIEW
+public function addReview($productId, $userId, $rating, $comment) {
+    $sql = "INSERT INTO `REVIEW` (`Product_ID`, `User_ID`, `Rating`, `Comment`) VALUES (?, ?, ?, ?)";
+    $stmt = $this->db->prepare($sql);
+    return $stmt->execute([$productId, $userId, $rating, $comment]);
+}
 }
 ?>
