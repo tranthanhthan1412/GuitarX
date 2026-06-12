@@ -316,7 +316,7 @@
                 </h1>
                 <p style="font-size:1.05rem; opacity:0.8; max-width:480px; line-height:1.7;" class="mb-4">
                     Hàng trăm nhạc cụ chính hãng đang giảm giá sốc đến
-                    <strong class="text-warning"><?= empty($saleProducts) ? '0' : max(array_column($saleProducts, 'DiscountPercent')) ?>%</strong>.
+                    <strong class="text-warning"><?= empty($saleProducts) ? '0' : max(array_column($saleProducts, 'PhanTramGiamGia')) ?>%</strong>.
                     Cơ hội vàng cho người yêu âm nhạc!
                 </p>
                 <!-- Countdown -->
@@ -414,9 +414,9 @@
         <?php else: ?>
         <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4">
             <?php foreach ($saleProducts as $prod):
-                $salePrice     = $prod['Price'] * (1 - $prod['DiscountPercent'] / 100);
-                $savingAmount  = $prod['Price'] - $salePrice;
-                $isFav         = isset($userFavorites) && in_array($prod['Product_ID'], $userFavorites);
+                $salePrice     = $prod['GiaTien'] * (1 - $prod['PhanTramGiamGia'] / 100);
+                $savingAmount  = $prod['GiaTien'] - $salePrice;
+                $isFav         = isset($userFavorites) && in_array($prod['Ma_SanPham'], $userFavorites);
             ?>
             <div class="col">
                 <div class="sale-card">
@@ -424,32 +424,32 @@
                     <div class="sale-card-img-wrap">
                         <!-- Discount badge -->
                         <div class="sale-disc-badge">
-                            <span class="sale-disc-badge-num">-<?= $prod['DiscountPercent'] ?></span>
+                            <span class="sale-disc-badge-num">-<?= $prod['PhanTramGiamGia'] ?></span>
                             <span class="sale-disc-badge-pct">%</span>
                         </div>
                         <!-- Fav button -->
-                        <button class="sale-fav-btn" onclick="toggleFavorite(<?= $prod['Product_ID'] ?>, this, event)" title="Yêu thích">
+                        <button class="sale-fav-btn" onclick="toggleFavorite(<?= $prod['Ma_SanPham'] ?>, this, event)" title="Yêu thích">
                             <span class="material-symbols-outlined <?= $isFav ? 'text-danger' : '' ?>"
                                 style="font-variation-settings:'FILL' <?= $isFav?1:0 ?>, 'wght' 400, 'GRAD' 0, 'opsz' 24; font-size:19px;">favorite</span>
                         </button>
-                        <a href="/GuitarX/index.php?act=chitiet&id=<?= $prod['Product_ID'] ?>">
-                            <img src="/GuitarX/view/image/<?= htmlspecialchars($prod['Image']) ?>"
-                                 alt="<?= htmlspecialchars($prod['ProductName']) ?>" loading="lazy" />
+                        <a href="/GuitarX/index.php?act=chitiet&id=<?= $prod['Ma_SanPham'] ?>">
+                            <img src="/GuitarX/view/image/<?= htmlspecialchars($prod['Anh']) ?>"
+                                 alt="<?= htmlspecialchars($prod['TenSanPham']) ?>" loading="lazy" />
                         </a>
                     </div>
 
                     <!-- Body -->
                     <div class="sale-card-body">
-                        <div class="sale-card-brand"><?= htmlspecialchars($prod['Brand'] ?? '') ?></div>
+                        <div class="sale-card-brand"><?= htmlspecialchars($prod['ThuongHieu'] ?? '') ?></div>
                         <div class="sale-card-name">
-                            <a href="/GuitarX/index.php?act=chitiet&id=<?= $prod['Product_ID'] ?>">
-                                <?= htmlspecialchars($prod['ProductName']) ?>
+                            <a href="/GuitarX/index.php?act=chitiet&id=<?= $prod['Ma_SanPham'] ?>">
+                                <?= htmlspecialchars($prod['TenSanPham']) ?>
                             </a>
                         </div>
 
                         <!-- Price box -->
                         <div class="sale-price-box">
-                            <div class="sale-price-old"><?= number_format($prod['Price'], 0, ',', '.') ?>₫</div>
+                            <div class="sale-price-old"><?= number_format($prod['GiaTien'], 0, ',', '.') ?>₫</div>
                             <div class="sale-price-new"><?= number_format($salePrice, 0, ',', '.') ?>₫</div>
                             <div class="sale-saving-tag">
                                 <span class="material-symbols-outlined" style="font-size:13px;">savings</span>
@@ -457,7 +457,7 @@
                             </div>
                         </div>
 
-                        <a href="/GuitarX/index.php?act=chitiet&id=<?= $prod['Product_ID'] ?>" class="sale-card-btn">
+                        <a href="/GuitarX/index.php?act=chitiet&id=<?= $prod['Ma_SanPham'] ?>" class="sale-card-btn">
                             Xem chi tiết
                         </a>
                     </div>

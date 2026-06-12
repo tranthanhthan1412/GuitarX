@@ -294,46 +294,46 @@
                 <?php foreach ($featuredProducts as $prod): ?>
                     <div class="col">
                         <div class="product-card h-100 position-relative d-flex flex-column justify-content-between">
-                            <?php if (isset($prod['DiscountPercent']) && $prod['DiscountPercent'] > 0): ?>
-                                <span class="sale-badge">-<?php echo $prod['DiscountPercent']; ?>%</span>
-                            <?php elseif ($prod['Product_ID'] % 2 == 0): ?>
+                            <?php if (isset($prod['PhanTramGiamGia']) && $prod['PhanTramGiamGia'] > 0): ?>
+                                <span class="sale-badge">-<?php echo $prod['PhanTramGiamGia']; ?>%</span>
+                            <?php elseif ($prod['Ma_SanPham'] % 2 == 0): ?>
                                 <span class="position-absolute top-0 end-0 m-3 badge bg-secondary-custom text-white px-2 py-1 font-label-sm rounded-1 z-1">BEST SELLER</span>
                             <?php endif; ?>
                             
                             <?php 
-                            $isFav = isset($userFavorites) && in_array($prod['Product_ID'], $userFavorites); 
+                            $isFav = isset($userFavorites) && in_array($prod['Ma_SanPham'], $userFavorites); 
                             $fillValue = $isFav ? 1 : 0;
                             $colorClass = $isFav ? 'text-danger' : '';
                             ?>
-                            <button class="btn btn-light rounded-circle shadow-sm position-absolute p-2 z-2 d-flex align-items-center justify-content-center" style="top: 10px; left: 10px; width: 36px; height: 36px;" onclick="toggleFavorite(<?php echo $prod['Product_ID']; ?>, this, event)" title="Yêu thích">
+                            <button class="btn btn-light rounded-circle shadow-sm position-absolute p-2 z-2 d-flex align-items-center justify-content-center" style="top: 10px; left: 10px; width: 36px; height: 36px;" onclick="toggleFavorite(<?php echo $prod['Ma_SanPham']; ?>, this, event)" title="Yêu thích">
                                 <span class="material-symbols-outlined <?php echo $colorClass; ?>" style="font-variation-settings: 'FILL' <?php echo $fillValue; ?>, 'wght' 400, 'GRAD' 0, 'opsz' 24; font-size: 20px;">favorite</span>
                             </button>
 
                             <div>
                                 <div class="product-img-wrapper bg-surface-container-low rounded mb-3">
-                                    <a href="/GuitarX/index.php?act=chitiet&id=<?php echo $prod['Product_ID']; ?>">
-                                        <img alt="<?php echo htmlspecialchars($prod['ProductName']); ?>" src="/GuitarX/view/image/<?php echo htmlspecialchars($prod['Image']); ?>" />
+                                    <a href="/GuitarX/index.php?act=chitiet&id=<?php echo $prod['Ma_SanPham']; ?>">
+                                        <img alt="<?php echo htmlspecialchars($prod['TenSanPham']); ?>" src="/GuitarX/view/image/<?php echo htmlspecialchars($prod['Anh']); ?>" />
                                     </a>
                                 </div>
-                                <p class="text-muted font-label-sm text-uppercase fw-bold mb-1 tracking-wider"><?php echo htmlspecialchars($prod['Brand']); ?></p>
+                                <p class="text-muted font-label-sm text-uppercase fw-bold mb-1 tracking-wider"><?php echo htmlspecialchars($prod['ThuongHieu']); ?></p>
                                 <h3 class="font-body-md fw-bold text-dark mb-2">
-                                    <a href="/GuitarX/index.php?act=chitiet&id=<?php echo $prod['Product_ID']; ?>" class="text-decoration-none text-dark link-hover-red">
-                                        <?php echo htmlspecialchars($prod['ProductName']); ?>
+                                    <a href="/GuitarX/index.php?act=chitiet&id=<?php echo $prod['Ma_SanPham']; ?>" class="text-decoration-none text-dark link-hover-red">
+                                        <?php echo htmlspecialchars($prod['TenSanPham']); ?>
                                     </a>
                                 </h3>
                             </div>
                             <div>
                                 <div class="d-flex align-items-center flex-wrap gap-2 mb-3">
-                                    <?php if (isset($prod['DiscountPercent']) && $prod['DiscountPercent'] > 0): 
-                                        $salePrice = $prod['Price'] - ($prod['Price'] * $prod['DiscountPercent'] / 100);
+                                    <?php if (isset($prod['PhanTramGiamGia']) && $prod['PhanTramGiamGia'] > 0): 
+                                        $salePrice = $prod['GiaTien'] - ($prod['GiaTien'] * $prod['PhanTramGiamGia'] / 100);
                                     ?>
-                                        <span class="old-price"><?php echo number_format($prod['Price'], 0, ',', '.'); ?>₫</span>
+                                        <span class="old-price"><?php echo number_format($prod['GiaTien'], 0, ',', '.'); ?>₫</span>
                                         <span class="new-price"><?php echo number_format($salePrice, 0, ',', '.'); ?>₫</span>
                                     <?php else: ?>
-                                        <span class="text-secondary-custom font-headline-sm mb-0"><?php echo number_format($prod['Price'], 0, ',', '.'); ?>₫</span>
+                                        <span class="text-secondary-custom font-headline-sm mb-0"><?php echo number_format($prod['GiaTien'], 0, ',', '.'); ?>₫</span>
                                     <?php endif; ?>
                                 </div>
-                                <a href="/GuitarX/index.php?act=chitiet&id=<?php echo $prod['Product_ID']; ?>" class="btn btn-add-cart-custom w-100 text-center text-decoration-none d-block pt-2">XEM CHI TIẾT</a>
+                                <a href="/GuitarX/index.php?act=chitiet&id=<?php echo $prod['Ma_SanPham']; ?>" class="btn btn-add-cart-custom w-100 text-center text-decoration-none d-block pt-2">XEM CHI TIẾT</a>
                             </div>
                         </div>
                     </div>

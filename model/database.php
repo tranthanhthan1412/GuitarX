@@ -40,159 +40,159 @@ class Database {
     private function initializeAllTables() {
         $queries = [
             // 1. Bảng phân hạng khách hàng
-            "CREATE TABLE IF NOT EXISTS `CUSTOMER_RANK` (
-                `Rank_ID` INT AUTO_INCREMENT PRIMARY KEY,
-                `RankName` VARCHAR(100) NOT NULL,
-                `Min_Spending` DECIMAL(15, 2) DEFAULT 0.00,
-                `Discount_Percent` INT DEFAULT 0,
-                CONSTRAINT `CH_Rank_MinSpending` CHECK (`Min_Spending` >= 0),
-                CONSTRAINT `CH_Rank_Discount` CHECK (`Discount_Percent` BETWEEN 0 AND 100)
+            "CREATE TABLE IF NOT EXISTS `XepHang` (
+                `Ma_XepHang` INT AUTO_INCREMENT PRIMARY KEY,
+                `TenXepHang` VARCHAR(100) NOT NULL,
+                `ChiTieuToiThieu` DECIMAL(15, 2) DEFAULT 0.00,
+                `PhanTramGiamGia` INT DEFAULT 0,
+                CONSTRAINT `CH_Rank_MinSpending` CHECK (`ChiTieuToiThieu` >= 0),
+                CONSTRAINT `CH_Rank_Discount` CHECK (`PhanTramGiamGia` BETWEEN 0 AND 100)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
             // 2. Bảng người dùng
-            "CREATE TABLE IF NOT EXISTS `USER` (
-                `User_ID` INT AUTO_INCREMENT PRIMARY KEY,
-                `UserName` VARCHAR(150) NOT NULL,
-                `PassWord` VARCHAR(255) NOT NULL,
-                `PhoneNumber` VARCHAR(15) DEFAULT NULL,
-                `Role` VARCHAR(50) DEFAULT 'customer',
-                `Create_At` DATETIME DEFAULT CURRENT_TIMESTAMP,
-                `Rank_ID` INT NULL,
-                CONSTRAINT `UQ_User_UserName` UNIQUE (`UserName`),
-                FOREIGN KEY (`Rank_ID`) REFERENCES `CUSTOMER_RANK`(`Rank_ID`) ON DELETE SET NULL
+            "CREATE TABLE IF NOT EXISTS `NguoiDung` (
+                `Ma_NguoiDung` INT AUTO_INCREMENT PRIMARY KEY,
+                `TenNguoiDung` VARCHAR(150) NOT NULL,
+                `MatKhau` VARCHAR(255) NOT NULL,
+                `SDT` VARCHAR(15) DEFAULT NULL,
+                `VaiTro` VARCHAR(50) DEFAULT 'customer',
+                `NgayKhoiTao` DATETIME DEFAULT CURRENT_TIMESTAMP,
+                `Ma_XepHang` INT NULL,
+                CONSTRAINT `UQ_User_UserName` UNIQUE (`TenNguoiDung`),
+                FOREIGN KEY (`Ma_XepHang`) REFERENCES `XepHang`(`Ma_XepHang`) ON DELETE SET NULL
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
             // 3. Bảng danh mục sản phẩm
-            "CREATE TABLE IF NOT EXISTS `CATEGORIES` (
-                `Category_ID` INT AUTO_INCREMENT PRIMARY KEY,
-                `CategoryName` VARCHAR(255) NOT NULL
+            "CREATE TABLE IF NOT EXISTS `DanhMuc` (
+                `Ma_DanhMuc` INT AUTO_INCREMENT PRIMARY KEY,
+                `TenDanhMuc` VARCHAR(255) NOT NULL
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
             // 4. Bảng sản phẩm
-            "CREATE TABLE IF NOT EXISTS `PRODUCTS` (
-                `Product_ID` INT AUTO_INCREMENT PRIMARY KEY,
-                `ProductName` VARCHAR(255) NOT NULL,
-                `Image` VARCHAR(255) NOT NULL,
-                `Description` TEXT DEFAULT NULL,
-                `Price` DECIMAL(15, 2) NOT NULL,
-                `Count` INT DEFAULT 0,
-                `Brand` VARCHAR(100) DEFAULT NULL,
-                `DateImport` DATE DEFAULT NULL,
-                `Category_ID` INT NULL,
-                `DiscountPercent` INT DEFAULT 0,
-                CONSTRAINT `CH_Product_Price` CHECK (`Price` >= 0),
-                CONSTRAINT `CH_Product_Count` CHECK (`Count` >= 0),
-                CONSTRAINT `CH_Product_Discount` CHECK (`DiscountPercent` BETWEEN 0 AND 100),
-                FOREIGN KEY (`Category_ID`) REFERENCES `CATEGORIES`(`Category_ID`) ON DELETE SET NULL
+            "CREATE TABLE IF NOT EXISTS `SanPham` (
+                `Ma_SanPham` INT AUTO_INCREMENT PRIMARY KEY,
+                `TenSanPham` VARCHAR(255) NOT NULL,
+                `Anh` VARCHAR(255) NOT NULL,
+                `MoTa` TEXT DEFAULT NULL,
+                `GiaTien` DECIMAL(15, 2) NOT NULL,
+                `SoLuong` INT DEFAULT 0,
+                `ThuongHieu` VARCHAR(100) DEFAULT NULL,
+                `NgayNhapHang` DATE DEFAULT NULL,
+                `Ma_DanhMuc` INT NULL,
+                `PhanTramGiamGia` INT DEFAULT 0,
+                CONSTRAINT `CH_Product_Price` CHECK (`GiaTien` >= 0),
+                CONSTRAINT `CH_Product_Count` CHECK (`SoLuong` >= 0),
+                CONSTRAINT `CH_Product_Discount` CHECK (`PhanTramGiamGia` BETWEEN 0 AND 100),
+                FOREIGN KEY (`Ma_DanhMuc`) REFERENCES `DanhMuc`(`Ma_DanhMuc`) ON DELETE SET NULL
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
             // 5. Bảng đánh giá sản phẩm
-            "CREATE TABLE IF NOT EXISTS `REVIEW` (
-                `Review_ID` INT AUTO_INCREMENT PRIMARY KEY,
-                `Rating` INT NOT NULL,
-                `Comment` TEXT DEFAULT NULL,
-                `User_ID` INT NOT NULL,
-                `Product_ID` INT NOT NULL,
-                CONSTRAINT `CH_Review_Rating` CHECK (`Rating` BETWEEN 1 AND 5),
-                FOREIGN KEY (`User_ID`) REFERENCES `USER`(`User_ID`) ON DELETE CASCADE,
-                FOREIGN KEY (`Product_ID`) REFERENCES `PRODUCTS`(`Product_ID`) ON DELETE CASCADE
+            "CREATE TABLE IF NOT EXISTS `DanhGia` (
+                `Ma_DanhGia` INT AUTO_INCREMENT PRIMARY KEY,
+                `DiemDanhGia` INT NOT NULL,
+                `BinhLuan` TEXT DEFAULT NULL,
+                `Ma_NguoiDung` INT NOT NULL,
+                `Ma_SanPham` INT NOT NULL,
+                CONSTRAINT `CH_Review_Rating` CHECK (`DiemDanhGia` BETWEEN 1 AND 5),
+                FOREIGN KEY (`Ma_NguoiDung`) REFERENCES `NguoiDung`(`Ma_NguoiDung`) ON DELETE CASCADE,
+                FOREIGN KEY (`Ma_SanPham`) REFERENCES `SanPham`(`Ma_SanPham`) ON DELETE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
             // 6. Bảng giỏ hàng
-            "CREATE TABLE IF NOT EXISTS `CART` (
-                `Cart_ID` INT AUTO_INCREMENT PRIMARY KEY,
-                `TotalCartProducts` INT DEFAULT 0,
-                CONSTRAINT `CH_Cart_Total` CHECK (`TotalCartProducts` >= 0)
+            "CREATE TABLE IF NOT EXISTS `GioHang` (
+                `Ma_GioHang` INT AUTO_INCREMENT PRIMARY KEY,
+                `TongSoSanPham` INT DEFAULT 0,
+                CONSTRAINT `CH_Cart_Total` CHECK (`TongSoSanPham` >= 0)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
             // 7. Bảng chi tiết giỏ hàng
-            "CREATE TABLE IF NOT EXISTS `CART_DETAIL` (
-                `Product_ID` INT NOT NULL,
-                `Cart_ID` INT NOT NULL,
-                `Price` DECIMAL(15, 2) NOT NULL,
-                `Quantity` INT NOT NULL DEFAULT 1,
-                PRIMARY KEY (`Product_ID`, `Cart_ID`),
-                CONSTRAINT `CH_CartDetail_Price` CHECK (`Price` >= 0),
-                CONSTRAINT `CH_CartDetail_Qty` CHECK (`Quantity` > 0),
-                FOREIGN KEY (`Product_ID`) REFERENCES `PRODUCTS`(`Product_ID`) ON DELETE CASCADE,
-                FOREIGN KEY (`Cart_ID`) REFERENCES `CART`(`Cart_ID`) ON DELETE CASCADE
+            "CREATE TABLE IF NOT EXISTS `ChiTietGioHang` (
+                `Ma_SanPham` INT NOT NULL,
+                `Ma_GioHang` INT NOT NULL,
+                `GiaTien` DECIMAL(15, 2) NOT NULL,
+                `SoLuong` INT NOT NULL DEFAULT 1,
+                PRIMARY KEY (`Ma_SanPham`, `Ma_GioHang`),
+                CONSTRAINT `CH_CartDetail_Price` CHECK (`GiaTien` >= 0),
+                CONSTRAINT `CH_CartDetail_Qty` CHECK (`SoLuong` > 0),
+                FOREIGN KEY (`Ma_SanPham`) REFERENCES `SanPham`(`Ma_SanPham`) ON DELETE CASCADE,
+                FOREIGN KEY (`Ma_GioHang`) REFERENCES `GioHang`(`Ma_GioHang`) ON DELETE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
             // 8. Bảng mã giảm giá
-            "CREATE TABLE IF NOT EXISTS `VOUCHERS` (
-                `Vouchers_ID` INT AUTO_INCREMENT PRIMARY KEY,
-                `Code` VARCHAR(50) NOT NULL,
-                `discount_value` DECIMAL(15, 2) NOT NULL,
-                `quantity` INT NOT NULL DEFAULT 0,
-                `expiry_date` DATE DEFAULT NULL,
-                CONSTRAINT `UQ_Voucher_Code` UNIQUE (`Code`),
-                CONSTRAINT `CH_Voucher_Value` CHECK (`discount_value` >= 0),
-                CONSTRAINT `CH_Voucher_Qty` CHECK (`quantity` >= 0)
+            "CREATE TABLE IF NOT EXISTS `MaGiamGia` (
+                `Ma_MaGiamGia` INT AUTO_INCREMENT PRIMARY KEY,
+                `Ma` VARCHAR(50) NOT NULL,
+                `GiaTriGiam` DECIMAL(15, 2) NOT NULL,
+                `SoLuong` INT NOT NULL DEFAULT 0,
+                `NgayHetHan` DATE DEFAULT NULL,
+                CONSTRAINT `UQ_Voucher_Code` UNIQUE (`Ma`),
+                CONSTRAINT `CH_Voucher_Value` CHECK (`GiaTriGiam` >= 0),
+                CONSTRAINT `CH_Voucher_Qty` CHECK (`SoLuong` >= 0)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
             // 9. Bảng phương thức thanh toán
-            "CREATE TABLE IF NOT EXISTS `PAYMENT_METHOD` (
-                `PayMent_ID` INT AUTO_INCREMENT PRIMARY KEY,
-                `MethodName` VARCHAR(100) NOT NULL
+            "CREATE TABLE IF NOT EXISTS `PhuongThucThanhToan` (
+                `Ma_PhuongThuc` INT AUTO_INCREMENT PRIMARY KEY,
+                `TenPhuongThuc` VARCHAR(100) NOT NULL
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
             // 10. Bảng đơn hàng
-            "CREATE TABLE IF NOT EXISTS `ORDERS` (
-                `Order_ID` INT AUTO_INCREMENT PRIMARY KEY,
-                `Order_Date` DATETIME DEFAULT CURRENT_TIMESTAMP,
-                `Shipping_Date` DATETIME DEFAULT NULL,
-                `Status` VARCHAR(100) DEFAULT 'Pending',
-                `User_ID` INT NOT NULL,
-                `PayMent_ID` INT NULL,
-                `Vouchers_ID` INT NULL,
-                CONSTRAINT `CH_Order_ShippingDate` CHECK (`Shipping_Date` IS NULL OR `Shipping_Date` >= `Order_Date`),
-                FOREIGN KEY (`User_ID`) REFERENCES `USER`(`User_ID`) ON DELETE CASCADE,
-                FOREIGN KEY (`PayMent_ID`) REFERENCES `PAYMENT_METHOD`(`PayMent_ID`) ON DELETE SET NULL,
-                FOREIGN KEY (`Vouchers_ID`) REFERENCES `VOUCHERS`(`Vouchers_ID`) ON DELETE SET NULL
+            "CREATE TABLE IF NOT EXISTS `DonHang` (
+                `Ma_DonHang` INT AUTO_INCREMENT PRIMARY KEY,
+                `NgayDatHang` DATETIME DEFAULT CURRENT_TIMESTAMP,
+                `NgayGiaoHang` DATETIME DEFAULT NULL,
+                `TrangThai` VARCHAR(100) DEFAULT 'Pending',
+                `Ma_NguoiDung` INT NOT NULL,
+                `Ma_PhuongThuc` INT NULL,
+                `Ma_MaGiamGia` INT NULL,
+                CONSTRAINT `CH_Order_ShippingDate` CHECK (`NgayGiaoHang` IS NULL OR `NgayGiaoHang` >= `NgayDatHang`),
+                FOREIGN KEY (`Ma_NguoiDung`) REFERENCES `NguoiDung`(`Ma_NguoiDung`) ON DELETE CASCADE,
+                FOREIGN KEY (`Ma_PhuongThuc`) REFERENCES `PhuongThucThanhToan`(`Ma_PhuongThuc`) ON DELETE SET NULL,
+                FOREIGN KEY (`Ma_MaGiamGia`) REFERENCES `MaGiamGia`(`Ma_MaGiamGia`) ON DELETE SET NULL
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
             // 11. Bảng chi tiết đơn hàng
-            "CREATE TABLE IF NOT EXISTS `ORDER_DETAIL` (
-                `Order_ID` INT NOT NULL,
-                `Product_ID` INT NOT NULL,
-                `Total` DECIMAL(15, 2) NOT NULL,
-                `Quantity` INT NOT NULL DEFAULT 1,
-                PRIMARY KEY (`Order_ID`, `Product_ID`),
-                CONSTRAINT `CH_OrderDetail_Total` CHECK (`Total` >= 0),
-                CONSTRAINT `CH_OrderDetail_Qty` CHECK (`Quantity` > 0),
-                FOREIGN KEY (`Order_ID`) REFERENCES `ORDERS`(`Order_ID`) ON DELETE CASCADE,
-                FOREIGN KEY (`Product_ID`) REFERENCES `PRODUCTS`(`Product_ID`) ON DELETE CASCADE
+            "CREATE TABLE IF NOT EXISTS `ChiTietDonHang` (
+                `Ma_DonHang` INT NOT NULL,
+                `Ma_SanPham` INT NOT NULL,
+                `TongTien` DECIMAL(15, 2) NOT NULL,
+                `SoLuong` INT NOT NULL DEFAULT 1,
+                PRIMARY KEY (`Ma_DonHang`, `Ma_SanPham`),
+                CONSTRAINT `CH_OrderDetail_Total` CHECK (`TongTien` >= 0),
+                CONSTRAINT `CH_OrderDetail_Qty` CHECK (`SoLuong` > 0),
+                FOREIGN KEY (`Ma_DonHang`) REFERENCES `DonHang`(`Ma_DonHang`) ON DELETE CASCADE,
+                FOREIGN KEY (`Ma_SanPham`) REFERENCES `SanPham`(`Ma_SanPham`) ON DELETE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
             // 12. Bảng địa chỉ giao hàng
-            "CREATE TABLE IF NOT EXISTS `SHIPPING_ADDRESS` (
-                `ShippingAddress_ID` INT AUTO_INCREMENT PRIMARY KEY,
-                `Adress` VARCHAR(255) NOT NULL,
-                `City` VARCHAR(100) NOT NULL,
-                `User_ID` INT NOT NULL,
-                FOREIGN KEY (`User_ID`) REFERENCES `USER`(`User_ID`) ON DELETE CASCADE
+            "CREATE TABLE IF NOT EXISTS `DiaChiGiaoHang` (
+                `Ma_DiaChiGiao` INT AUTO_INCREMENT PRIMARY KEY,
+                `DiaChi` VARCHAR(255) NOT NULL,
+                `ThanhPho` VARCHAR(100) NOT NULL,
+                `Ma_NguoiDung` INT NOT NULL,
+                FOREIGN KEY (`Ma_NguoiDung`) REFERENCES `NguoiDung`(`Ma_NguoiDung`) ON DELETE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
             // 13. Bảng phiếu giao hàng
-            "CREATE TABLE IF NOT EXISTS `DELIVERY_NOTE` (
-                `Delivery_ID` INT AUTO_INCREMENT PRIMARY KEY,
-                `DeliveryDate` DATETIME DEFAULT CURRENT_TIMESTAMP,
-                `Order_ID` INT NOT NULL,
-                `Product_ID` INT NOT NULL,
-                `ShippingAddress_ID` INT NOT NULL,
-                FOREIGN KEY (`Order_ID`) REFERENCES `ORDERS`(`Order_ID`) ON DELETE CASCADE,
-                FOREIGN KEY (`Product_ID`) REFERENCES `PRODUCTS`(`Product_ID`) ON DELETE CASCADE,
-                FOREIGN KEY (`ShippingAddress_ID`) REFERENCES `SHIPPING_ADDRESS`(`ShippingAddress_ID`) ON DELETE CASCADE
+            "CREATE TABLE IF NOT EXISTS `GhiChuGiaoHang` (
+                `Ma_GiaoHang` INT AUTO_INCREMENT PRIMARY KEY,
+                `NgayGiaoHang` DATETIME DEFAULT CURRENT_TIMESTAMP,
+                `Ma_DonHang` INT NOT NULL,
+                `Ma_SanPham` INT NOT NULL,
+                `Ma_DiaChiGiao` INT NOT NULL,
+                FOREIGN KEY (`Ma_DonHang`) REFERENCES `DonHang`(`Ma_DonHang`) ON DELETE CASCADE,
+                FOREIGN KEY (`Ma_SanPham`) REFERENCES `SanPham`(`Ma_SanPham`) ON DELETE CASCADE,
+                FOREIGN KEY (`Ma_DiaChiGiao`) REFERENCES `DiaChiGiaoHang`(`Ma_DiaChiGiao`) ON DELETE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
             // 14. Bảng sản phẩm yêu thích (Wishlist)
-            "CREATE TABLE IF NOT EXISTS `FAVORITES` (
-                `User_ID` INT NOT NULL,
-                `Product_ID` INT NOT NULL,
-                `Created_At` DATETIME DEFAULT CURRENT_TIMESTAMP,
-                PRIMARY KEY (`User_ID`, `Product_ID`),
-                FOREIGN KEY (`User_ID`) REFERENCES `USER`(`User_ID`) ON DELETE CASCADE,
-                FOREIGN KEY (`Product_ID`) REFERENCES `PRODUCTS`(`Product_ID`) ON DELETE CASCADE
+            "CREATE TABLE IF NOT EXISTS `YeuThich` (
+                `Ma_NguoiDung` INT NOT NULL,
+                `Ma_SanPham` INT NOT NULL,
+                `NgayTao` DATETIME DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (`Ma_NguoiDung`, `Ma_SanPham`),
+                FOREIGN KEY (`Ma_NguoiDung`) REFERENCES `NguoiDung`(`Ma_NguoiDung`) ON DELETE CASCADE,
+                FOREIGN KEY (`Ma_SanPham`) REFERENCES `SanPham`(`Ma_SanPham`) ON DELETE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
         ];
 
@@ -201,16 +201,16 @@ class Database {
             $this->conn->exec($query);
         }
 
-        // Tự động bổ sung cột DiscountPercent nếu bảng PRODUCTS đã được tạo từ trước
+        // Tự động bổ sung cột PhanTramGiamGia nếu bảng SanPham đã được tạo từ trước
         try {
-            $this->conn->exec("ALTER TABLE `PRODUCTS` ADD COLUMN `DiscountPercent` INT DEFAULT 0 AFTER `Category_ID`");
+            $this->conn->exec("ALTER TABLE `SanPham` ADD COLUMN `PhanTramGiamGia` INT DEFAULT 0 AFTER `Ma_DanhMuc`");
         } catch (PDOException $e) {
-            // Bỏ qua lỗi nếu cột DiscountPercent đã tồn tại
+            // Bỏ qua lỗi nếu cột PhanTramGiamGia đã tồn tại
         }
 
-        // Tự động bổ sung cột Email nếu bảng USER đã được tạo từ trước nhưng chưa có cột này
+        // Tự động bổ sung cột Email nếu bảng NguoiDung đã được tạo từ trước nhưng chưa có cột này
         try {
-            $this->conn->exec("ALTER TABLE `USER` ADD COLUMN `Email` VARCHAR(255) DEFAULT NULL AFTER `PassWord`");
+            $this->conn->exec("ALTER TABLE `NguoiDung` ADD COLUMN `Email` VARCHAR(255) DEFAULT NULL AFTER `MatKhau`");
         } catch (PDOException $e) {
             // Bỏ qua lỗi nếu cột Email đã tồn tại
         }
@@ -219,32 +219,32 @@ class Database {
     // Hàm tự động nạp dữ liệu mẫu để Giai đoạn 1 hiển thị lên được giao diện luôn
     private function seedDataDataForPhase1() {
         
-        // 0. Kiểm tra bảng USER rỗng thì chèn tài khoản admin mặc định
-        $check_user = $this->conn->query("SELECT COUNT(*) FROM `USER`")->fetchColumn();
+        // 0. Kiểm tra bảng NguoiDung rỗng thì chèn tài khoản admin mặc định
+        $check_user = $this->conn->query("SELECT COUNT(*) FROM `NguoiDung`")->fetchColumn();
         if ($check_user == 0) {
             // Mật khẩu là 123456 (để thô cho tiện lúc demo, sau này có thể dùng mã hóa password_hash)
             $this->conn->exec("
-                INSERT INTO `USER` (`UserName`, `PassWord`, `Role`) VALUES
+                INSERT INTO `NguoiDung` (`TenNguoiDung`, `MatKhau`, `VaiTro`) VALUES
                 ('admin', '123456', 'admin'),
                 ('khachhang', '123456', 'customer');
             ");
         }
 
-        // 0.5. Kiểm tra bảng PAYMENT_METHOD rỗng thì chèn phương thức thanh toán
-        $check_pm = $this->conn->query("SELECT COUNT(*) FROM `PAYMENT_METHOD`")->fetchColumn();
+        // 0.5. Kiểm tra bảng PhuongThucThanhToan rỗng thì chèn phương thức thanh toán
+        $check_pm = $this->conn->query("SELECT COUNT(*) FROM `PhuongThucThanhToan`")->fetchColumn();
         if ($check_pm == 0) {
             $this->conn->exec("
-                INSERT INTO `PAYMENT_METHOD` (`PayMent_ID`, `MethodName`) VALUES
+                INSERT INTO `PhuongThucThanhToan` (`Ma_PhuongThuc`, `TenPhuongThuc`) VALUES
                 (1, 'Thanh toán khi nhận hàng (COD)'),
                 (2, 'Chuyển khoản qua Ngân hàng / Momo');
             ");
         }
 
-        // 1. Kiểm tra bảng CATEGORIES rỗng thì chèn danh mục
-        $check_cat = $this->conn->query("SELECT COUNT(*) FROM `CATEGORIES`")->fetchColumn();
+        // 1. Kiểm tra bảng DanhMuc rỗng thì chèn danh mục
+        $check_cat = $this->conn->query("SELECT COUNT(*) FROM `DanhMuc`")->fetchColumn();
         if ($check_cat == 0) {
             $this->conn->exec("
-                INSERT INTO `CATEGORIES` (`Category_ID`, `CategoryName`) VALUES
+                INSERT INTO `DanhMuc` (`Ma_DanhMuc`, `TenDanhMuc`) VALUES
                 (1, 'Acoustic Guitars'),
                 (2, 'Electric Guitars'),
                 (3, 'Classic Guitars'),
@@ -254,11 +254,11 @@ class Database {
             ");
         }
 
-        // 2. Kiểm tra bảng PRODUCTS rỗng thì chèn các sản phẩm tương ứng với ảnh thật bạn đang có
-        $check_prod = $this->conn->query("SELECT COUNT(*) FROM `PRODUCTS`")->fetchColumn();
+        // 2. Kiểm tra bảng SanPham rỗng thì chèn các sản phẩm tương ứng với ảnh thật bạn đang có
+        $check_prod = $this->conn->query("SELECT COUNT(*) FROM `SanPham`")->fetchColumn();
         if ($check_prod == 0) {
             $this->conn->exec("
-                INSERT INTO `PRODUCTS` (`ProductName`, `Image`, `Description`, `Price`, `Count`, `Brand`, `DateImport`, `Category_ID`, `DiscountPercent`) VALUES
+                INSERT INTO `SanPham` (`TenSanPham`, `Anh`, `MoTa`, `GiaTien`, `SoLuong`, `ThuongHieu`, `NgayNhapHang`, `Ma_DanhMuc`, `PhanTramGiamGia`) VALUES
                 ('Đàn Guitar Acoustic Yamaha FS800', 'Yamaha.jpg', 'Dòng âm thanh chuẩn mực, thích hợp cho mọi đối tượng học bấm ngón.', 3500000.00, 12, 'Yamaha', '2026-04-10', 1, 15),
                 ('Đàn Guitar Electric Ibanez GRG170DX', 'Ibanez.jpg', 'Đàn điện lý tưởng cho rock/metal với độ nhạy cao và cần đàn mượt.', 5800000.00, 8, 'Ibanez', '2026-04-12', 2, 0),
                 ('Đàn Guitar Acoustic Washburn WD10S', 'Washburn.jpg', 'Mặt trước bằng gỗ thông nguyên tấm mang lại âm thanh cực ấm.', 4200000.00, 15, 'Washburn', '2026-04-15', 1, 10),

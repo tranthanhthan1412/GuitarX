@@ -31,27 +31,27 @@
                                             <td class="p-4">
                                                 <div class="d-flex align-items-center gap-3">
                                                     <div class="bg-surface-container-low rounded-2 d-flex align-items-center justify-content-center p-2" style="width: 80px; height: 80px;">
-                                                        <img src="/GuitarX/view/image/<?php echo htmlspecialchars($item['Image']); ?>" alt="Product" class="img-fluid" style="max-height: 100%; object-fit: contain;">
+                                                        <img src="/GuitarX/view/image/<?php echo htmlspecialchars($item['Anh']); ?>" alt="Product" class="img-fluid" style="max-height: 100%; object-fit: contain;">
                                                     </div>
                                                     <div>
                                                         <h5 class="font-body-md fw-bold mb-1">
-                                                            <a href="/GuitarX/index.php?act=chitiet&id=<?php echo $item['Product_ID']; ?>" class="text-dark text-decoration-none hover-text-danger">
-                                                                <?php echo htmlspecialchars($item['ProductName']); ?>
+                                                            <a href="/GuitarX/index.php?act=chitiet&id=<?php echo $item['Ma_SanPham']; ?>" class="text-dark text-decoration-none hover-text-danger">
+                                                                <?php echo htmlspecialchars($item['TenSanPham']); ?>
                                                             </a>
                                                         </h5>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td class="text-center font-body-md fw-semibold">
-                                                <?php echo number_format($item['Price'], 0, ',', '.'); ?>₫
+                                                <?php echo number_format($item['GiaTien'], 0, ',', '.'); ?>₫
                                             </td>
                                             <td class="text-center">
                                                 <form action="/GuitarX/index.php?act=capnhatgiohang" method="POST" class="d-inline-flex align-items-center">
-                                                    <input type="hidden" name="product_id" value="<?php echo $item['Product_ID']; ?>">
+                                                    <input type="hidden" name="product_id" value="<?php echo $item['Ma_SanPham']; ?>">
                                                     <div class="input-group input-group-sm" style="width: 100px;">
-                                                        <button class="btn btn-outline-secondary" type="submit" name="quantity" value="<?php echo $item['Quantity'] - 1; ?>">-</button>
-                                                        <input type="number" class="form-control text-center px-1" value="<?php echo $item['Quantity']; ?>" readonly>
-                                                        <button class="btn btn-outline-secondary" type="submit" name="quantity" value="<?php echo $item['Quantity'] + 1; ?>" <?php echo ($item['Quantity'] >= $item['MaxCount']) ? 'disabled' : ''; ?>>+</button>
+                                                        <button class="btn btn-outline-secondary" type="submit" name="quantity" value="<?php echo $item['SoLuong'] - 1; ?>">-</button>
+                                                        <input type="number" class="form-control text-center px-1" value="<?php echo $item['SoLuong']; ?>" readonly>
+                                                        <button class="btn btn-outline-secondary" type="submit" name="quantity" value="<?php echo $item['SoLuong'] + 1; ?>" <?php echo ($item['SoLuong'] >= $item['MaxCount']) ? 'disabled' : ''; ?>>+</button>
                                                     </div>
                                                 </form>
                                             </td>
@@ -59,7 +59,7 @@
                                                 <?php echo number_format($item['Subtotal'], 0, ',', '.'); ?>₫
                                             </td>
                                             <td class="text-center">
-                                                <a href="/GuitarX/index.php?act=xoagiohang&id=<?php echo $item['Product_ID']; ?>" class="btn btn-sm btn-light text-danger rounded-circle p-2" title="Xóa">
+                                                <a href="/GuitarX/index.php?act=xoagiohang&id=<?php echo $item['Ma_SanPham']; ?>" class="btn btn-sm btn-light text-danger rounded-circle p-2" title="Xóa">
                                                     <span class="material-symbols-outlined fs-6 d-block">delete</span>
                                                 </a>
                                             </td>
@@ -79,7 +79,7 @@
                         <?php 
                         $discount = 0;
                         if (isset($_SESSION['applied_voucher'])) {
-                            $discount = $_SESSION['applied_voucher']['discount_value'];
+                            $discount = $_SESSION['applied_voucher']['GiaTriGiam'];
                         }
                         $finalTotal = max(0, $totalAmount - $discount);
                         ?>

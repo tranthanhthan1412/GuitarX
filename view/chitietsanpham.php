@@ -1,12 +1,12 @@
 <?php
 // 1. Lấy tên danh mục cho breadcrumb
-$catName = isset($product['Category_ID']) ? $productModel->getCategoryName($product['Category_ID']) : 'Nhạc cụ';
+$catName = isset($product['Ma_DanhMuc']) ? $productModel->getCategoryName($product['Ma_DanhMuc']) : 'Nhạc cụ';
 
 // 2. TỰ ĐỘNG LẤY ALBUM ẢNH PHỤ NẾU CONTROLLER CHƯA TRUYỀN BIẾN $album
-if (!isset($album) && isset($product['Product_ID'])) {
+if (!isset($album) && isset($product['Ma_SanPham'])) {
     // Kiểm tra nếu hàm getProductImages đã tồn tại trong model của mày
     if (method_exists($productModel, 'getProductImages')) {
-        $album = $productModel->getProductImages($product['Product_ID']);
+        $album = $productModel->getProductImages($product['Ma_SanPham']);
     } else {
         $album = []; // Tránh lỗi undefined nếu chưa viết hàm trong model
     }
@@ -19,9 +19,9 @@ if (!isset($album) && isset($product['Product_ID'])) {
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/GuitarX/index.php" class="text-decoration-none text-muted">Trang
                         chủ</a></li>
-                <?php if (isset($product['Category_ID'])): ?>
+                <?php if (isset($product['Ma_DanhMuc'])): ?>
                 <li class="breadcrumb-item">
-                    <a href="/GuitarX/index.php?act=sanpham&id=<?php echo $product['Category_ID']; ?>"
+                    <a href="/GuitarX/index.php?act=sanpham&id=<?php echo $product['Ma_DanhMuc']; ?>"
                         class="text-decoration-none text-muted">
                         <?php echo htmlspecialchars($catName); ?>
                     </a>
@@ -29,7 +29,7 @@ if (!isset($album) && isset($product['Product_ID'])) {
                 <?php endif; ?>
                 <li class="breadcrumb-item active text-danger-custom text-truncate" style="max-width: 300px;"
                     aria-current="page">
-                    <?php echo htmlspecialchars($product['ProductName']); ?>
+                    <?php echo htmlspecialchars($product['TenSanPham']); ?>
                 </li>
             </ol>
         </nav>
@@ -39,14 +39,14 @@ if (!isset($album) && isset($product['Product_ID'])) {
                 <div class="row g-2 m-0 w-100 position-relative">
 
                     <?php 
-                    $isFavMain = isset($userFavorites) && in_array($product['Product_ID'], $userFavorites); 
+                    $isFavMain = isset($userFavorites) && in_array($product['Ma_SanPham'], $userFavorites); 
                     $fillValueMain = $isFavMain ? 1 : 0;
                     $colorClassMain = $isFavMain ? 'text-danger' : '';
                     ?>
                     <button
                         class="btn btn-light rounded-circle shadow-sm position-absolute p-2 z-3 d-flex align-items-center justify-content-center"
                         style="top: 15px; right: 15px; width: 44px; height: 44px;"
-                        onclick="toggleFavorite(<?php echo $product['Product_ID']; ?>, this, event)" title="Yêu thích">
+                        onclick="toggleFavorite(<?php echo $product['Ma_SanPham']; ?>, this, event)" title="Yêu thích">
                         <span class="material-symbols-outlined <?php echo $colorClassMain; ?>"
                             style="font-variation-settings: 'FILL' <?php echo $fillValueMain; ?>, 'wght' 400, 'GRAD' 0, 'opsz' 24; font-size: 24px;">favorite</span>
                     </button>
@@ -55,7 +55,7 @@ if (!isset($album) && isset($product['Product_ID'])) {
 
                         <div class="thumb-gallery-wrap border rounded text-center p-1 bg-white position-relative active-thumb"
                             onclick="changeProductImage(this)">
-                            <img src="/GuitarX/view/image/<?php echo htmlspecialchars($product['Image']); ?>"
+                            <img src="/GuitarX/view/image/<?php echo htmlspecialchars($product['Anh']); ?>"
                                 class="img-fluid thumb-gallery-img" style="aspect-ratio: 1/1; object-fit: contain;">
                         </div>
 
@@ -91,8 +91,8 @@ if (!isset($album) && isset($product['Product_ID'])) {
                             <div
                                 class="product-detail-img-wrap w-100 h-100 overflow-hidden rounded-2 d-flex align-items-center justify-content-center">
                                 <img id="primaryProductImg"
-                                    src="/GuitarX/view/image/<?php echo htmlspecialchars($product['Image']); ?>"
-                                    alt="<?php echo htmlspecialchars($product['ProductName']); ?>"
+                                    src="/GuitarX/view/image/<?php echo htmlspecialchars($product['Anh']); ?>"
+                                    alt="<?php echo htmlspecialchars($product['TenSanPham']); ?>"
                                     class="img-fluid h-100 object-fit-contain transition-all hover-zoom-detail" />
                             </div>
                         </div>
@@ -105,31 +105,31 @@ if (!isset($album) && isset($product['Product_ID'])) {
                 <div>
                     <span
                         class="badge bg-primary-custom text-white px-3 py-2 font-label-sm rounded-1 mb-2 text-uppercase tracking-wider">
-                        <?php echo htmlspecialchars($product['Brand'] ?? 'GuitarX'); ?>
+                        <?php echo htmlspecialchars($product['ThuongHieu'] ?? 'GuitarX'); ?>
                     </span>
 
                     <h1 class="font-display-lg text-dark mb-3 fw-bold" style="font-size: 2.2rem; line-height: 1.2;">
-                        <?php echo htmlspecialchars($product['ProductName']); ?>
+                        <?php echo htmlspecialchars($product['TenSanPham']); ?>
                     </h1>
 
                     <div class="d-flex align-items-center gap-2 mb-4">
                         <span class="material-symbols-outlined text-success">check_circle</span>
                         <span class="text-muted font-body-md">Tình trạng:
                             <strong class="text-dark">
-                                <?php echo ($product['Count'] > 0) ? 'Còn hàng (' . $product['Count'] . ' sản phẩm)' : 'Hết hàng'; ?>
+                                <?php echo ($product['SoLuong'] > 0) ? 'Còn hàng (' . $product['SoLuong'] . ' sản phẩm)' : 'Hết hàng'; ?>
                             </strong>
                         </span>
                     </div>
 
                     <div class="bg-white p-4 rounded-3 shadow-sm mb-4 border-start border-danger-custom border-4">
-                        <?php if (isset($product['DiscountPercent']) && $product['DiscountPercent'] > 0): 
-                            $salePrice = $product['Price'] - ($product['Price'] * $product['DiscountPercent'] / 100);
-                            $savings = $product['Price'] - $salePrice;
+                        <?php if (isset($product['PhanTramGiamGia']) && $product['PhanTramGiamGia'] > 0): 
+                            $salePrice = $product['GiaTien'] - ($product['GiaTien'] * $product['PhanTramGiamGia'] / 100);
+                            $savings = $product['GiaTien'] - $salePrice;
                         ?>
                             <div class="d-flex align-items-center mb-1 gap-2">
                                 <span class="text-muted font-label-md d-block text-uppercase fw-bold">Giá gốc:</span>
-                                <span class="old-price text-muted" style="text-decoration: line-through;"><?php echo number_format($product['Price'], 0, ',', '.'); ?>₫</span>
-                                <span class="badge bg-secondary-custom text-white fw-bold" style="font-size: 0.85rem;">-<?php echo $product['DiscountPercent']; ?>%</span>
+                                <span class="old-price text-muted" style="text-decoration: line-through;"><?php echo number_format($product['GiaTien'], 0, ',', '.'); ?>₫</span>
+                                <span class="badge bg-secondary-custom text-white fw-bold" style="font-size: 0.85rem;">-<?php echo $product['PhanTramGiamGia']; ?>%</span>
                             </div>
                             <span class="text-secondary-custom font-display-lg fs-1 fw-bold">
                                 <?php echo number_format($salePrice, 0, ',', '.'); ?>₫
@@ -141,7 +141,7 @@ if (!isset($album) && isset($product['Product_ID'])) {
                             <span class="text-muted font-label-md d-block text-uppercase fw-bold mb-1">Giá bán lẻ đề
                                 xuất</span>
                             <span class="text-secondary-custom font-display-lg fs-1 fw-bold">
-                                <?php echo number_format($product['Price'], 0, ',', '.'); ?>₫
+                                <?php echo number_format($product['GiaTien'], 0, ',', '.'); ?>₫
                             </span>
                         <?php endif; ?>
                     </div>
@@ -149,14 +149,14 @@ if (!isset($album) && isset($product['Product_ID'])) {
                     <div class="mb-4">
                         <h4 class="font-headline-sm text-dark mb-2 text-uppercase fs-6 fw-bold">Tóm tắt sản phẩm:</h4>
                         <p class="text-muted font-body-md mb-0">
-                            <?php echo nl2br(htmlspecialchars($product['Description'] ?? 'Đang cập nhật thông tin mô tả chi tiết cho sản phẩm này.')); ?>
+                            <?php echo nl2br(htmlspecialchars($product['MoTa'] ?? 'Đang cập nhật thông tin mô tả chi tiết cho sản phẩm này.')); ?>
                         </p>
                     </div>
                 </div>
 
                 <div class="bg-white p-4 rounded-3 shadow-sm mt-3">
                     <form action="/GuitarX/index.php?act=themgiohang" method="POST" class="d-flex flex-column gap-3">
-                        <input type="hidden" name="product_id" value="<?php echo $product['Product_ID']; ?>" />
+                        <input type="hidden" name="product_id" value="<?php echo $product['Ma_SanPham']; ?>" />
 
                         <div class="d-flex align-items-center gap-3">
                             <span class="text-muted font-label-md fw-bold text-nowrap">Số lượng:</span>
@@ -165,7 +165,7 @@ if (!isset($album) && isset($product['Product_ID'])) {
                                     onclick="changeQty(-1)">-</button>
                                 <input type="number" name="quantity" id="quantityInput"
                                     class="form-control text-center py-2 fw-bold" value="1" min="1"
-                                    max="<?php echo $product['Count']; ?>" />
+                                    max="<?php echo $product['SoLuong']; ?>" />
                                 <button class="btn btn-outline-secondary py-2" type="button"
                                     onclick="changeQty(1)">+</button>
                             </div>
@@ -195,7 +195,7 @@ if (!isset($album) && isset($product['Product_ID'])) {
             <h3 class="font-headline-sm text-dark mb-4 pb-2 border-bottom fw-bold text-uppercase">Chi tiết sản phẩm</h3>
             <div class="font-body-md text-muted" style="line-height: 1.8;">
                 <p>Cảm ơn bạn đã quan tâm đến dòng sản phẩm
-                    <strong><?php echo htmlspecialchars($product['ProductName']); ?></strong> được phân phối chính hãng
+                    <strong><?php echo htmlspecialchars($product['TenSanPham']); ?></strong> được phân phối chính hãng
                     bởi <strong>GuitarX</strong>.
                 </p>
                 <p>Tất cả sản phẩm nhạc cụ tại cửa hàng đều được kiểm tra kỹ thuật nghiêm ngặt trước khi bàn giao, đảm
@@ -206,7 +206,7 @@ if (!isset($album) && isset($product['Product_ID'])) {
                     <tbody>
                         <tr>
                             <td class="fw-bold bg-light" style="width: 30%;">Thương hiệu</td>
-                            <td><?php echo htmlspecialchars($product['Brand'] ?? 'Chưa xác định'); ?></td>
+                            <td><?php echo htmlspecialchars($product['ThuongHieu'] ?? 'Chưa xác định'); ?></td>
                         </tr>
                         <tr>
                             <td class="fw-bold bg-light">Dòng nhạc cụ</td>
@@ -214,7 +214,7 @@ if (!isset($album) && isset($product['Product_ID'])) {
                         </tr>
                         <tr>
                             <td class="fw-bold bg-light">Ngày nhập khẩu</td>
-                            <td><?php echo isset($product['DateImport']) ? date('d/m/Y', strtotime($product['DateImport'])) : 'Đang cập nhật'; ?>
+                            <td><?php echo isset($product['NgayNhapHang']) ? date('d/m/Y', strtotime($product['NgayNhapHang'])) : 'Đang cập nhật'; ?>
                             </td>
                         </tr>
                         <tr>
@@ -241,11 +241,11 @@ if (!isset($album) && isset($product['Product_ID'])) {
                         </div>
                         <div class="text-warning mb-2" style="font-size: 1.1rem; letter-spacing: 2px;">
                             <?php for ($i = 1; $i <= 5; $i++): ?>
-                            <?= $i <= $rev['Rating'] ? '★' : '☆' ?>
+                            <?= $i <= $rev['DiemDanhGia'] ? '★' : '☆' ?>
                             <?php endfor; ?>
                         </div>
                         <p class="text-secondary m-0" style="white-space: pre-line; line-height: 1.6;">
-                            <?= htmlspecialchars($rev['Comment']) ?></p>
+                            <?= htmlspecialchars($rev['BinhLuan']) ?></p>
                     </div>
                     <?php endforeach; ?>
                     <?php else: ?>
@@ -256,7 +256,7 @@ if (!isset($album) && isset($product['Product_ID'])) {
 
                 <h3 class="font-headline-sm text-dark mb-3" style="font-size: 1.2rem;">Viết đánh giá của bạn</h3>
                 <?php if (isset($_SESSION['user_id'])): ?>
-                <form action="index.php?act=chitiet&id=<?= $product['Product_ID'] ?>" method="POST">
+                <form action="index.php?act=chitiet&id=<?= $product['Ma_SanPham'] ?>" method="POST">
                     <input type="hidden" name="submit_review" value="1">
 
                     <div class="mb-3">
@@ -303,52 +303,52 @@ if (!isset($album) && isset($product['Product_ID'])) {
                 <div class="col">
                     <div
                         class="product-card h-100 position-relative d-flex flex-column justify-content-between shadow-sm">
-                        <?php if (isset($related['DiscountPercent']) && $related['DiscountPercent'] > 0): ?>
-                            <span class="sale-badge">-<?php echo $related['DiscountPercent']; ?>%</span>
-                        <?php elseif ($related['Product_ID'] % 2 == 0): ?>
+                        <?php if (isset($related['PhanTramGiamGia']) && $related['PhanTramGiamGia'] > 0): ?>
+                            <span class="sale-badge">-<?php echo $related['PhanTramGiamGia']; ?>%</span>
+                        <?php elseif ($related['Ma_SanPham'] % 2 == 0): ?>
                             <span class="position-absolute top-0 end-0 m-3 badge bg-secondary-custom text-white px-2 py-1 font-label-sm rounded-1 z-1">BEST SELLER</span>
                         <?php endif; ?>
                         <?php 
-                                $isFavRelated = isset($userFavorites) && in_array($related['Product_ID'], $userFavorites); 
+                                $isFavRelated = isset($userFavorites) && in_array($related['Ma_SanPham'], $userFavorites); 
                                 $fillValueRelated = $isFavRelated ? 1 : 0;
                                 $colorClassRelated = $isFavRelated ? 'text-danger' : '';
                                 ?>
                         <button
                             class="btn btn-light rounded-circle shadow-sm position-absolute p-2 z-2 d-flex align-items-center justify-content-center"
                             style="top: 10px; left: 10px; width: 36px; height: 36px;"
-                            onclick="toggleFavorite(<?php echo $related['Product_ID']; ?>, this, event)"
+                            onclick="toggleFavorite(<?php echo $related['Ma_SanPham']; ?>, this, event)"
                             title="Yêu thích">
                             <span class="material-symbols-outlined <?php echo $colorClassRelated; ?>"
                                 style="font-variation-settings: 'FILL' <?php echo $fillValueRelated; ?>, 'wght' 400, 'GRAD' 0, 'opsz' 24; font-size: 20px;">favorite</span>
                         </button>
                         <div>
                             <div class="product-img-wrapper bg-surface-container-low rounded mb-3">
-                                <a href="/GuitarX/index.php?act=chitiet&id=<?php echo $related['Product_ID']; ?>">
-                                    <img alt="<?php echo htmlspecialchars($related['ProductName']); ?>"
-                                        src="/GuitarX/view/image/<?php echo htmlspecialchars($related['Image']); ?>" />
+                                <a href="/GuitarX/index.php?act=chitiet&id=<?php echo $related['Ma_SanPham']; ?>">
+                                    <img alt="<?php echo htmlspecialchars($related['TenSanPham']); ?>"
+                                        src="/GuitarX/view/image/<?php echo htmlspecialchars($related['Anh']); ?>" />
                                 </a>
                             </div>
                             <p class="text-muted font-label-sm text-uppercase fw-bold mb-1 tracking-wider">
-                                <?php echo htmlspecialchars($related['Brand']); ?></p>
+                                <?php echo htmlspecialchars($related['ThuongHieu']); ?></p>
                             <h3 class="font-body-md fw-bold text-dark mb-2">
-                                <a href="/GuitarX/index.php?act=chitiet&id=<?php echo $related['Product_ID']; ?>"
+                                <a href="/GuitarX/index.php?act=chitiet&id=<?php echo $related['Ma_SanPham']; ?>"
                                     class="text-decoration-none text-dark link-hover-red">
-                                    <?php echo htmlspecialchars($related['ProductName']); ?>
+                                    <?php echo htmlspecialchars($related['TenSanPham']); ?>
                                 </a>
                             </h3>
                         </div>
                         <div>
                             <div class="d-flex align-items-center flex-wrap gap-2 mb-3">
-                                <?php if (isset($related['DiscountPercent']) && $related['DiscountPercent'] > 0): 
-                                    $relatedSalePrice = $related['Price'] - ($related['Price'] * $related['DiscountPercent'] / 100);
+                                <?php if (isset($related['PhanTramGiamGia']) && $related['PhanTramGiamGia'] > 0): 
+                                    $relatedSalePrice = $related['GiaTien'] - ($related['GiaTien'] * $related['PhanTramGiamGia'] / 100);
                                 ?>
-                                    <span class="old-price"><?php echo number_format($related['Price'], 0, ',', '.'); ?>₫</span>
+                                    <span class="old-price"><?php echo number_format($related['GiaTien'], 0, ',', '.'); ?>₫</span>
                                     <span class="new-price"><?php echo number_format($relatedSalePrice, 0, ',', '.'); ?>₫</span>
                                 <?php else: ?>
-                                    <span class="text-secondary-custom font-headline-sm mb-0"><?php echo number_format($related['Price'], 0, ',', '.'); ?>₫</span>
+                                    <span class="text-secondary-custom font-headline-sm mb-0"><?php echo number_format($related['GiaTien'], 0, ',', '.'); ?>₫</span>
                                 <?php endif; ?>
                             </div>
-                            <a href="/GuitarX/index.php?act=chitiet&id=<?php echo $related['Product_ID']; ?>"
+                            <a href="/GuitarX/index.php?act=chitiet&id=<?php echo $related['Ma_SanPham']; ?>"
                                 class="btn btn-add-cart-custom w-100 text-center text-decoration-none d-block pt-2">XEM
                                 CHI TIẾT</a>
                         </div>

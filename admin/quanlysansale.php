@@ -12,14 +12,14 @@ $productModel = new ProductModel($db);
 $message = '';
 $error = '';
 
-// ---- Xử lý cập nhật DiscountPercent ----
+// ---- Xử lý cập nhật PhanTramGiamGia ----
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     if ($_POST['action'] === 'update_discount') {
         $pid      = intval($_POST['product_id'] ?? 0);
         $discount = intval($_POST['discount'] ?? 0);
         $discount = max(0, min(100, $discount)); // Clamp 0-100
 
-        $stmt = $db->prepare("UPDATE `PRODUCTS` SET `DiscountPercent` = :disc WHERE `Product_ID` = :id");
+        $stmt = $db->prepare("UPDATE `SanPham` SET `PhanTramGiamGia` = :disc WHERE `Ma_SanPham` = :id");
         $stmt->bindValue(':disc', $discount, PDO::PARAM_INT);
         $stmt->bindValue(':id',   $pid,      PDO::PARAM_INT);
         if ($stmt->execute()) {
@@ -28,12 +28,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             $error = "Có lỗi xảy ra khi cập nhật.";
         }
     } elseif ($_POST['action'] === 'bulk_clear') {
-        $db->exec("UPDATE `PRODUCTS` SET `DiscountPercent` = 0");
+        $db->exec("UPDATE `SanPham` SET `PhanTramGiamGia` = 0");
         $message = "Đã xóa toàn bộ giảm giá. Không có sản phẩm nào đang sale.";
     } elseif ($_POST['action'] === 'bulk_update') {
         $updates = $_POST['discounts'] ?? [];
         $count = 0;
-        $stmt = $db->prepare("UPDATE `PRODUCTS` SET `DiscountPercent` = :disc WHERE `Product_ID` = :id");
+        $stmt = $db->prepare("UPDATE `SanPham` SET `PhanTramGiamGia` = :disc WHERE `Ma_SanPham` = :id");
         foreach ($updates as $pid => $disc) {
             $pid  = intval($pid);
             $disc = max(0, min(100, intval($disc)));
@@ -48,20 +48,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
 // ---- Lấy danh sách sản phẩm + tổng sản phẩm sale ----
 $allProducts = $db->query("
-    SELECT p.*, c.CategoryName 
-    FROM `PRODUCTS` p 
-    LEFT JOIN `CATEGORIES` c ON p.Category_ID = c.Category_ID 
-    ORDER BY p.DiscountPercent DESC, p.Product_ID ASC
+    SELECT p.*, c.TenDanhMuc 
+    FROM `SanPham` p 
+    LEFT JOIN `DanhMuc` c ON p.Ma_DanhMuc = c.Ma_DanhMuc 
+    ORDER BY p.PhanTramGiamGia DESC, p.Ma_SanPham ASC
 ")->fetchAll(PDO::FETCH_ASSOC);
 
-$saleCount  = count(array_filter($allProducts, fn($p) => $p['DiscountPercent'] > 0));
+$saleCount  = count(array_filter($allProducts, fn($p) => $p['PhanTramGiamGia'] > 0));
 $totalCount = count($allProducts);
 
 // Filter view
 $viewMode = $_GET['view'] ?? 'all'; // all | sale | nosale
 $filteredProducts = match($viewMode) {
-    'sale'   => array_filter($allProducts, fn($p) => $p['DiscountPercent'] > 0),
-    'nosale' => array_filter($allProducts, fn($p) => $p['DiscountPercent'] == 0),
+    'sale'   => array_filter($allProducts, fn($p) => $p['PhanTramGiamGia'] > 0),
+    'nosale' => array_filter($allProducts, fn($p) => $p['PhanTramGiamGia'] == 0),
     default  => $allProducts,
 };
 ?>
@@ -118,7 +118,7 @@ $filteredProducts = match($viewMode) {
     <div class="col-6 col-md-3">
         <div class="card border-0 shadow-sm h-100" style="border-left: 4px solid #f6ad55 !important;">
             <div class="card-body py-3 px-3">
-                <?php $maxDisc = $totalCount > 0 ? max(array_column($allProducts, 'DiscountPercent')) : 0; ?>
+                <?php $maxDisc = $totalCount > 0 ? max(array_column($allProducts, 'PhanTramGiamGia')) : 0; ?>
                 <div style="font-size:2rem; font-weight:800; color:#f6ad55; font-family:var(--font-display);"><?= $maxDisc ?>%</div>
                 <div class="text-muted" style="font-size:0.8rem;">Giảm tối đa</div>
             </div>
@@ -187,31 +187,31 @@ $filteredProducts = match($viewMode) {
                     </thead>
                     <tbody>
                         <?php foreach ($filteredProducts as $p):
-                            $disc       = intval($p['DiscountPercent']);
-                            $salePrice  = $p['Price'] * (1 - $disc / 100);
+                            $disc       = intval($p['PhanTramGiamGia']);
+                            $salePrice  = $p['GiaTien'] * (1 - $disc / 100);
                         ?>
                         <tr class="<?= $disc > 0 ? 'table-warning' : '' ?>" style="<?= $disc > 0 ? 'background:rgba(254,243,199,0.5) !important;' : '' ?>">
-                            <td class="ps-4 fw-bold text-muted">#<?= $p['Product_ID'] ?></td>
+                            <td class="ps-4 fw-bold text-muted">#<?= $p['Ma_SanPham'] ?></td>
                             <td>
-                                <img src="../view/image/<?= htmlspecialchars($p['Image']) ?>"
+                                <img src="../view/image/<?= htmlspecialchars($p['Anh']) ?>"
                                      alt="" style="width:46px;height:46px;object-fit:cover;border-radius:8px;border:1px solid #eee;">
                             </td>
                             <td>
-                                <div class="fw-bold text-dark" style="font-size:0.88rem; max-width:240px;"><?= htmlspecialchars($p['ProductName']) ?></div>
-                                <div class="text-muted" style="font-size:0.75rem;"><?= htmlspecialchars($p['Brand'] ?? '') ?></div>
+                                <div class="fw-bold text-dark" style="font-size:0.88rem; max-width:240px;"><?= htmlspecialchars($p['TenSanPham']) ?></div>
+                                <div class="text-muted" style="font-size:0.75rem;"><?= htmlspecialchars($p['ThuongHieu'] ?? '') ?></div>
                             </td>
-                            <td><span class="badge bg-light text-dark border"><?= htmlspecialchars($p['CategoryName'] ?? 'N/A') ?></span></td>
-                            <td class="fw-bold" style="font-size:0.88rem;"><?= number_format($p['Price'], 0, ',', '.') ?>₫</td>
+                            <td><span class="badge bg-light text-dark border"><?= htmlspecialchars($p['TenDanhMuc'] ?? 'N/A') ?></span></td>
+                            <td class="fw-bold" style="font-size:0.88rem;"><?= number_format($p['GiaTien'], 0, ',', '.') ?>₫</td>
                             <td class="text-center">
                                 <div class="d-flex align-items-center justify-content-center gap-1">
                                     <input type="range" class="form-range discount-range"
-                                           name="discounts[<?= $p['Product_ID'] ?>]"
-                                           id="range_<?= $p['Product_ID'] ?>"
+                                           name="discounts[<?= $p['Ma_SanPham'] ?>]"
+                                           id="range_<?= $p['Ma_SanPham'] ?>"
                                            min="0" max="80" step="5"
                                            value="<?= $disc ?>"
-                                           oninput="updateDiscount(<?= $p['Product_ID'] ?>)"
+                                           oninput="updateDiscount(<?= $p['Ma_SanPham'] ?>)"
                                            style="width:70px; accent-color:#e63946;">
-                                    <span id="val_<?= $p['Product_ID'] ?>" class="fw-bold <?= $disc > 0 ? 'text-danger' : 'text-muted' ?>"
+                                    <span id="val_<?= $p['Ma_SanPham'] ?>" class="fw-bold <?= $disc > 0 ? 'text-danger' : 'text-muted' ?>"
                                           style="min-width:36px; font-size:0.9rem; font-family:var(--font-display);">
                                         <?= $disc ?>%
                                     </span>
@@ -219,14 +219,14 @@ $filteredProducts = match($viewMode) {
                             </td>
                             <td>
                                 <?php if ($disc > 0): ?>
-                                <span class="fw-bold" style="color:#e63946; font-size:0.88rem;" id="sale_price_<?= $p['Product_ID'] ?>">
+                                <span class="fw-bold" style="color:#e63946; font-size:0.88rem;" id="sale_price_<?= $p['Ma_SanPham'] ?>">
                                     <?= number_format($salePrice, 0, ',', '.') ?>₫
                                 </span>
                                 <?php else: ?>
-                                <span class="text-muted" style="font-size:0.85rem;" id="sale_price_<?= $p['Product_ID'] ?>">—</span>
+                                <span class="text-muted" style="font-size:0.85rem;" id="sale_price_<?= $p['Ma_SanPham'] ?>">—</span>
                                 <?php endif; ?>
                             </td>
-                            <td class="text-center" id="status_<?= $p['Product_ID'] ?>">
+                            <td class="text-center" id="status_<?= $p['Ma_SanPham'] ?>">
                                 <?php if ($disc > 0): ?>
                                 <span class="badge bg-danger">🔥 Sale -<?= $disc ?>%</span>
                                 <?php else: ?>
@@ -237,16 +237,16 @@ $filteredProducts = match($viewMode) {
                                 <!-- Quick set buttons -->
                                 <div class="d-flex gap-1 justify-content-end">
                                     <button type="button" class="btn btn-outline-secondary btn-sm px-1 py-0"
-                                            onclick="setDiscount(<?= $p['Product_ID'] ?>, <?= $p['Price'] ?>, 0)"
+                                            onclick="setDiscount(<?= $p['Ma_SanPham'] ?>, <?= $p['GiaTien'] ?>, 0)"
                                             title="Tắt sale" style="font-size:11px; min-width:28px;">✕</button>
                                     <button type="button" class="btn btn-outline-warning btn-sm px-1 py-0"
-                                            onclick="setDiscount(<?= $p['Product_ID'] ?>, <?= $p['Price'] ?>, 10)"
+                                            onclick="setDiscount(<?= $p['Ma_SanPham'] ?>, <?= $p['GiaTien'] ?>, 10)"
                                             title="10%" style="font-size:11px;">10</button>
                                     <button type="button" class="btn btn-outline-danger btn-sm px-1 py-0"
-                                            onclick="setDiscount(<?= $p['Product_ID'] ?>, <?= $p['Price'] ?>, 20)"
+                                            onclick="setDiscount(<?= $p['Ma_SanPham'] ?>, <?= $p['GiaTien'] ?>, 20)"
                                             title="20%" style="font-size:11px;">20</button>
                                     <button type="button" class="btn btn-danger btn-sm px-1 py-0"
-                                            onclick="setDiscount(<?= $p['Product_ID'] ?>, <?= $p['Price'] ?>, 30)"
+                                            onclick="setDiscount(<?= $p['Ma_SanPham'] ?>, <?= $p['GiaTien'] ?>, 30)"
                                             title="30%" style="font-size:11px;">30</button>
                                 </div>
                             </td>
@@ -269,7 +269,7 @@ $filteredProducts = match($viewMode) {
 <script>
 const prices = {
     <?php foreach ($allProducts as $p): ?>
-    <?= $p['Product_ID'] ?>: <?= $p['Price'] ?>,
+    <?= $p['Ma_SanPham'] ?>: <?= $p['GiaTien'] ?>,
     <?php endforeach; ?>
 };
 

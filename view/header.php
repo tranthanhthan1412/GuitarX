@@ -165,8 +165,8 @@ if (isset($_SESSION['user_id'])) {
                 <div class="cat-links">
                     <?php if (!empty($categories)): ?>
                     <?php foreach ($categories as $cat): ?>
-                    <a class="cat-link" href="/GuitarX/index.php?act=sanpham&id=<?php echo $cat['Category_ID']; ?>">
-                        <?php echo htmlspecialchars($cat['CategoryName']); ?>
+                    <a class="cat-link" href="/GuitarX/index.php?act=sanpham&id=<?php echo $cat['Ma_DanhMuc']; ?>">
+                        <?php echo htmlspecialchars($cat['TenDanhMuc']); ?>
                     </a>
                     <?php endforeach; ?>
                     <?php else: ?>

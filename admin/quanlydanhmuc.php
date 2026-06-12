@@ -85,17 +85,17 @@ $categories = $categoryModel->getAllCategories();
                     <?php else: ?>
                         <?php foreach ($categories as $c): ?>
                             <tr>
-                                <td class="ps-4 fw-bold text-muted">#<?= $c['Category_ID'] ?></td>
+                                <td class="ps-4 fw-bold text-muted">#<?= $c['Ma_DanhMuc'] ?></td>
                                 <td>
-                                    <span class="fw-bold text-dark fs-5"><?= htmlspecialchars($c['CategoryName']) ?></span>
+                                    <span class="fw-bold text-dark fs-5"><?= htmlspecialchars($c['TenDanhMuc']) ?></span>
                                 </td>
                                 <td class="text-end pe-4">
                                     <button class="btn btn-sm btn-outline-secondary me-2" 
-                                        onclick='openEditModal(<?= $c['Category_ID'] ?>, <?= json_encode($c['CategoryName']) ?>)'
+                                        onclick='openEditModal(<?= $c['Ma_DanhMuc'] ?>, <?= json_encode($c['TenDanhMuc']) ?>)'
                                         title="Sửa">
                                         <span class="material-symbols-outlined" style="font-size: 18px;">edit</span>
                                     </button>
-                                    <a href="index.php?act=quanlydanhmuc&delete_id=<?= $c['Category_ID'] ?>" 
+                                    <a href="index.php?act=quanlydanhmuc&delete_id=<?= $c['Ma_DanhMuc'] ?>" 
                                        class="btn btn-sm btn-outline-danger" 
                                        onclick="return confirm('Bạn có chắc chắn muốn xóa danh mục này không? Các sản phẩm bên trong sẽ bị mất liên kết danh mục.');"
                                        title="Xóa">

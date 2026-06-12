@@ -14,8 +14,8 @@ class CartModel {
         }
 
         foreach ($cartSession as $productId => $quantity) {
-            $query = "SELECT `Product_ID`, `ProductName`, `Image`, `Price`, `Count`, `DiscountPercent` 
-                      FROM `PRODUCTS` WHERE `Product_ID` = :id LIMIT 1";
+            $query = "SELECT `Ma_SanPham`, `TenSanPham`, `Anh`, `GiaTien`, `SoLuong`, `PhanTramGiamGia` 
+                      FROM `SanPham` WHERE `Ma_SanPham` = :id LIMIT 1";
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(":id", $productId, PDO::PARAM_INT);
             $stmt->execute();
@@ -23,21 +23,21 @@ class CartModel {
 
             if ($product) {
                 // Đảm bảo số lượng không vượt quá số lượng tồn kho
-                $actualQty = min((int)$quantity, (int)$product['Count']);
+                $actualQty = min((int)$quantity, (int)$product['SoLuong']);
                 
                 // Tính giá đã giảm
-                $discountPercent = isset($product['DiscountPercent']) ? (int)$product['DiscountPercent'] : 0;
-                $actualPrice = $product['Price'] - ($product['Price'] * $discountPercent / 100);
+                $discountPercent = isset($product['PhanTramGiamGia']) ? (int)$product['PhanTramGiamGia'] : 0;
+                $actualPrice = $product['GiaTien'] - ($product['GiaTien'] * $discountPercent / 100);
 
                 $cartDetails[] = [
-                    'Product_ID' => $product['Product_ID'],
-                    'ProductName' => $product['ProductName'],
-                    'Image' => $product['Image'],
-                    'OriginalPrice' => $product['Price'],
-                    'Price' => $actualPrice,
-                    'Quantity' => $actualQty,
+                    'Ma_SanPham' => $product['Ma_SanPham'],
+                    'TenSanPham' => $product['TenSanPham'],
+                    'Anh' => $product['Anh'],
+                    'OriginalPrice' => $product['GiaTien'],
+                    'GiaTien' => $actualPrice,
+                    'SoLuong' => $actualQty,
                     'Subtotal' => $actualPrice * $actualQty,
-                    'MaxCount' => $product['Count']
+                    'MaxCount' => $product['SoLuong']
                 ];
             }
         }

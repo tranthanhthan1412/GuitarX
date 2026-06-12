@@ -81,31 +81,31 @@ function getRoleBadge($role) {
                     <?php else: ?>
                     <?php foreach ($users as $u): ?>
                     <tr>
-                        <td class="ps-4 fw-bold text-muted">#<?= $u['User_ID'] ?></td>
-                        <td><span class="fw-bold text-dark"><?= htmlspecialchars($u['UserName']) ?></span></td>
+                        <td class="ps-4 fw-bold text-muted">#<?= $u['Ma_NguoiDung'] ?></td>
+                        <td><span class="fw-bold text-dark"><?= htmlspecialchars($u['TenNguoiDung']) ?></span></td>
                         <td><?= htmlspecialchars($u['Email'] ?? 'N/A') ?></td>
-                        <td><?= htmlspecialchars($u['PhoneNumber'] ?? 'N/A') ?></td>
-                        <td><?= date('d/m/Y H:i', strtotime($u['Create_At'])) ?></td>
-                        <td><?= getRoleBadge($u['Role']) ?></td>
+                        <td><?= htmlspecialchars($u['SDT'] ?? 'N/A') ?></td>
+                        <td><?= date('d/m/Y H:i', strtotime($u['NgayKhoiTao'])) ?></td>
+                        <td><?= getRoleBadge($u['VaiTro']) ?></td>
 
-                        <td><span class="<?= htmlspecialchars($u['RankClass'] ?? 'rank-badge rank-new') ?>"><?= htmlspecialchars($u['RankName'] ?? '🌱 Thành viên mới') ?></span></td>
+                        <td><span class="<?= htmlspecialchars($u['RankClass'] ?? 'rank-badge rank-new') ?>"><?= htmlspecialchars($u['TenXepHang'] ?? '🌱 Thành viên mới') ?></span></td>
 
                         <td class="text-end pe-4">
                             <form action="index.php?act=quanlyuser" method="POST"
                                 class="d-flex align-items-center justify-content-end m-0">
                                 <input type="hidden" name="action" value="change_role">
-                                <input type="hidden" name="user_id" value="<?= $u['User_ID'] ?>">
+                                <input type="hidden" name="user_id" value="<?= $u['Ma_NguoiDung'] ?>">
                                 <select name="role" class="form-select form-select-sm me-2" style="width: 130px;"
-                                    <?= $u['User_ID'] === $_SESSION['user_id'] ? 'disabled' : '' ?>>
-                                    <option value="customer" <?= $u['Role'] == 'customer' ? 'selected' : '' ?>>Khách
+                                    <?= $u['Ma_NguoiDung'] === $_SESSION['user_id'] ? 'disabled' : '' ?>>
+                                    <option value="customer" <?= $u['VaiTro'] == 'customer' ? 'selected' : '' ?>>Khách
                                         Hàng</option>
-                                    <option value="admin" <?= $u['Role'] == 'admin' ? 'selected' : '' ?>>Quản Trị Viên
+                                    <option value="admin" <?= $u['VaiTro'] == 'admin' ? 'selected' : '' ?>>Quản Trị Viên
                                     </option>
-                                    <option value="banned" <?= $u['Role'] == 'banned' ? 'selected' : '' ?>>Khóa (Ban)
+                                    <option value="banned" <?= $u['VaiTro'] == 'banned' ? 'selected' : '' ?>>Khóa (Ban)
                                     </option>
                                 </select>
                                 <button type="submit" class="btn btn-sm btn-secondary-custom"
-                                    <?= $u['User_ID'] === $_SESSION['user_id'] ? 'disabled' : '' ?>>Lưu</button>
+                                    <?= $u['Ma_NguoiDung'] === $_SESSION['user_id'] ? 'disabled' : '' ?>>Lưu</button>
                             </form>
                         </td>
                     </tr>

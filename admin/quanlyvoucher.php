@@ -99,19 +99,19 @@ $vouchers = $voucherModel->getAllVouchers();
                     <?php else: ?>
                         <?php foreach ($vouchers as $v): ?>
                             <?php 
-                                $isExpired = strtotime($v['expiry_date']) < strtotime(date('Y-m-d'));
-                                $isOut = $v['quantity'] <= 0;
+                                $isExpired = strtotime($v['NgayHetHan']) < strtotime(date('Y-m-d'));
+                                $isOut = $v['SoLuong'] <= 0;
                             ?>
                             <tr>
-                                <td class="ps-4 fw-bold text-muted">#<?= $v['Vouchers_ID'] ?></td>
+                                <td class="ps-4 fw-bold text-muted">#<?= $v['Ma_MaGiamGia'] ?></td>
                                 <td>
                                     <span class="badge bg-dark px-3 py-2 fs-6 text-uppercase" style="letter-spacing: 2px;">
-                                        <?= htmlspecialchars($v['Code']) ?>
+                                        <?= htmlspecialchars($v['Ma']) ?>
                                     </span>
                                 </td>
-                                <td class="fw-bold text-primary-custom"><?= number_format($v['discount_value'], 0, ',', '.') ?>₫</td>
-                                <td><?= $v['quantity'] ?></td>
-                                <td><?= date('d/m/Y', strtotime($v['expiry_date'])) ?></td>
+                                <td class="fw-bold text-primary-custom"><?= number_format($v['GiaTriGiam'], 0, ',', '.') ?>₫</td>
+                                <td><?= $v['SoLuong'] ?></td>
+                                <td><?= date('d/m/Y', strtotime($v['NgayHetHan'])) ?></td>
                                 <td>
                                     <?php if ($isExpired): ?>
                                         <span class="badge bg-danger bg-opacity-10 text-danger border border-danger">Hết hạn</span>
@@ -127,7 +127,7 @@ $vouchers = $voucherModel->getAllVouchers();
                                         title="Sửa">
                                         <span class="material-symbols-outlined" style="font-size: 18px;">edit</span>
                                     </button>
-                                    <a href="index.php?act=quanlyvoucher&delete_id=<?= $v['Vouchers_ID'] ?>" 
+                                    <a href="index.php?act=quanlyvoucher&delete_id=<?= $v['Ma_MaGiamGia'] ?>" 
                                        class="btn btn-sm btn-outline-danger" 
                                        onclick="return confirm('Bạn có chắc chắn muốn xóa mã giảm giá này không?');"
                                        title="Xóa">
@@ -203,11 +203,11 @@ function openAddModal() {
 function openEditModal(voucher) {
     document.getElementById('voucherModalLabel').innerText = 'Chỉnh Sửa Mã Giảm Giá';
     document.getElementById('formAction').value = 'edit';
-    document.getElementById('voucherId').value = voucher.Vouchers_ID;
-    document.getElementById('voucherCode').value = voucher.Code;
-    document.getElementById('voucherValue').value = voucher.discount_value;
-    document.getElementById('voucherQty').value = voucher.quantity;
-    document.getElementById('voucherExpiry').value = voucher.expiry_date;
+    document.getElementById('voucherId').value = voucher.Ma_MaGiamGia;
+    document.getElementById('voucherCode').value = voucher.Ma;
+    document.getElementById('voucherValue').value = voucher.GiaTriGiam;
+    document.getElementById('voucherQty').value = voucher.SoLuong;
+    document.getElementById('voucherExpiry').value = voucher.NgayHetHan;
     document.getElementById('btnSubmitForm').innerText = 'Lưu thay đổi';
     
     var myModal = new bootstrap.Modal(document.getElementById('voucherModal'));

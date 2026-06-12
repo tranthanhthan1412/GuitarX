@@ -55,11 +55,11 @@
                         <div
                             class="form-check mb-3 p-3 border rounded-2 <?php echo $index === 0 ? 'border-secondary-custom bg-surface-container-low' : ''; ?>">
                             <input class="form-check-input ms-1 mt-1" type="radio" name="payment_method"
-                                id="pm_<?php echo $pm['PayMent_ID']; ?>" value="<?php echo $pm['PayMent_ID']; ?>"
+                                id="pm_<?php echo $pm['Ma_PhuongThuc']; ?>" value="<?php echo $pm['Ma_PhuongThuc']; ?>"
                                 <?php echo $index === 0 ? 'checked' : ''; ?>>
                             <label class="form-check-label font-body-md fw-bold ms-2"
-                                for="pm_<?php echo $pm['PayMent_ID']; ?>">
-                                <?php echo htmlspecialchars($pm['MethodName']); ?>
+                                for="pm_<?php echo $pm['Ma_PhuongThuc']; ?>">
+                                <?php echo htmlspecialchars($pm['TenPhuongThuc']); ?>
                             </label>
                         </div>
                         <?php endforeach; ?>
@@ -76,14 +76,14 @@
                             <div class="d-flex gap-3 mb-3 pb-3 border-bottom">
                                 <div class="bg-light rounded-2 d-flex align-items-center justify-content-center p-1"
                                     style="width: 64px; height: 64px;">
-                                    <img src="/GuitarX/view/image/<?php echo htmlspecialchars($item['Image']); ?>"
+                                    <img src="/GuitarX/view/image/<?php echo htmlspecialchars($item['Anh']); ?>"
                                         class="img-fluid" style="max-height: 100%; object-fit: contain;">
                                 </div>
                                 <div class="flex-grow-1">
                                     <h6 class="font-body-sm fw-bold mb-1">
-                                        <?php echo htmlspecialchars($item['ProductName']); ?></h6>
+                                        <?php echo htmlspecialchars($item['TenSanPham']); ?></h6>
                                     <div class="text-muted font-label-sm mb-1">Số lượng:
-                                        <?php echo $item['Quantity']; ?></div>
+                                        <?php echo $item['SoLuong']; ?></div>
                                     <div class="font-body-sm fw-bold text-secondary-custom">
                                         <?php echo number_format($item['Subtotal'], 0, ',', '.'); ?>₫</div>
                                 </div>
@@ -117,7 +117,7 @@
                         $voucherDiscount = 0;
                         $appliedVoucherCode = '';
                         if (isset($_SESSION['applied_voucher'])) {
-                            $voucherDiscount = $_SESSION['applied_voucher']['discount_value'];
+                            $voucherDiscount = $_SESSION['applied_voucher']['GiaTriGiam'];
                             $appliedVoucherCode = $_SESSION['applied_voucher']['code'];
                         }
                         $finalTotal = max(0, $totalAmount - $voucherDiscount);

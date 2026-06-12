@@ -28,24 +28,24 @@
                             <tbody>
                                 <?php foreach ($ordersList as $order): ?>
                                     <tr>
-                                        <td class="p-4 font-body-md fw-bold text-dark">#<?php echo $order['Order_ID']; ?></td>
-                                        <td class="font-body-md"><?php echo date('d/m/Y H:i', strtotime($order['Order_Date'])); ?></td>
+                                        <td class="p-4 font-body-md fw-bold text-dark">#<?php echo $order['Ma_DonHang']; ?></td>
+                                        <td class="font-body-md"><?php echo date('d/m/Y H:i', strtotime($order['NgayDatHang'])); ?></td>
                                         <td class="font-body-md fw-bold text-secondary-custom"><?php echo number_format($order['TotalAmount'], 0, ',', '.'); ?>₫</td>
-                                        <td class="font-body-sm text-muted"><?php echo htmlspecialchars($order['MethodName']); ?></td>
+                                        <td class="font-body-sm text-muted"><?php echo htmlspecialchars($order['TenPhuongThuc']); ?></td>
                                         <td>
                                             <?php 
                                             $statusClass = 'bg-secondary';
-                                            if ($order['Status'] == 'Pending') $statusClass = 'bg-warning text-dark';
-                                            if ($order['Status'] == 'Processing') $statusClass = 'bg-info text-dark';
-                                            if ($order['Status'] == 'Completed') $statusClass = 'bg-success';
-                                            if ($order['Status'] == 'Cancelled') $statusClass = 'bg-danger';
+                                            if ($order['TrangThai'] == 'Pending') $statusClass = 'bg-warning text-dark';
+                                            if ($order['TrangThai'] == 'Processing') $statusClass = 'bg-info text-dark';
+                                            if ($order['TrangThai'] == 'Completed') $statusClass = 'bg-success';
+                                            if ($order['TrangThai'] == 'Cancelled') $statusClass = 'bg-danger';
                                             ?>
                                             <span class="badge <?php echo $statusClass; ?> rounded-pill px-3 py-2 font-label-sm fw-bold">
-                                                <?php echo htmlspecialchars($order['Status']); ?>
+                                                <?php echo htmlspecialchars($order['TrangThai']); ?>
                                             </span>
                                         </td>
                                         <td class="text-center">
-                                            <a href="/GuitarX/index.php?act=lichsudonhang&id=<?php echo $order['Order_ID']; ?>" class="btn btn-sm btn-outline-secondary rounded-2 font-label-sm fw-bold px-3">
+                                            <a href="/GuitarX/index.php?act=lichsudonhang&id=<?php echo $order['Ma_DonHang']; ?>" class="btn btn-sm btn-outline-secondary rounded-2 font-label-sm fw-bold px-3">
                                                 Xem chi tiết
                                             </a>
                                         </td>
@@ -74,13 +74,13 @@
                     ?>
                     <div class="d-flex gap-4 mb-4 pb-4 border-bottom align-items-center">
                         <div class="bg-surface-container-low rounded-3 d-flex align-items-center justify-content-center p-2 shadow-sm" style="width: 100px; height: 100px;">
-                            <img src="/GuitarX/view/image/<?php echo htmlspecialchars($item['Image']); ?>" class="img-fluid" style="max-height: 100%; object-fit: contain;">
+                            <img src="/GuitarX/view/image/<?php echo htmlspecialchars($item['Anh']); ?>" class="img-fluid" style="max-height: 100%; object-fit: contain;">
                         </div>
                         <div class="flex-grow-1">
-                            <h5 class="font-body-lg fw-bold mb-2"><?php echo htmlspecialchars($item['ProductName']); ?></h5>
+                            <h5 class="font-body-lg fw-bold mb-2"><?php echo htmlspecialchars($item['TenSanPham']); ?></h5>
                             <div class="d-flex align-items-center gap-4">
-                                <span class="text-muted font-label-md">Đơn giá: <?php echo number_format($item['Price'], 0, ',', '.'); ?>₫</span>
-                                <span class="text-muted font-label-md">Số lượng: x<?php echo $item['Quantity']; ?></span>
+                                <span class="text-muted font-label-md">Đơn giá: <?php echo number_format($item['GiaTien'], 0, ',', '.'); ?>₫</span>
+                                <span class="text-muted font-label-md">Số lượng: x<?php echo $item['SoLuong']; ?></span>
                                 <span class="font-body-md fw-bold text-secondary-custom ms-auto"><?php echo number_format($item['Subtotal'], 0, ',', '.'); ?>₫</span>
                             </div>
                         </div>

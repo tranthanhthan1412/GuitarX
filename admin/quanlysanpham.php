@@ -181,24 +181,24 @@ $categories = $productModel->getAllCategories();
                 <tbody>
                     <?php foreach ($products as $p): ?>
                     <tr>
-                        <td class="ps-4 fw-bold text-muted">#<?= $p['Product_ID'] ?></td>
+                        <td class="ps-4 fw-bold text-muted">#<?= $p['Ma_SanPham'] ?></td>
                         <td>
-                            <img src="../view/image/<?= $p['Image'] ?>" alt="<?= htmlspecialchars($p['ProductName']) ?>"
+                            <img src="../view/image/<?= $p['Anh'] ?>" alt="<?= htmlspecialchars($p['TenSanPham']) ?>"
                                 style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">
                         </td>
                         <td>
-                            <span class="fw-bold text-dark d-block"><?= htmlspecialchars($p['ProductName']) ?></span>
+                            <span class="fw-bold text-dark d-block"><?= htmlspecialchars($p['TenSanPham']) ?></span>
                         </td>
-                        <td><?= htmlspecialchars($p['Brand']) ?></td>
-                        <td><?= htmlspecialchars($p['CategoryName'] ?? '') ?></td>
-                        <td class="fw-bold text-primary-custom"><?= number_format($p['Price'], 0, ',', '.') ?>₫</td>
+                        <td><?= htmlspecialchars($p['ThuongHieu']) ?></td>
+                        <td><?= htmlspecialchars($p['TenDanhMuc'] ?? '') ?></td>
+                        <td class="fw-bold text-primary-custom"><?= number_format($p['GiaTien'], 0, ',', '.') ?>₫</td>
                         <td>
-                            <?php if ($p['Count'] > 10): ?>
+                            <?php if ($p['SoLuong'] > 10): ?>
                             <span
-                                class="badge bg-success bg-opacity-10 text-success border border-success"><?= $p['Count'] ?></span>
-                            <?php elseif ($p['Count'] > 0): ?>
+                                class="badge bg-success bg-opacity-10 text-success border border-success"><?= $p['SoLuong'] ?></span>
+                            <?php elseif ($p['SoLuong'] > 0): ?>
                             <span
-                                class="badge bg-warning bg-opacity-10 text-warning border border-warning"><?= $p['Count'] ?></span>
+                                class="badge bg-warning bg-opacity-10 text-warning border border-warning"><?= $p['SoLuong'] ?></span>
                             <?php else: ?>
                             <span class="badge bg-danger bg-opacity-10 text-danger border border-danger">Hết hàng</span>
                             <?php endif; ?>
@@ -208,7 +208,7 @@ $categories = $productModel->getAllCategories();
                                 onclick='openEditModal(<?= json_encode($p) ?>)' title="Sửa">
                                 <span class="material-symbols-outlined" style="font-size: 18px;">edit</span>
                             </button>
-                            <a href="index.php?act=quanlysanpham&delete_id=<?= $p['Product_ID'] ?>"
+                            <a href="index.php?act=quanlysanpham&delete_id=<?= $p['Ma_SanPham'] ?>"
                                 class="btn btn-sm btn-outline-danger"
                                 onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này không?');" title="Xóa">
                                 <span class="material-symbols-outlined" style="font-size: 18px;">delete</span>
@@ -287,7 +287,7 @@ $categories = $productModel->getAllCategories();
                             <select class="form-select" name="category_id" id="productCategory" required>
                                 <option value="">Chọn danh mục</option>
                                 <?php foreach($categories as $c): ?>
-                                <option value="<?= $c['Category_ID'] ?>"><?= $c['CategoryName'] ?></option>
+                                <option value="<?= $c['Ma_DanhMuc'] ?>"><?= $c['TenDanhMuc'] ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -351,13 +351,13 @@ document.querySelector('[data-bs-target="#productModal"]').addEventListener('cli
 function openEditModal(product) {
     document.getElementById('productModalLabel').innerText = 'Chỉnh Sửa Sản Phẩm';
     document.getElementById('formAction').value = 'edit';
-    document.getElementById('productId').value = product.Product_ID;
-    document.getElementById('productName').value = product.ProductName;
-    document.getElementById('productBrand').value = product.Brand;
-    document.getElementById('productCategory').value = product.Category_ID;
-    document.getElementById('productPrice').value = product.Price;
-    document.getElementById('productCount').value = product.Count;
-    document.getElementById('productDesc').value = product.Description;
+    document.getElementById('productId').value = product.Ma_SanPham;
+    document.getElementById('productName').value = product.TenSanPham;
+    document.getElementById('productBrand').value = product.ThuongHieu;
+    document.getElementById('productCategory').value = product.Ma_DanhMuc;
+    document.getElementById('productPrice').value = product.GiaTien;
+    document.getElementById('productCount').value = product.SoLuong;
+    document.getElementById('productDesc').value = product.MoTa;
     document.getElementById('productImage').required = false;
     document.getElementById('productAlbum').value = ''; // Reset album file khi bấm sửa cây khác
     document.getElementById('btnSubmitForm').innerText = 'Lưu thay đổi';

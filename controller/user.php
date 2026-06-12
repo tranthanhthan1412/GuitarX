@@ -26,13 +26,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
 
     if ($userData) {
         // Đăng nhập thành công
-        $_SESSION['user_id'] = $userData['User_ID'];
-        $_SESSION['username'] = $userData['UserName'];
+        $_SESSION['user_id'] = $userData['Ma_NguoiDung'];
+        $_SESSION['username'] = $userData['TenNguoiDung'];
         $_SESSION['email'] = $userData['Email'] ?? '';
-        $_SESSION['role'] = $userData['Role'];
+        $_SESSION['role'] = $userData['VaiTro'];
 
         // Nếu đăng nhập từ form admin mà không phải admin thì từ chối (hoặc có thể vẫn cho vào nhưng ở trang index)
-        if ($isAdminLogin && $userData['Role'] !== 'admin') {
+        if ($isAdminLogin && $userData['VaiTro'] !== 'admin') {
             session_unset();
             session_destroy();
             header("Location: ../admin/login.php?error=not_admin");
@@ -40,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         }
 
         // Điều hướng dựa trên quyền
-        if ($userData['Role'] === 'admin') {
+        if ($userData['VaiTro'] === 'admin') {
             header("Location: ../admin/index.php");
         } else {
             header("Location: ../index.php");
@@ -69,10 +69,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         // Đăng ký xong tự động đăng nhập luôn
         $userData = $userModel->checkLogin($username, $password);
         if ($userData) {
-            $_SESSION['user_id'] = $userData['User_ID'];
-            $_SESSION['username'] = $userData['UserName'];
+            $_SESSION['user_id'] = $userData['Ma_NguoiDung'];
+            $_SESSION['username'] = $userData['TenNguoiDung'];
             $_SESSION['email'] = $userData['Email'] ?? '';
-            $_SESSION['role'] = $userData['Role'];
+            $_SESSION['role'] = $userData['VaiTro'];
         }
         header("Location: ../index.php");
         exit();

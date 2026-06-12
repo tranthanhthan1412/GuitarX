@@ -38,10 +38,10 @@ class MailService {
             $itemsHtml = '';
             foreach ($cartDetails as $item) {
                 // Nhúng ảnh sản phẩm trực tiếp vào email (Embed Image)
-                $imgPath = __DIR__ . '/../view/image/' . $item['Image'];
-                $cid = 'img_' . $item['Product_ID'];
+                $imgPath = __DIR__ . '/../view/image/' . $item['Anh'];
+                $cid = 'img_' . $item['Ma_SanPham'];
                 
-                if (file_exists($imgPath) && !empty($item['Image'])) {
+                if (file_exists($imgPath) && !empty($item['Anh'])) {
                     $this->mail->addEmbeddedImage($imgPath, $cid);
                     $imgSrc = "cid:$cid";
                 } else {
@@ -51,11 +51,11 @@ class MailService {
                 $itemsHtml .= "
                 <tr>
                     <td style='padding: 15px; border-bottom: 1px solid #eeeeee;'>
-                        <img src='{$imgSrc}' alt='{$item['ProductName']}' style='width: 80px; height: auto; border-radius: 8px;'/>
+                        <img src='{$imgSrc}' alt='{$item['TenSanPham']}' style='width: 80px; height: auto; border-radius: 8px;'/>
                     </td>
                     <td style='padding: 15px; border-bottom: 1px solid #eeeeee;'>
-                        <strong style='color: #333; font-size: 16px;'>{$item['ProductName']}</strong><br/>
-                        <span style='color: #888;'>Số lượng: {$item['Quantity']}</span>
+                        <strong style='color: #333; font-size: 16px;'>{$item['TenSanPham']}</strong><br/>
+                        <span style='color: #888;'>Số lượng: {$item['SoLuong']}</span>
                     </td>
                     <td style='padding: 15px; border-bottom: 1px solid #eeeeee; text-align: right; font-weight: bold; color: #e63946;'>
                         " . number_format($item['Subtotal'], 0, ',', '.') . "₫

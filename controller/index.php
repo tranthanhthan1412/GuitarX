@@ -93,10 +93,10 @@ switch ($act) {
 
     // Phần lấy sản phẩm liên quan (giữ nguyên logic gốc của mày)
     $relatedProducts = [];
-    if (!empty($product['Category_ID'])) {
-        $allRelated = $productModel->getProductsByCategory($product['Category_ID']);
+    if (!empty($product['Ma_DanhMuc'])) {
+        $allRelated = $productModel->getProductsByCategory($product['Ma_DanhMuc']);
         foreach ($allRelated as $item) {
-            if ($item['Product_ID'] != $prodId) {
+            if ($item['Ma_SanPham'] != $prodId) {
                 $relatedProducts[] = $item;
             }
             if (count($relatedProducts) >= 4) {
@@ -274,26 +274,26 @@ switch ($act) {
             echo json_encode(['success' => false, 'message' => 'Mã giảm giá không tồn tại.']);
             exit();
         }
-        if ($v['quantity'] <= 0) {
+        if ($v['SoLuong'] <= 0) {
             echo json_encode(['success' => false, 'message' => 'Mã giảm giá đã hết lượt sử dụng.']);
             exit();
         }
-        if (!empty($v['expiry_date']) && strtotime($v['expiry_date']) < strtotime(date('Y-m-d'))) {
+        if (!empty($v['NgayHetHan']) && strtotime($v['NgayHetHan']) < strtotime(date('Y-m-d'))) {
             echo json_encode(['success' => false, 'message' => 'Mã giảm giá đã hết hạn.']);
             exit();
         }
         
         $_SESSION['applied_voucher'] = [
-            'id' => $v['Vouchers_ID'],
-            'code' => $v['Code'],
-            'discount_value' => $v['discount_value']
+            'id' => $v['Ma_MaGiamGia'],
+            'code' => $v['Ma'],
+            'GiaTriGiam' => $v['GiaTriGiam']
         ];
         
         echo json_encode([
             'success' => true,
             'message' => 'Áp dụng mã giảm giá thành công.',
-            'code' => $v['Code'],
-            'discount' => $v['discount_value']
+            'code' => $v['Ma'],
+            'discount' => $v['GiaTriGiam']
         ]);
         exit();
 
@@ -365,7 +365,7 @@ switch ($act) {
                 if (isset($_SESSION['applied_voucher'])) {
                     $voucherId = $_SESSION['applied_voucher']['id'];
                     $voucherCode = $_SESSION['applied_voucher']['code'];
-                    $discountValue = $_SESSION['applied_voucher']['discount_value'];
+                    $discountValue = $_SESSION['applied_voucher']['GiaTriGiam'];
                 }
 
                 // Nếu có dùng voucher, số tiền cuối cùng khi gửi mail hóa đơn sẽ trừ tiếp voucherValue

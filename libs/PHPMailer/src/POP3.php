@@ -322,7 +322,7 @@ class POP3
         $username = self::stripControls($username);
         $password = self::stripControls($password);
         //Send the Username
-        $this->sendString("USER $username" . static::LE);
+        $this->sendString("NguoiDung $username" . static::LE);
         $pop3_response = $this->getResponse();
         if ($this->checkResponse($pop3_response)) {
             //Send the Password
