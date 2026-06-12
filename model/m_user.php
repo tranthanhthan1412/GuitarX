@@ -8,15 +8,30 @@ class UserModel {
     }
 
     public function checkLogin($username, $password) {
-        // Trong hệ thống thực tế, bạn nên mã hóa password, ví dụ dùng password_verify().
-        // Ở đây chúng ta đang dùng text thô để dễ kiểm tra ở giai đoạn đầu.
-        $query = "SELECT * FROM `NguoiDung` WHERE `TenNguoiDung` = :username AND `MatKhau` = :password LIMIT 1";
+        $query = "SELECT * FROM `NguoiDung` WHERE `TenNguoiDung` = :username LIMIT 1";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(":username", $username);
-        $stmt->bindParam(":password", $password);
         $stmt->execute();
         
-        return $stmt->fetch(PDO::FETCH_ASSOC); // Trả về false nếu không tìm thấy, ngược lại trả về mảng dữ liệu
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($user) {
+            if (password_verify($password, $user['MatKhau'])) {
+                return $user;
+            } elseif ($user['MatKhau'] === $password) {
+                // Migration: Cập nhật pass thô cũ thành mã hóa mới
+                $this->updateUserPassword($user['Ma_NguoiDung'], password_hash($password, PASSWORD_DEFAULT));
+                return $user;
+            }
+        }
+        return false;
+    }
+
+    public function updateUserPassword($userId, $newHash) {
+        $query = "UPDATE `NguoiDung` SET `MatKhau` = :hash WHERE `Ma_NguoiDung` = :id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(":hash", $newHash);
+        $stmt->bindParam(":id", $userId, PDO::PARAM_INT);
+        return $stmt->execute();
     }
 
     // Kiểm tra xem tên đăng nhập đã tồn tại chưa
@@ -34,10 +49,12 @@ class UserModel {
             return false; // Tên đăng nhập đã tồn tại
         }
         
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        
         $query = "INSERT INTO `NguoiDung` (`TenNguoiDung`, `MatKhau`, `Email`, `SDT`, `VaiTro`) VALUES (:username, :password, :email, :phone, 'customer')";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(":username", $username);
-        $stmt->bindParam(":password", $password);
+        $stmt->bindParam(":password", $hashedPassword);
         $stmt->bindParam(":email", $email);
         $stmt->bindParam(":phone", $phone);
         

@@ -5,9 +5,9 @@ if (session_status() == PHP_SESSION_NONE) {
 // Nếu đã đăng nhập thì không cho vào trang này nữa, đẩy về trang chủ hoặc admin
 if (isset($_SESSION['user_id'])) {
     if ($_SESSION['role'] === 'admin') {
-        header("Location: /GuitarX/admin/index.php");
+        header("Location: " . BASE_URL . "admin/index.php");
     } else {
-        header("Location: /GuitarX/index.php");
+        header("Location: " . BASE_URL . "index.php");
     }
     exit();
 }
@@ -31,7 +31,7 @@ if (isset($_SESSION['user_id'])) {
             <?php endif; ?>
 
             <!-- Action trỏ thẳng về controller/user.php -->
-            <form action="/GuitarX/controller/user.php" method="POST">
+            <form action="<?= BASE_URL ?>controller/user.php" method="POST">
                 <input type="hidden" name="action" value="login">
                 
                 <div class="mb-3">
@@ -46,7 +46,7 @@ if (isset($_SESSION['user_id'])) {
             </form>
             
             <div class="text-center mt-4 pt-3 border-top">
-                <p class="font-label-sm text-muted mb-0">Chưa có tài khoản? <a href="/GuitarX/index.php?act=dangky" class="text-primary-custom text-decoration-none fw-bold">Đăng ký ngay</a></p>
+                <p class="font-label-sm text-muted mb-0">Chưa có tài khoản? <a href="<?= BASE_URL ?>index.php?act=dangky" class="text-primary-custom text-decoration-none fw-bold">Đăng ký ngay</a></p>
             </div>
         </div>
     </div>

@@ -9,7 +9,7 @@
                     <span class="material-symbols-outlined text-muted mb-3" style="font-size: 64px;">receipt_long</span>
                     <h3 class="font-headline-md text-dark mb-2">Bạn chưa có đơn hàng nào</h3>
                     <p class="text-muted font-body-md mb-4">Hãy khám phá các sản phẩm tuyệt vời của chúng tôi và đặt hàng ngay!</p>
-                    <a href="/GuitarX/index.php" class="btn btn-secondary-custom px-4 py-2 font-headline-sm rounded-2">Khám phá sản phẩm</a>
+                    <a href="<?= BASE_URL ?>index.php" class="btn btn-secondary-custom px-4 py-2 font-headline-sm rounded-2">Khám phá sản phẩm</a>
                 </div>
             <?php else: ?>
                 <div class="card border-0 shadow-sm rounded-3 bg-white overflow-hidden">
@@ -45,7 +45,7 @@
                                             </span>
                                         </td>
                                         <td class="text-center">
-                                            <a href="/GuitarX/index.php?act=lichsudonhang&id=<?php echo $order['Ma_DonHang']; ?>" class="btn btn-sm btn-outline-secondary rounded-2 font-label-sm fw-bold px-3">
+                                            <a href="<?= BASE_URL ?>index.php?act=lichsudonhang&id=<?php echo $order['Ma_DonHang']; ?>" class="btn btn-sm btn-outline-secondary rounded-2 font-label-sm fw-bold px-3">
                                                 Xem chi tiết
                                             </a>
                                         </td>
@@ -60,7 +60,7 @@
         <?php elseif ($viewMode === 'detail'): ?>
             <div class="d-flex align-items-center justify-content-between mb-4">
                 <h1 class="font-display-md fw-bold mb-0">Chi tiết đơn hàng <span class="text-secondary-custom">#<?php echo $orderId; ?></span></h1>
-                <a href="/GuitarX/index.php?act=lichsudonhang" class="btn btn-outline-secondary font-label-sm fw-bold d-flex align-items-center gap-1">
+                <a href="<?= BASE_URL ?>index.php?act=lichsudonhang" class="btn btn-outline-secondary font-label-sm fw-bold d-flex align-items-center gap-1">
                     <span class="material-symbols-outlined fs-6">arrow_back</span> Quay lại
                 </a>
             </div>
@@ -74,7 +74,7 @@
                     ?>
                     <div class="d-flex gap-4 mb-4 pb-4 border-bottom align-items-center">
                         <div class="bg-surface-container-low rounded-3 d-flex align-items-center justify-content-center p-2 shadow-sm" style="width: 100px; height: 100px;">
-                            <img src="/GuitarX/view/image/<?php echo htmlspecialchars($item['Anh']); ?>" class="img-fluid" style="max-height: 100%; object-fit: contain;">
+                            <img src="<?= BASE_URL ?>view/image/<?php echo htmlspecialchars($item['Anh']); ?>" class="img-fluid" style="max-height: 100%; object-fit: contain;">
                         </div>
                         <div class="flex-grow-1">
                             <h5 class="font-body-lg fw-bold mb-2"><?php echo htmlspecialchars($item['TenSanPham']); ?></h5>

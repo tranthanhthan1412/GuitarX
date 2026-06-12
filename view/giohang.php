@@ -7,7 +7,7 @@
                 <span class="material-symbols-outlined text-muted mb-3" style="font-size: 64px;">production_quantity_limits</span>
                 <h3 class="font-headline-md text-dark mb-2">Giỏ hàng trống</h3>
                 <p class="text-muted font-body-md mb-4">Bạn chưa có sản phẩm nào trong giỏ hàng. Cùng mua sắm nhé!</p>
-                <a href="/GuitarX/index.php" class="btn btn-secondary-custom px-4 py-2 font-headline-sm rounded-2">Tiếp tục mua sắm</a>
+                <a href="<?= BASE_URL ?>index.php" class="btn btn-secondary-custom px-4 py-2 font-headline-sm rounded-2">Tiếp tục mua sắm</a>
             </div>
         <?php else: ?>
             <div class="row g-4">
@@ -31,11 +31,11 @@
                                             <td class="p-4">
                                                 <div class="d-flex align-items-center gap-3">
                                                     <div class="bg-surface-container-low rounded-2 d-flex align-items-center justify-content-center p-2" style="width: 80px; height: 80px;">
-                                                        <img src="/GuitarX/view/image/<?php echo htmlspecialchars($item['Anh']); ?>" alt="Product" class="img-fluid" style="max-height: 100%; object-fit: contain;">
+                                                        <img src="<?= BASE_URL ?>view/image/<?php echo htmlspecialchars($item['Anh']); ?>" alt="Product" class="img-fluid" style="max-height: 100%; object-fit: contain;">
                                                     </div>
                                                     <div>
                                                         <h5 class="font-body-md fw-bold mb-1">
-                                                            <a href="/GuitarX/index.php?act=chitiet&id=<?php echo $item['Ma_SanPham']; ?>" class="text-dark text-decoration-none hover-text-danger">
+                                                            <a href="<?= BASE_URL ?>index.php?act=chitiet&id=<?php echo $item['Ma_SanPham']; ?>" class="text-dark text-decoration-none hover-text-danger">
                                                                 <?php echo htmlspecialchars($item['TenSanPham']); ?>
                                                             </a>
                                                         </h5>
@@ -46,7 +46,7 @@
                                                 <?php echo number_format($item['GiaTien'], 0, ',', '.'); ?>₫
                                             </td>
                                             <td class="text-center">
-                                                <form action="/GuitarX/index.php?act=capnhatgiohang" method="POST" class="d-inline-flex align-items-center">
+                                                <form action="<?= BASE_URL ?>index.php?act=capnhatgiohang" method="POST" class="d-inline-flex align-items-center">
                                                     <input type="hidden" name="product_id" value="<?php echo $item['Ma_SanPham']; ?>">
                                                     <div class="input-group input-group-sm" style="width: 100px;">
                                                         <button class="btn btn-outline-secondary" type="submit" name="quantity" value="<?php echo $item['SoLuong'] - 1; ?>">-</button>
@@ -59,7 +59,7 @@
                                                 <?php echo number_format($item['Subtotal'], 0, ',', '.'); ?>₫
                                             </td>
                                             <td class="text-center">
-                                                <a href="/GuitarX/index.php?act=xoagiohang&id=<?php echo $item['Ma_SanPham']; ?>" class="btn btn-sm btn-light text-danger rounded-circle p-2" title="Xóa">
+                                                <a href="<?= BASE_URL ?>index.php?act=xoagiohang&id=<?php echo $item['Ma_SanPham']; ?>" class="btn btn-sm btn-light text-danger rounded-circle p-2" title="Xóa">
                                                     <span class="material-symbols-outlined fs-6 d-block">delete</span>
                                                 </a>
                                             </td>
@@ -97,11 +97,11 @@
                             <span class="font-display-sm fw-bold text-secondary-custom fs-4"><?php echo number_format($finalTotal, 0, ',', '.'); ?>₫</span>
                         </div>
 
-                        <a href="/GuitarX/index.php?act=thanhtoan" class="btn btn-secondary-custom w-100 py-3 font-headline-sm rounded-2 shadow-sm text-center text-decoration-none d-block">
+                        <a href="<?= BASE_URL ?>index.php?act=thanhtoan" class="btn btn-secondary-custom w-100 py-3 font-headline-sm rounded-2 shadow-sm text-center text-decoration-none d-block">
                             TIẾN HÀNH THANH TOÁN
                         </a>
                         <div class="text-center mt-3">
-                            <a href="/GuitarX/index.php" class="text-decoration-none font-label-sm text-primary-custom fw-bold">
+                            <a href="<?= BASE_URL ?>index.php" class="text-decoration-none font-label-sm text-primary-custom fw-bold">
                                 <span class="material-symbols-outlined align-middle fs-6 me-1">arrow_back</span>Tiếp tục mua sắm
                             </a>
                         </div>

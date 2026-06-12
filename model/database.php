@@ -1,9 +1,11 @@
 <?php
+require_once __DIR__ . '/../config/config.php';
+
 class Database {
-    private $host = "localhost";
-    private $db_name = "guitarx";
-    private $username = "root";
-    private $password = "";
+    private $host = DB_HOST;
+    private $db_name = DB_NAME;
+    private $username = DB_USER;
+    private $password = DB_PASS;
     public $conn;
 
     // Hàm kết nối CSDL và tự động kích hoạt tạo cấu trúc hệ thống
@@ -24,11 +26,10 @@ class Database {
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
             
-            // Tự động kiểm tra và cập nhật cấu trúc 13 bảng dữ liệu kèm ràng buộc nghiêm ngặt
-            $this->initializeAllTables();
-
-            // Tự động nạp dữ liệu mẫu cho Giai đoạn 1 nếu dữ liệu đang trống
-            $this->seedDataDataForPhase1();
+            // LƯU Ý KHI DEPLOY: Đã tắt tự động tạo bảng và thêm dữ liệu mẫu để tối ưu hiệu năng
+            // Nếu đây là lần chạy đầu tiên trên host, hãy bỏ comment 2 dòng dưới đây để tạo DB
+            // $this->initializeAllTables();
+            // $this->seedDataDataForPhase1();
             
         } catch(PDOException $exception) {
             die("Lỗi kết nối hoặc khởi tạo cơ sở dữ liệu: " . $exception->getMessage());

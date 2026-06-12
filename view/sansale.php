@@ -381,9 +381,9 @@
             <div class="d-flex align-items-center gap-2">
                 <span style="font-size:0.82rem; color:#888; white-space:nowrap;">Sắp xếp:</span>
                 <select class="form-select form-select-sm border-0 fw-semibold" style="width:auto; background:#f5f5f5;" onchange="window.location.href=this.value">
-                    <option value="/GuitarX/index.php?act=sansale" <?= !isset($_GET['sort']) ? 'selected' : '' ?>>Giảm nhiều nhất</option>
-                    <option value="/GuitarX/index.php?act=sansale&sort=price-asc" <?= (isset($_GET['sort'])&&$_GET['sort']==='price-asc')?'selected':'' ?>>Giá tăng dần</option>
-                    <option value="/GuitarX/index.php?act=sansale&sort=price-desc" <?= (isset($_GET['sort'])&&$_GET['sort']==='price-desc')?'selected':'' ?>>Giá giảm dần</option>
+                    <option value="<?= BASE_URL ?>index.php?act=sansale" <?= !isset($_GET['sort']) ? 'selected' : '' ?>>Giảm nhiều nhất</option>
+                    <option value="<?= BASE_URL ?>index.php?act=sansale&sort=price-asc" <?= (isset($_GET['sort'])&&$_GET['sort']==='price-asc')?'selected':'' ?>>Giá tăng dần</option>
+                    <option value="<?= BASE_URL ?>index.php?act=sansale&sort=price-desc" <?= (isset($_GET['sort'])&&$_GET['sort']==='price-desc')?'selected':'' ?>>Giá giảm dần</option>
                 </select>
             </div>
         </div>
@@ -397,10 +397,10 @@
         <!-- Filter pills -->
         <div class="d-flex align-items-center gap-2 flex-wrap mb-5">
             <span style="font-size:0.82rem; color:#888; font-weight:600;">Lọc theo mức giảm:</span>
-            <a href="/GuitarX/index.php?act=sansale" class="sale-filter-pill <?= !isset($_GET['discount']) ? 'active' : '' ?>">Tất cả</a>
-            <a href="/GuitarX/index.php?act=sansale&discount=10" class="sale-filter-pill <?= (isset($_GET['discount'])&&$_GET['discount']=='10')?'active':'' ?>">≥ 10% OFF</a>
-            <a href="/GuitarX/index.php?act=sansale&discount=20" class="sale-filter-pill <?= (isset($_GET['discount'])&&$_GET['discount']=='20')?'active':'' ?>">≥ 20% OFF</a>
-            <a href="/GuitarX/index.php?act=sansale&discount=30" class="sale-filter-pill <?= (isset($_GET['discount'])&&$_GET['discount']=='30')?'active':'' ?>">≥ 30% OFF</a>
+            <a href="<?= BASE_URL ?>index.php?act=sansale" class="sale-filter-pill <?= !isset($_GET['discount']) ? 'active' : '' ?>">Tất cả</a>
+            <a href="<?= BASE_URL ?>index.php?act=sansale&discount=10" class="sale-filter-pill <?= (isset($_GET['discount'])&&$_GET['discount']=='10')?'active':'' ?>">≥ 10% OFF</a>
+            <a href="<?= BASE_URL ?>index.php?act=sansale&discount=20" class="sale-filter-pill <?= (isset($_GET['discount'])&&$_GET['discount']=='20')?'active':'' ?>">≥ 20% OFF</a>
+            <a href="<?= BASE_URL ?>index.php?act=sansale&discount=30" class="sale-filter-pill <?= (isset($_GET['discount'])&&$_GET['discount']=='30')?'active':'' ?>">≥ 30% OFF</a>
         </div>
 
         <?php if (empty($saleProducts)): ?>
@@ -408,7 +408,7 @@
             <div style="font-size:5rem; margin-bottom:1rem;">😴</div>
             <h3 style="font-family:var(--font-display); color:#1a1a2e; margin-bottom:0.5rem;">Chưa có sản phẩm sale</h3>
             <p class="text-muted" style="max-width:380px; margin:0 auto 1.5rem;">Hãy quay lại sau nhé! Chúng tôi cập nhật deal mới mỗi ngày.</p>
-            <a href="/GuitarX/index.php" class="btn btn-secondary-custom px-5 py-2 rounded-pill shadow fw-bold">Về trang chủ</a>
+            <a href="<?= BASE_URL ?>index.php" class="btn btn-secondary-custom px-5 py-2 rounded-pill shadow fw-bold">Về trang chủ</a>
         </div>
 
         <?php else: ?>
@@ -432,8 +432,8 @@
                             <span class="material-symbols-outlined <?= $isFav ? 'text-danger' : '' ?>"
                                 style="font-variation-settings:'FILL' <?= $isFav?1:0 ?>, 'wght' 400, 'GRAD' 0, 'opsz' 24; font-size:19px;">favorite</span>
                         </button>
-                        <a href="/GuitarX/index.php?act=chitiet&id=<?= $prod['Ma_SanPham'] ?>">
-                            <img src="/GuitarX/view/image/<?= htmlspecialchars($prod['Anh']) ?>"
+                        <a href="<?= BASE_URL ?>index.php?act=chitiet&id=<?= $prod['Ma_SanPham'] ?>">
+                            <img src="<?= BASE_URL ?>view/image/<?= htmlspecialchars($prod['Anh']) ?>"
                                  alt="<?= htmlspecialchars($prod['TenSanPham']) ?>" loading="lazy" />
                         </a>
                     </div>
@@ -442,7 +442,7 @@
                     <div class="sale-card-body">
                         <div class="sale-card-brand"><?= htmlspecialchars($prod['ThuongHieu'] ?? '') ?></div>
                         <div class="sale-card-name">
-                            <a href="/GuitarX/index.php?act=chitiet&id=<?= $prod['Ma_SanPham'] ?>">
+                            <a href="<?= BASE_URL ?>index.php?act=chitiet&id=<?= $prod['Ma_SanPham'] ?>">
                                 <?= htmlspecialchars($prod['TenSanPham']) ?>
                             </a>
                         </div>
@@ -457,7 +457,7 @@
                             </div>
                         </div>
 
-                        <a href="/GuitarX/index.php?act=chitiet&id=<?= $prod['Ma_SanPham'] ?>" class="sale-card-btn">
+                        <a href="<?= BASE_URL ?>index.php?act=chitiet&id=<?= $prod['Ma_SanPham'] ?>" class="sale-card-btn">
                             Xem chi tiết
                         </a>
                     </div>

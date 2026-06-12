@@ -26,7 +26,7 @@ if (isset($_SESSION['user_id'])) {
         rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet" />
-    <link href="/GuitarX/view/css/theme.css" rel="stylesheet" />
+    <link href="<?= BASE_URL ?>view/css/theme.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -35,7 +35,7 @@ if (isset($_SESSION['user_id'])) {
         <div class="container-max-custom px-desktop-custom">
             <div class="header-inner">
 
-                <a class="site-logo" href="/GuitarX/index.php">
+                <a class="site-logo" href="<?= BASE_URL ?>index.php">
                     <div class="logo-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44" width="44" height="44" fill="none">
                             <circle cx="22" cy="22" r="22" fill="#e63946" />
@@ -56,7 +56,7 @@ if (isset($_SESSION['user_id'])) {
                 </a>
 
                 <div class="header-search">
-                    <form action="/GuitarX/index.php" method="GET" class="search-wrap mb-0">
+                    <form action="<?= BASE_URL ?>index.php" method="GET" class="search-wrap mb-0">
                         <input type="hidden" name="act" value="timkiem">
                         <span class="search-icon material-symbols-outlined">search</span>
                         <input type="text" name="keyword" class="search-input"
@@ -68,7 +68,7 @@ if (isset($_SESSION['user_id'])) {
                 </div>
 
                 <div class="header-actions">
-                    <a href="/GuitarX/index.php?act=yeuthich" class="hdr-action-btn text-decoration-none"
+                    <a href="<?= BASE_URL ?>index.php?act=yeuthich" class="hdr-action-btn text-decoration-none"
                         title="Yêu thích">
                         <span class="hdr-action-icon">
                             <span class="material-symbols-outlined">favorite</span>
@@ -105,24 +105,24 @@ if (isset($_SESSION['user_id'])) {
                             </li>
                             <li><hr class="dropdown-divider m-0"></li>
                             <?php if($_SESSION['role'] === 'admin'): ?>
-                            <li><a class="dropdown-item" href="/GuitarX/admin/index.php"><span
+                            <li><a class="dropdown-item" href="<?= BASE_URL ?>admin/index.php"><span
                                         class="material-symbols-outlined align-middle fs-5 me-2">admin_panel_settings</span>Trang
                                     Quản Trị</a></li>
                             <?php endif; ?>
-                            <li><a class="dropdown-item" href="/GuitarX/index.php?act=lichsudonhang"><span
+                            <li><a class="dropdown-item" href="<?= BASE_URL ?>index.php?act=lichsudonhang"><span
                                         class="material-symbols-outlined align-middle fs-5 me-2">receipt_long</span>Đơn
                                     hàng của tôi</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
                             <li><a class="dropdown-item text-danger"
-                                    href="/GuitarX/controller/user.php?act=logout"><span
+                                    href="<?= BASE_URL ?>controller/user.php?act=logout"><span
                                         class="material-symbols-outlined align-middle fs-5 me-2">logout</span>Đăng
                                     xuất</a></li>
                         </ul>
                     </div>
                     <?php else: ?>
-                    <a href="/GuitarX/index.php?act=login" class="hdr-action-btn text-decoration-none"
+                    <a href="<?= BASE_URL ?>index.php?act=login" class="hdr-action-btn text-decoration-none"
                         title="Đăng nhập">
                         <span class="hdr-action-icon">
                             <span class="material-symbols-outlined">person</span>
@@ -139,7 +139,7 @@ if (isset($_SESSION['user_id'])) {
                             }
                         }
                     ?>
-                    <a href="/GuitarX/index.php?act=giohang" class="hdr-cart-btn text-decoration-none" title="Giỏ hàng">
+                    <a href="<?= BASE_URL ?>index.php?act=giohang" class="hdr-cart-btn text-decoration-none" title="Giỏ hàng">
                         <span class="hdr-action-icon">
                             <span class="material-symbols-outlined">shopping_cart</span>
                             <span class="hdr-badge hdr-badge--red"><?php echo $cartItemCount; ?></span>
@@ -165,7 +165,7 @@ if (isset($_SESSION['user_id'])) {
                 <div class="cat-links">
                     <?php if (!empty($categories)): ?>
                     <?php foreach ($categories as $cat): ?>
-                    <a class="cat-link" href="/GuitarX/index.php?act=sanpham&id=<?php echo $cat['Ma_DanhMuc']; ?>">
+                    <a class="cat-link" href="<?= BASE_URL ?>index.php?act=sanpham&id=<?php echo $cat['Ma_DanhMuc']; ?>">
                         <?php echo htmlspecialchars($cat['TenDanhMuc']); ?>
                     </a>
                     <?php endforeach; ?>
@@ -178,7 +178,7 @@ if (isset($_SESSION['user_id'])) {
                     <a class="cat-link" href="#">Phụ kiện</a>
                     <?php endif; ?>
 
-                    <a class="cat-link cat-link--hot" href="/GuitarX/index.php?act=sansale">Săn Sale chớp nhoáng 🔥</a>
+                    <a class="cat-link cat-link--hot" href="<?= BASE_URL ?>index.php?act=sansale">Săn Sale chớp nhoáng 🔥</a>
                 </div>
                 <div class="cat-contact ms-auto">
                     <span class="material-symbols-outlined" style="font-size:16px;color:#e63946;">call</span>
@@ -191,7 +191,7 @@ if (isset($_SESSION['user_id'])) {
     <script>
     function toggleFavorite(productId, btnElement, event) {
         if (event) event.preventDefault();
-        fetch('/GuitarX/index.php?act=toggle_favorite', {
+        fetch('<?= BASE_URL ?>index.php?act=toggle_favorite', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
@@ -201,7 +201,7 @@ if (isset($_SESSION['user_id'])) {
             .then(res => res.json())
             .then(data => {
                 if (data.require_login) {
-                    window.location.href = '/GuitarX/index.php?act=login';
+                    window.location.href = '<?= BASE_URL ?>index.php?act=login';
                     return;
                 }
                 if (data.success) {

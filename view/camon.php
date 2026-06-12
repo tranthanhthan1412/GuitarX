@@ -7,7 +7,7 @@
             <strong class="text-secondary-custom fs-5">#<?php echo $orderId; ?></strong>.
             <br><br>Chúng tôi sẽ sớm liên hệ với bạn theo thông tin đã cung cấp để xác nhận đơn hàng và tiến hành giao hàng trong thời gian sớm nhất.
         </p>
-        <a href="/GuitarX/index.php" class="btn btn-secondary-custom px-5 py-3 font-headline-sm rounded-2 shadow-sm">
+        <a href="<?= BASE_URL ?>index.php" class="btn btn-secondary-custom px-5 py-3 font-headline-sm rounded-2 shadow-sm">
             TIẾP TỤC MUA SẮM
         </a>
     </div>

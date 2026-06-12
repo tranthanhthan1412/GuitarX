@@ -4,7 +4,7 @@
         <div class="mb-4">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="/GuitarX/index.php"
+                    <li class="breadcrumb-item"><a href="<?= BASE_URL ?>index.php"
                             class="text-decoration-none text-muted">Trang chủ</a></li>
                     <li class="breadcrumb-item active text-danger-custom" aria-current="page">
                         <?php echo htmlspecialchars($titleName); ?></li>
@@ -28,7 +28,7 @@
                         <?php 
                                     $activeClass = (isset($_GET['id']) && $_GET['id'] == $cat['Ma_DanhMuc']) ? 'fw-bold text-danger-custom' : 'text-dark';
                                 ?>
-                        <a href="/GuitarX/index.php?act=sanpham&id=<?php echo $cat['Ma_DanhMuc']; ?>"
+                        <a href="<?= BASE_URL ?>index.php?act=sanpham&id=<?php echo $cat['Ma_DanhMuc']; ?>"
                             class="text-decoration-none py-2 px-1 hover-sidebar transition-all d-flex align-items-center justify-content-between <?php echo $activeClass; ?>">
                             <span><?php echo htmlspecialchars($cat['TenDanhMuc']); ?></span>
                             <span class="material-symbols-outlined fs-5">chevron_right</span>
@@ -42,7 +42,7 @@
                     <h3 class="font-headline-sm text-dark mb-3 pb-2 border-bottom fw-bold text-uppercase">Ưu đãi nổi bật
                     </h3>
                     <div class="position-relative overflow-hidden rounded-2">
-                        <img src="/GuitarX/view/image/acoustic.jpg" class="img-fluid rounded-2 hover-zoom"
+                        <img src="<?= BASE_URL ?>view/image/acoustic.jpg" class="img-fluid rounded-2 hover-zoom"
                             alt="Promotion" />
                         <div class="position-absolute bottom-0 start-0 w-100 p-3 bg-dark bg-opacity-75 text-white">
                             <p class="font-label-sm text-uppercase text-warning mb-1">🔥 Hot Sale</p>
@@ -126,15 +126,15 @@
 
                             <div>
                                 <div class="product-img-wrapper bg-surface-container-low rounded mb-3">
-                                    <a href="/GuitarX/index.php?act=chitiet&id=<?php echo $prod['Ma_SanPham']; ?>">
+                                    <a href="<?= BASE_URL ?>index.php?act=chitiet&id=<?php echo $prod['Ma_SanPham']; ?>">
                                         <img alt="<?php echo htmlspecialchars($prod['TenSanPham']); ?>"
-                                            src="/GuitarX/view/image/<?php echo htmlspecialchars($prod['Anh']); ?>" />
+                                            src="<?= BASE_URL ?>view/image/<?php echo htmlspecialchars($prod['Anh']); ?>" />
                                     </a>
                                 </div>
                                 <p class="text-muted font-label-sm text-uppercase fw-bold mb-1 tracking-wider">
                                     <?php echo htmlspecialchars($prod['ThuongHieu']); ?></p>
                                 <h3 class="font-body-md fw-bold text-dark mb-2">
-                                    <a href="/GuitarX/index.php?act=chitiet&id=<?php echo $prod['Ma_SanPham']; ?>"
+                                    <a href="<?= BASE_URL ?>index.php?act=chitiet&id=<?php echo $prod['Ma_SanPham']; ?>"
                                         class="text-decoration-none text-dark link-hover-red">
                                         <?php echo htmlspecialchars($prod['TenSanPham']); ?>
                                     </a>
@@ -151,7 +151,7 @@
                                         <span class="text-secondary-custom font-headline-sm mb-0"><?php echo number_format($prod['GiaTien'], 0, ',', '.'); ?>₫</span>
                                     <?php endif; ?>
                                 </div>
-                                <a href="/GuitarX/index.php?act=chitiet&id=<?php echo $prod['Ma_SanPham']; ?>"
+                                <a href="<?= BASE_URL ?>index.php?act=chitiet&id=<?php echo $prod['Ma_SanPham']; ?>"
                                     class="btn btn-add-cart-custom w-100 text-center text-decoration-none d-block pt-2">XEM
                                     CHI TIẾT</a>
                             </div>
@@ -162,7 +162,7 @@
                     <div class="col-12 text-center py-5 bg-white rounded-3 shadow-sm w-100">
                         <span class="material-symbols-outlined display-1 text-muted mb-3">inventory_2</span>
                         <p class="text-muted font-body-lg">Không tìm thấy sản phẩm nào trong danh mục này.</p>
-                        <a href="/GuitarX/index.php?act=sanpham"
+                        <a href="<?= BASE_URL ?>index.php?act=sanpham"
                             class="btn btn-secondary-custom px-4 py-2 mt-2 font-headline-sm rounded-1 shadow">Xem tất cả
                             sản phẩm</a>
                     </div>

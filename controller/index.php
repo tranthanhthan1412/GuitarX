@@ -1,4 +1,9 @@
 <?php
+require_once __DIR__ . '/../config/config.php';
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
 // controller/index.php — Front Controller
 
 $act = isset($_GET['act']) ? $_GET['act'] : 'home';
@@ -87,7 +92,7 @@ switch ($act) {
     $reviews = $productModel->getProductReviews($prodId);
 
     if (!$product) {
-        header("Location: /GuitarX/index.php");
+        header("Location: " . BASE_URL . "index.php");
         exit();
     }
 
@@ -131,7 +136,7 @@ switch ($act) {
 
     case 'yeuthich':
         if (!isset($_SESSION['user_id'])) {
-            header("Location: /GuitarX/index.php?act=login");
+            header("Location: " . BASE_URL . "index.php?act=login");
             exit();
         }
         $productsList = $favoriteModel->getFavoriteProducts($_SESSION['user_id']);
@@ -173,7 +178,7 @@ switch ($act) {
     case 'giohang':
         // KIỂM TRA ĐĂNG NHẬP
         if (!isset($_SESSION['user_id'])) {
-            header("Location: /GuitarX/index.php?act=login");
+            header("Location: " . BASE_URL . "index.php?act=login");
             exit();
         }
 
@@ -195,7 +200,7 @@ switch ($act) {
     case 'themgiohang':
         // KIỂM TRA ĐĂNG NHẬP
         if (!isset($_SESSION['user_id'])) {
-            header("Location: /GuitarX/index.php?act=login");
+            header("Location: " . BASE_URL . "index.php?act=login");
             exit();
         }
 
@@ -215,13 +220,13 @@ switch ($act) {
                 }
             }
         }
-        header("Location: /GuitarX/index.php?act=giohang");
+        header("Location: " . BASE_URL . "index.php?act=giohang");
         exit();
         break;
 
     case 'capnhatgiohang':
         if (!isset($_SESSION['user_id'])) {
-            header("Location: /GuitarX/index.php?act=login");
+            header("Location: " . BASE_URL . "index.php?act=login");
             exit();
         }
 
@@ -237,13 +242,13 @@ switch ($act) {
                 }
             }
         }
-        header("Location: /GuitarX/index.php?act=giohang");
+        header("Location: " . BASE_URL . "index.php?act=giohang");
         exit();
         break;
 
     case 'xoagiohang':
         if (!isset($_SESSION['user_id'])) {
-            header("Location: /GuitarX/index.php?act=login");
+            header("Location: " . BASE_URL . "index.php?act=login");
             exit();
         }
 
@@ -251,7 +256,7 @@ switch ($act) {
         if ($productId > 0 && isset($_SESSION['cart'][$productId])) {
             unset($_SESSION['cart'][$productId]);
         }
-        header("Location: /GuitarX/index.php?act=giohang");
+        header("Location: " . BASE_URL . "index.php?act=giohang");
         exit();
         break;
 
@@ -307,7 +312,7 @@ switch ($act) {
 
     case 'thanhtoan':
         if (!isset($_SESSION['user_id'])) {
-            header("Location: /GuitarX/index.php?act=login");
+            header("Location: " . BASE_URL . "index.php?act=login");
             exit();
         }
 
@@ -321,7 +326,7 @@ switch ($act) {
         
         $cartSession = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
         if (empty($cartSession)) {
-            header("Location: /GuitarX/index.php?act=giohang");
+            header("Location: " . BASE_URL . "index.php?act=giohang");
             exit();
         }
 
@@ -390,7 +395,7 @@ switch ($act) {
 
                     unset($_SESSION['cart']);
                     unset($_SESSION['applied_voucher']);
-                    header("Location: /GuitarX/index.php?act=camon&id=" . $orderId);
+                    header("Location: " . BASE_URL . "index.php?act=camon&id=" . $orderId);
                     exit();
                 } else {
                     $error = 'Có lỗi xảy ra hoặc sản phẩm/voucher đã hết. Vui lòng thử lại sau.';
@@ -408,7 +413,7 @@ switch ($act) {
 
     case 'camon':
         if (!isset($_SESSION['user_id'])) {
-            header("Location: /GuitarX/index.php?act=login");
+            header("Location: " . BASE_URL . "index.php?act=login");
             exit();
         }
         $orderId = isset($_GET['id']) ? intval($_GET['id']) : 0;
@@ -423,7 +428,7 @@ switch ($act) {
 
     case 'lichsudonhang':
         if (!isset($_SESSION['user_id'])) {
-            header("Location: /GuitarX/index.php?act=login");
+            header("Location: " . BASE_URL . "index.php?act=login");
             exit();
         }
 
@@ -438,7 +443,7 @@ switch ($act) {
             $orderDetails = $orderModel->getOrderDetails($orderId, $userId);
             if ($orderDetails === false) {
                 // Đơn hàng không tồn tại hoặc không phải của user này
-                header("Location: /GuitarX/index.php?act=lichsudonhang");
+                header("Location: " . BASE_URL . "index.php?act=lichsudonhang");
                 exit();
             }
             $viewMode = 'detail';

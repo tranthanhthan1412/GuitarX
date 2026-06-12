@@ -4,7 +4,7 @@
         <div class="hero-track" id="heroTrack">
 
             <div class="hero-slide active">
-                <img alt="Hero Guitar" class="hero-slide-img" src="/GuitarX/view/image/guitar.jpg" />
+                <img alt="Hero Guitar" class="hero-slide-img" src="<?= BASE_URL ?>view/image/guitar.jpg" />
                 <div class="position-absolute inset-0 hero-gradient-overlay d-flex align-items-center w-100 h-100">
                     <div class="container-max-custom px-desktop-custom text-white w-100">
                         <div class="hero-content" style="max-width: 576px;">
@@ -26,7 +26,7 @@
             </div>
 
             <div class="hero-slide">
-                <img alt="Banner Guitar 1" class="hero-slide-img" src="/GuitarX/view/image/bannerguitar1.jpg" />
+                <img alt="Banner Guitar 1" class="hero-slide-img" src="<?= BASE_URL ?>view/image/bannerguitar1.jpg" />
                 <div class="position-absolute inset-0 hero-gradient-overlay d-flex align-items-center w-100 h-100">
                     <div class="container-max-custom px-desktop-custom text-white w-100">
                         <div class="hero-content" style="max-width: 576px;">
@@ -48,7 +48,7 @@
             </div>
 
             <div class="hero-slide">
-                <img alt="Banner Guitar 2" class="hero-slide-img" src="/GuitarX/view/image/bannerguitar2.jpg" />
+                <img alt="Banner Guitar 2" class="hero-slide-img" src="<?= BASE_URL ?>view/image/bannerguitar2.jpg" />
                 <div class="position-absolute inset-0 hero-gradient-overlay d-flex align-items-center w-100 h-100">
                     <div class="container-max-custom px-desktop-custom text-white w-100">
                         <div class="hero-content" style="max-width: 576px;">
@@ -270,7 +270,7 @@
                         <span class="text-white-50 uppercase fw-bold" style="font-size: 10px;">GIÂY</span>
                     </div>
                 </div>
-                <a href="/GuitarX/index.php?act=sansale" class="btn btn-light text-danger-custom fw-bold px-4 py-2 shadow-sm text-decoration-none">SĂN SALE NGAY</a>
+                <a href="<?= BASE_URL ?>index.php?act=sansale" class="btn btn-light text-danger-custom fw-bold px-4 py-2 shadow-sm text-decoration-none">SĂN SALE NGAY</a>
             </div>
         </div>
     </section>
@@ -283,7 +283,7 @@
                 <p class="text-muted font-body-md mb-0">Lựa chọn hoàn hảo cho mọi phong cách riêng</p>
             </div>
             <a class="text-primary-custom fw-bold text-decoration-none d-flex align-items-center gap-1 link-hover-effect"
-                href="/GuitarX/index.php?act=sanpham">
+                href="<?= BASE_URL ?>index.php?act=sanpham">
                 Xem tất cả nhạc cụ <span class="material-symbols-outlined transition-transform">arrow_forward</span>
             </a>
         </div>
@@ -311,13 +311,13 @@
 
                             <div>
                                 <div class="product-img-wrapper bg-surface-container-low rounded mb-3">
-                                    <a href="/GuitarX/index.php?act=chitiet&id=<?php echo $prod['Ma_SanPham']; ?>">
-                                        <img alt="<?php echo htmlspecialchars($prod['TenSanPham']); ?>" src="/GuitarX/view/image/<?php echo htmlspecialchars($prod['Anh']); ?>" />
+                                    <a href="<?= BASE_URL ?>index.php?act=chitiet&id=<?php echo $prod['Ma_SanPham']; ?>">
+                                        <img alt="<?php echo htmlspecialchars($prod['TenSanPham']); ?>" src="<?= BASE_URL ?>view/image/<?php echo htmlspecialchars($prod['Anh']); ?>" />
                                     </a>
                                 </div>
                                 <p class="text-muted font-label-sm text-uppercase fw-bold mb-1 tracking-wider"><?php echo htmlspecialchars($prod['ThuongHieu']); ?></p>
                                 <h3 class="font-body-md fw-bold text-dark mb-2">
-                                    <a href="/GuitarX/index.php?act=chitiet&id=<?php echo $prod['Ma_SanPham']; ?>" class="text-decoration-none text-dark link-hover-red">
+                                    <a href="<?= BASE_URL ?>index.php?act=chitiet&id=<?php echo $prod['Ma_SanPham']; ?>" class="text-decoration-none text-dark link-hover-red">
                                         <?php echo htmlspecialchars($prod['TenSanPham']); ?>
                                     </a>
                                 </h3>
@@ -333,7 +333,7 @@
                                         <span class="text-secondary-custom font-headline-sm mb-0"><?php echo number_format($prod['GiaTien'], 0, ',', '.'); ?>₫</span>
                                     <?php endif; ?>
                                 </div>
-                                <a href="/GuitarX/index.php?act=chitiet&id=<?php echo $prod['Ma_SanPham']; ?>" class="btn btn-add-cart-custom w-100 text-center text-decoration-none d-block pt-2">XEM CHI TIẾT</a>
+                                <a href="<?= BASE_URL ?>index.php?act=chitiet&id=<?php echo $prod['Ma_SanPham']; ?>" class="btn btn-add-cart-custom w-100 text-center text-decoration-none d-block pt-2">XEM CHI TIẾT</a>
                             </div>
                         </div>
                     </div>
@@ -357,37 +357,37 @@
                 <div class="col">
                     <div class="bg-white border rounded d-flex align-items-center justify-content-center p-4 grayscale-img"
                         style="height: 128px;">
-                        <img alt="Yamaha" class="img-fluid max-h-100" src="/GuitarX/view/image/yamaha.jpg" />
+                        <img alt="Yamaha" class="img-fluid max-h-100" src="<?= BASE_URL ?>view/image/yamaha.jpg" />
                     </div>
                 </div>
                 <div class="col">
                     <div class="bg-white border rounded d-flex align-items-center justify-content-center p-4 grayscale-img"
                         style="height: 128px;">
-                        <img alt="Fender" class="img-fluid max-h-100" src="/GuitarX/view/image/fender.jpg" />
+                        <img alt="Fender" class="img-fluid max-h-100" src="<?= BASE_URL ?>view/image/fender.jpg" />
                     </div>
                 </div>
                 <div class="col">
                     <div class="bg-white border rounded d-flex align-items-center justify-content-center p-4 grayscale-img"
                         style="height: 128px;">
-                        <img alt="Gibson" class="img-fluid max-h-100" src="/GuitarX/view/image/gibson.jpg" />
+                        <img alt="Gibson" class="img-fluid max-h-100" src="<?= BASE_URL ?>view/image/gibson.jpg" />
                     </div>
                 </div>
                 <div class="col">
                     <div class="bg-white border rounded d-flex align-items-center justify-content-center p-4 grayscale-img"
                         style="height: 128px;">
-                        <img alt="Taylor" class="img-fluid max-h-100" src="/GuitarX/view/image/taylor.jpg" />
+                        <img alt="Taylor" class="img-fluid max-h-100" src="<?= BASE_URL ?>view/image/taylor.jpg" />
                     </div>
                 </div>
                 <div class="col">
                     <div class="bg-white border rounded d-flex align-items-center justify-content-center p-4 grayscale-img"
                         style="height: 128px;">
-                        <img alt="Washburn" class="img-fluid max-h-100" src="/GuitarX/view/image/washburn.jpg" />
+                        <img alt="Washburn" class="img-fluid max-h-100" src="<?= BASE_URL ?>view/image/washburn.jpg" />
                     </div>
                 </div>
                 <div class="col">
                     <div class="bg-white border rounded d-flex align-items-center justify-content-center p-4 grayscale-img"
                         style="height: 128px;">
-                        <img alt="Ibanez" class="img-fluid max-h-100" src="/GuitarX/view/image/ibanez.jpg" />
+                        <img alt="Ibanez" class="img-fluid max-h-100" src="<?= BASE_URL ?>view/image/ibanez.jpg" />
                     </div>
                 </div>
             </div>
@@ -479,7 +479,7 @@
             </div>
             <div class="col-12 col-lg-6 p-0 community-image-wrapper d-none d-lg-block">
                 <div class="community-image-overlay"></div>
-                <img alt="Newsletter Image" class="position-absolute w-100 h-100 object-fit-cover" src="/GuitarX/view/image/acoustic.jpg" style="filter: brightness(0.8);" />
+                <img alt="Newsletter Image" class="position-absolute w-100 h-100 object-fit-cover" src="<?= BASE_URL ?>view/image/acoustic.jpg" style="filter: brightness(0.8);" />
             </div>
         </div>
     </section>

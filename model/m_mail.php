@@ -17,10 +17,10 @@ class MailService {
             $this->mail->isSMTP();
             $this->mail->Host       = 'smtp.gmail.com';
             $this->mail->SMTPAuth   = true;
-            $this->mail->Username   = 'tranthanhthang333@gmail.com'; // TODO: Thay bằng email của bạn
-            $this->mail->Password   = 'tmdv bypi gcuj eskd';    // TODO: Thay bằng App Password
-            $this->mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-            $this->mail->Port       = 465;
+            $this->mail->Username   = SMTP_USER;
+            $this->mail->Password   = SMTP_PASS;
+            $this->mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $this->mail->Port       = 587;
             $this->mail->CharSet    = 'UTF-8';
         } catch (Exception $e) {
             error_log("Lỗi cấu hình Mail: {$this->mail->ErrorInfo}");

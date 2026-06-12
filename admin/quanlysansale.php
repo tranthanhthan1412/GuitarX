@@ -76,7 +76,7 @@ $filteredProducts = match($viewMode) {
         <p class="text-muted mb-0 mt-1" style="font-size:0.85rem;">Bật/tắt và điều chỉnh mức giảm giá cho từng sản phẩm</p>
     </div>
     <div class="d-flex gap-2">
-        <a href="/GuitarX/index.php?act=sansale" target="_blank"
+        <a href="<?= BASE_URL ?>index.php?act=sansale" target="_blank"
            class="btn btn-sm btn-outline-danger d-flex align-items-center gap-1">
             <span class="material-symbols-outlined" style="font-size:16px;">open_in_new</span> Xem trang Sale
         </a>

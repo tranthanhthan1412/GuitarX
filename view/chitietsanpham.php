@@ -17,11 +17,11 @@ if (!isset($album) && isset($product['Ma_SanPham'])) {
     <div class="container-max-custom px-desktop-custom">
         <nav aria-label="breadcrumb" class="mb-4">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/GuitarX/index.php" class="text-decoration-none text-muted">Trang
+                <li class="breadcrumb-item"><a href="<?= BASE_URL ?>index.php" class="text-decoration-none text-muted">Trang
                         chủ</a></li>
                 <?php if (isset($product['Ma_DanhMuc'])): ?>
                 <li class="breadcrumb-item">
-                    <a href="/GuitarX/index.php?act=sanpham&id=<?php echo $product['Ma_DanhMuc']; ?>"
+                    <a href="<?= BASE_URL ?>index.php?act=sanpham&id=<?php echo $product['Ma_DanhMuc']; ?>"
                         class="text-decoration-none text-muted">
                         <?php echo htmlspecialchars($catName); ?>
                     </a>
@@ -55,7 +55,7 @@ if (!isset($album) && isset($product['Ma_SanPham'])) {
 
                         <div class="thumb-gallery-wrap border rounded text-center p-1 bg-white position-relative active-thumb"
                             onclick="changeProductImage(this)">
-                            <img src="/GuitarX/view/image/<?php echo htmlspecialchars($product['Anh']); ?>"
+                            <img src="<?= BASE_URL ?>view/image/<?php echo htmlspecialchars($product['Anh']); ?>"
                                 class="img-fluid thumb-gallery-img" style="aspect-ratio: 1/1; object-fit: contain;">
                         </div>
 
@@ -67,7 +67,7 @@ if (!isset($album) && isset($product['Ma_SanPham'])) {
                         ?>
                         <div class="thumb-gallery-wrap border rounded text-center p-1 bg-white position-relative"
                             onclick="changeProductImage(this)">
-                            <img src="/GuitarX/view/image/<?php echo htmlspecialchars($img['Image_Path']); ?>"
+                            <img src="<?= BASE_URL ?>view/image/<?php echo htmlspecialchars($img['Image_Path']); ?>"
                                 class="img-fluid thumb-gallery-img" style="aspect-ratio: 1/1; object-fit: contain;">
                         </div>
                         <?php 
@@ -91,7 +91,7 @@ if (!isset($album) && isset($product['Ma_SanPham'])) {
                             <div
                                 class="product-detail-img-wrap w-100 h-100 overflow-hidden rounded-2 d-flex align-items-center justify-content-center">
                                 <img id="primaryProductImg"
-                                    src="/GuitarX/view/image/<?php echo htmlspecialchars($product['Anh']); ?>"
+                                    src="<?= BASE_URL ?>view/image/<?php echo htmlspecialchars($product['Anh']); ?>"
                                     alt="<?php echo htmlspecialchars($product['TenSanPham']); ?>"
                                     class="img-fluid h-100 object-fit-contain transition-all hover-zoom-detail" />
                             </div>
@@ -155,7 +155,7 @@ if (!isset($album) && isset($product['Ma_SanPham'])) {
                 </div>
 
                 <div class="bg-white p-4 rounded-3 shadow-sm mt-3">
-                    <form action="/GuitarX/index.php?act=themgiohang" method="POST" class="d-flex flex-column gap-3">
+                    <form action="<?= BASE_URL ?>index.php?act=themgiohang" method="POST" class="d-flex flex-column gap-3">
                         <input type="hidden" name="product_id" value="<?php echo $product['Ma_SanPham']; ?>" />
 
                         <div class="d-flex align-items-center gap-3">
@@ -323,15 +323,15 @@ if (!isset($album) && isset($product['Ma_SanPham'])) {
                         </button>
                         <div>
                             <div class="product-img-wrapper bg-surface-container-low rounded mb-3">
-                                <a href="/GuitarX/index.php?act=chitiet&id=<?php echo $related['Ma_SanPham']; ?>">
+                                <a href="<?= BASE_URL ?>index.php?act=chitiet&id=<?php echo $related['Ma_SanPham']; ?>">
                                     <img alt="<?php echo htmlspecialchars($related['TenSanPham']); ?>"
-                                        src="/GuitarX/view/image/<?php echo htmlspecialchars($related['Anh']); ?>" />
+                                        src="<?= BASE_URL ?>view/image/<?php echo htmlspecialchars($related['Anh']); ?>" />
                                 </a>
                             </div>
                             <p class="text-muted font-label-sm text-uppercase fw-bold mb-1 tracking-wider">
                                 <?php echo htmlspecialchars($related['ThuongHieu']); ?></p>
                             <h3 class="font-body-md fw-bold text-dark mb-2">
-                                <a href="/GuitarX/index.php?act=chitiet&id=<?php echo $related['Ma_SanPham']; ?>"
+                                <a href="<?= BASE_URL ?>index.php?act=chitiet&id=<?php echo $related['Ma_SanPham']; ?>"
                                     class="text-decoration-none text-dark link-hover-red">
                                     <?php echo htmlspecialchars($related['TenSanPham']); ?>
                                 </a>
@@ -348,7 +348,7 @@ if (!isset($album) && isset($product['Ma_SanPham'])) {
                                     <span class="text-secondary-custom font-headline-sm mb-0"><?php echo number_format($related['GiaTien'], 0, ',', '.'); ?>₫</span>
                                 <?php endif; ?>
                             </div>
-                            <a href="/GuitarX/index.php?act=chitiet&id=<?php echo $related['Ma_SanPham']; ?>"
+                            <a href="<?= BASE_URL ?>index.php?act=chitiet&id=<?php echo $related['Ma_SanPham']; ?>"
                                 class="btn btn-add-cart-custom w-100 text-center text-decoration-none d-block pt-2">XEM
                                 CHI TIẾT</a>
                         </div>

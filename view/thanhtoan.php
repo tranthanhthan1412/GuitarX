@@ -8,7 +8,7 @@
         </div>
         <?php endif; ?>
 
-        <form action="/GuitarX/index.php?act=thanhtoan" method="POST">
+        <form action="<?= BASE_URL ?>index.php?act=thanhtoan" method="POST">
             <div class="row g-4">
                 <div class="col-12 col-lg-7">
                     <div class="card border-0 shadow-sm rounded-3 bg-white p-4 mb-4">
@@ -76,7 +76,7 @@
                             <div class="d-flex gap-3 mb-3 pb-3 border-bottom">
                                 <div class="bg-light rounded-2 d-flex align-items-center justify-content-center p-1"
                                     style="width: 64px; height: 64px;">
-                                    <img src="/GuitarX/view/image/<?php echo htmlspecialchars($item['Anh']); ?>"
+                                    <img src="<?= BASE_URL ?>view/image/<?php echo htmlspecialchars($item['Anh']); ?>"
                                         class="img-fluid" style="max-height: 100%; object-fit: contain;">
                                 </div>
                                 <div class="flex-grow-1">
@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             feedback.style.display = "none";
 
-            fetch('/GuitarX/index.php?act=apply_voucher', {
+            fetch('<?= BASE_URL ?>index.php?act=apply_voucher', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
@@ -235,7 +235,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (btnRemove) {
         btnRemove.addEventListener('click', function() {
-            fetch('/GuitarX/index.php?act=remove_voucher', {
+            fetch('<?= BASE_URL ?>index.php?act=remove_voucher', {
                     method: 'POST'
                 })
                 .then(res => res.json())

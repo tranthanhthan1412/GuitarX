@@ -1,5 +1,8 @@
 <?php
-session_start();
+require_once __DIR__ . '/../config/config.php';
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 require_once '../model/database.php';
 require_once '../model/m_user.php';
 
