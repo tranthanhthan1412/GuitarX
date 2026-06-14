@@ -142,7 +142,7 @@
     </div>
 </div>
 
-<!-- Chat FAB -->
+<!-- Chat FAB & Box -->
 <style>
     .btn-chat-fab {
         width: 60px;
@@ -171,16 +171,184 @@
         visibility: visible;
         margin-right: 18px;
     }
+    #chatBox {
+        position: fixed;
+        bottom: 90px;
+        right: 24px;
+        width: 350px;
+        height: 450px;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 5px 25px rgba(0,0,0,0.15);
+        display: none;
+        flex-direction: column;
+        z-index: 1000;
+        overflow: hidden;
+    }
+    .chat-header {
+        background: #e63946;
+        color: #fff;
+        padding: 15px;
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .chat-body {
+        flex: 1;
+        padding: 15px;
+        overflow-y: auto;
+        background: #f8f9fa;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .chat-msg {
+        max-width: 80%;
+        padding: 8px 12px;
+        border-radius: 15px;
+        font-size: 0.9rem;
+        word-wrap: break-word;
+    }
+    .chat-msg.admin {
+        align-self: flex-start;
+        background: #e9ecef;
+        color: #000;
+        border-bottom-left-radius: 2px;
+    }
+    .chat-msg.user {
+        align-self: flex-end;
+        background: #e63946;
+        color: #fff;
+        border-bottom-right-radius: 2px;
+    }
+    .chat-footer {
+        padding: 10px;
+        background: #fff;
+        border-top: 1px solid #eee;
+        display: flex;
+        gap: 5px;
+    }
+    .chat-footer input {
+        flex: 1;
+        border: 1px solid #ddd;
+        border-radius: 20px;
+        padding: 8px 15px;
+        outline: none;
+    }
+    .chat-footer button {
+        background: #e63946;
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 </style>
+
+<div id="chatBox">
+    <div class="chat-header">
+        <span>Tư vấn trực tuyến</span>
+        <span class="material-symbols-outlined" style="cursor:pointer;" onclick="toggleChat()">close</span>
+    </div>
+    <div class="chat-body" id="chatBody">
+        <?php if (!isset($_SESSION['user_id'])): ?>
+            <div class="text-center text-muted mt-5">Vui lòng đăng nhập để chat.</div>
+        <?php endif; ?>
+    </div>
+    <?php if (isset($_SESSION['user_id'])): ?>
+    <form class="chat-footer" id="chatForm" onsubmit="sendChat(event)">
+        <input type="text" id="chatInput" placeholder="Nhập tin nhắn..." autocomplete="off" required>
+        <button type="submit"><span class="material-symbols-outlined">send</span></button>
+    </form>
+    <?php endif; ?>
+</div>
+
 <div class="position-fixed bottom-0 end-0 m-4 z-3">
-    <button class="btn btn-chat-fab rounded-circle shadow-lg d-flex align-items-center justify-content-center position-relative group-fab">
+    <button onclick="toggleChat()" class="btn btn-chat-fab rounded-circle shadow-lg d-flex align-items-center justify-content-center position-relative group-fab">
         <span class="material-symbols-outlined fs-3 text-white">forum</span>
-        <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger border border-white d-flex align-items-center justify-content-center" style="width: 24px; height: 24px; font-size: 10px; font-weight: bold;">1</span>
+        <?php 
+        $unreadCount = 0;
+        if (isset($_SESSION['user_id']) && isset($db)) {
+            require_once __DIR__ . '/../model/m_chat.php';
+            $cModel = new ChatModel($db);
+            $unreadCount = $cModel->countUnreadForUser($_SESSION['user_id']);
+        }
+        ?>
+        <?php if ($unreadCount > 0): ?>
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger border border-white d-flex align-items-center justify-content-center" style="width: 24px; height: 24px; font-size: 10px; font-weight: bold;"><?= $unreadCount ?></span>
+        <?php endif; ?>
         <div class="fab-tooltip position-absolute bg-white text-dark px-3 py-2 rounded-3 shadow font-bold text-nowrap" style="font-size: 14px; font-weight: 600;">
             Chat với tư vấn viên
         </div>
     </button>
 </div>
+
+<script>
+let chatOpen = false;
+let lastMessageCount = 0;
+let chatInterval = null;
+
+function toggleChat() {
+    chatOpen = !chatOpen;
+    document.getElementById('chatBox').style.display = chatOpen ? 'flex' : 'none';
+    if (chatOpen) {
+        fetchMessages();
+        chatInterval = setInterval(fetchMessages, 3000);
+    } else {
+        clearInterval(chatInterval);
+    }
+}
+
+function fetchMessages() {
+    fetch('<?= BASE_URL ?>index.php?act=chat_api_get')
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'success') {
+            if (data.data.length !== lastMessageCount) {
+                lastMessageCount = data.data.length;
+                let html = '';
+                data.data.forEach(msg => {
+                    let className = msg.Is_Admin_Reply == 1 ? 'admin' : 'user';
+                    html += `<div class="chat-msg ${className}">${msg.NoiDung}</div>`;
+                });
+                if (html === '') html = '<div class="text-center text-muted mt-3" style="font-size:0.8rem;">Bắt đầu trò chuyện...</div>';
+                const body = document.getElementById('chatBody');
+                body.innerHTML = html;
+                body.scrollTop = body.scrollHeight; // auto scroll to bottom
+            }
+        }
+    });
+}
+
+function sendChat(e) {
+    e.preventDefault();
+    const input = document.getElementById('chatInput');
+    const text = input.value.trim();
+    if (!text) return;
+    
+    const body = document.getElementById('chatBody');
+    body.innerHTML += `<div class="chat-msg user">${text}</div>`;
+    body.scrollTop = body.scrollHeight;
+    lastMessageCount++;
+    input.value = '';
+
+    let formData = new FormData();
+    formData.append('message', text);
+
+    fetch('<?= BASE_URL ?>index.php?act=chat_api_send', {
+        method: 'POST',
+        body: formData
+    }).then(res => res.json()).then(data => {
+        if(data.status !== 'success') {
+            console.error('Lỗi gửi tin nhắn');
+        }
+    });
+}
+</script>
 
 <!-- Bootstrap 5 JS Bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

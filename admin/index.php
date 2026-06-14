@@ -10,6 +10,41 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header("Location: login.php");
     exit();
 }
+
+// Xử lý các API endpoint của Quản lý Chat (Trả về JSON, không render HTML)
+if (isset($_GET['act']) && strpos($_GET['act'], 'chat_api') === 0) {
+    header('Content-Type: application/json');
+    require_once __DIR__ . '/../model/database.php';
+    require_once __DIR__ . '/../model/m_chat.php';
+    $db = (new Database())->getConnection();
+    $chatModel = new ChatModel($db);
+
+    switch ($_GET['act']) {
+        case 'chat_api_get_users':
+            $users = $chatModel->getChatUsers();
+            echo json_encode(['status' => 'success', 'data' => $users]);
+            exit;
+        case 'chat_api_get_messages':
+            $userId = isset($_GET['user_id']) ? intval($_GET['user_id']) : 0;
+            $messages = $chatModel->getMessages($userId);
+            $chatModel->markAsRead($userId, true);
+            echo json_encode(['status' => 'success', 'data' => $messages]);
+            exit;
+        case 'chat_api_send':
+            $userId = isset($_POST['user_id']) ? intval($_POST['user_id']) : 0;
+            $content = isset($_POST['message']) ? trim($_POST['message']) : '';
+            if ($userId > 0 && $content !== '') {
+                if ($chatModel->sendMessage($userId, $content, 1)) {
+                    echo json_encode(['status' => 'success']);
+                } else {
+                    echo json_encode(['status' => 'error', 'message' => 'DB error']);
+                }
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Invalid data']);
+            }
+            exit;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -94,6 +129,8 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                         href="index.php?act=quanlyvoucher">Voucher</a>
                     <a class="cat-link nav-link <?= $act == 'quanlySanSale' ? 'active' : '' ?>"
                         href="index.php?act=quanlySanSale">🔥 Sale Chớp Nhoáng</a>
+                    <a class="cat-link nav-link <?= $act == 'quanlychat' ? 'active' : '' ?>"
+                        href="index.php?act=quanlychat">💬 Quản Lý Chat</a>
                 </div>
 
                 <div class="header-actions d-flex align-items-center gap-3">
@@ -136,6 +173,9 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                 break;
             case 'quanlySanSale':
                 include 'quanlysansale.php';
+                break;
+            case 'quanlychat':
+                include 'quanlychat.php';
                 break;
             case 'dashboard':
             default:

@@ -194,6 +194,25 @@ class Database {
                 PRIMARY KEY (`Ma_NguoiDung`, `Ma_SanPham`),
                 FOREIGN KEY (`Ma_NguoiDung`) REFERENCES `NguoiDung`(`Ma_NguoiDung`) ON DELETE CASCADE,
                 FOREIGN KEY (`Ma_SanPham`) REFERENCES `SanPham`(`Ma_SanPham`) ON DELETE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+
+            // 15. Bảng album ảnh phụ của sản phẩm
+            "CREATE TABLE IF NOT EXISTS `product_images` (
+                `Image_ID` INT AUTO_INCREMENT PRIMARY KEY,
+                `Ma_SanPham` INT NOT NULL,
+                `Image_Path` VARCHAR(255) NOT NULL,
+                FOREIGN KEY (`Ma_SanPham`) REFERENCES `SanPham`(`Ma_SanPham`) ON DELETE CASCADE ON UPDATE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+
+            // 16. Bảng tin nhắn (Live Chat)
+            "CREATE TABLE IF NOT EXISTS `tinnhan` (
+                `Ma_TinNhan` INT AUTO_INCREMENT PRIMARY KEY,
+                `User_ID` INT NOT NULL,
+                `NoiDung` TEXT NOT NULL,
+                `Is_Admin_Reply` TINYINT(1) DEFAULT 0,
+                `ThoiGian` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                `TrangThaiDoc` TINYINT(1) DEFAULT 0,
+                FOREIGN KEY (`User_ID`) REFERENCES `NguoiDung`(`Ma_NguoiDung`) ON DELETE CASCADE ON UPDATE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
         ];
 

@@ -473,6 +473,40 @@ switch ($act) {
         include_once __DIR__ . "/../view/footer.php";
         break;
 
+    case 'chat_api_get':
+        header('Content-Type: application/json');
+        if (!isset($_SESSION['user_id'])) {
+            echo json_encode(['status' => 'error', 'message' => 'Not logged in']);
+            exit;
+        }
+        require_once __DIR__ . "/../model/m_chat.php";
+        $chatModel = new ChatModel($db);
+        $messages = $chatModel->getMessages($_SESSION['user_id']);
+        // Khi User mở khung chat lấy tin nhắn, đánh dấu các tin của Admin gửi là đã đọc
+        $chatModel->markAsRead($_SESSION['user_id'], false);
+        echo json_encode(['status' => 'success', 'data' => $messages]);
+        exit;
+
+    case 'chat_api_send':
+        header('Content-Type: application/json');
+        if (!isset($_SESSION['user_id'])) {
+            echo json_encode(['status' => 'error', 'message' => 'Not logged in']);
+            exit;
+        }
+        require_once __DIR__ . "/../model/m_chat.php";
+        $chatModel = new ChatModel($db);
+        $content = isset($_POST['message']) ? trim($_POST['message']) : '';
+        if ($content !== '') {
+            if ($chatModel->sendMessage($_SESSION['user_id'], $content, 0)) {
+                echo json_encode(['status' => 'success']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'DB error']);
+            }
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Empty message']);
+        }
+        exit;
+
     case 'home':
     default:
         include_once __DIR__ . "/../view/header.php";
