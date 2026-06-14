@@ -155,7 +155,8 @@ class MainController {
         $this->renderView('chitietsanpham', [
             'product' => $product,
             'reviews' => $reviews,
-            'relatedProducts' => $relatedProducts
+            'relatedProducts' => $relatedProducts,
+            'productModel' => $productModel
         ]);
     }
 
