@@ -477,9 +477,10 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-lg-6 p-0 community-image-wrapper d-none d-lg-block">
-                <div class="community-image-overlay"></div>
-                <img alt="Newsletter Image" class="position-absolute w-100 h-100 object-fit-cover" src="<?= BASE_URL ?>view/image/acoustic.jpg" style="filter: brightness(0.8);" />
+            <div class="col-12 col-lg-6 p-0 position-relative d-none d-lg-block">
+                <!-- Overlay shadow for blending map edges with the dark theme -->
+                <div class="position-absolute top-0 bottom-0 start-0 z-2" style="width: 40px; background: linear-gradient(90deg, #1a1a1a 0%, transparent 100%); pointer-events: none;"></div>
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.6696584237025!2d106.67969327570377!3d10.759917089387768!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f1b7c3ed289%3A0xa06651894598e4e!2s290%20An%20D%C6%B0%C6%A1ng%20V%C6%B0%C6%A1ng%2C%20Ph%C6%B0%C6%A1ng%204%2C%20Qu%E1%BA%ADn%205%2C%20Th%C3%A0nh%20ph%E1%BB%91%20H%E1%BB%93%20Ch%C3%AD%20Minh!5e0!3m2!1svi!2s!4v1718342416434!5m2!1svi!2s" class="position-absolute w-100 h-100 z-1" style="border:0; filter: contrast(1.1) saturate(1.1);" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>
         </div>
     </section>
