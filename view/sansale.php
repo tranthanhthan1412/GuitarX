@@ -457,9 +457,18 @@
                             </div>
                         </div>
 
-                        <a href="<?= BASE_URL ?>index.php?act=chitiet&id=<?= $prod['Ma_SanPham'] ?>" class="sale-card-btn">
-                            Xem chi tiết
-                        </a>
+                        <div class="d-flex gap-2">
+                            <a href="<?= BASE_URL ?>index.php?act=chitiet&id=<?= $prod['Ma_SanPham'] ?>" class="sale-card-btn" style="flex: 1;">
+                                CHI TIẾT
+                            </a>
+                            <form action="<?= BASE_URL ?>index.php?act=themgiohang" method="POST" class="m-0">
+                                <input type="hidden" name="product_id" value="<?= $prod['Ma_SanPham'] ?>">
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" class="sale-card-btn d-flex align-items-center justify-content-center px-3" title="Thêm vào giỏ hàng" style="width: auto;">
+                                    <span class="material-symbols-outlined" style="font-size: 1.1rem;">shopping_cart</span>
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -151,9 +151,18 @@
                                         <span class="text-secondary-custom font-headline-sm mb-0"><?php echo number_format($prod['GiaTien'], 0, ',', '.'); ?>₫</span>
                                     <?php endif; ?>
                                 </div>
-                                <a href="<?= BASE_URL ?>index.php?act=chitiet&id=<?php echo $prod['Ma_SanPham']; ?>"
-                                    class="btn btn-add-cart-custom w-100 text-center text-decoration-none d-block pt-2">XEM
-                                    CHI TIẾT</a>
+                                <div class="d-flex gap-2">
+                                    <a href="<?= BASE_URL ?>index.php?act=chitiet&id=<?php echo $prod['Ma_SanPham']; ?>" class="btn btn-outline-dark flex-grow-1 text-center text-decoration-none d-flex align-items-center justify-content-center fw-bold" style="font-size: 0.9rem;">
+                                        CHI TIẾT
+                                    </a>
+                                    <form action="<?= BASE_URL ?>index.php?act=themgiohang" method="POST" class="m-0">
+                                        <input type="hidden" name="product_id" value="<?php echo $prod['Ma_SanPham']; ?>">
+                                        <input type="hidden" name="quantity" value="1">
+                                        <button type="submit" class="btn btn-add-cart-custom d-flex align-items-center justify-content-center" title="Thêm vào giỏ hàng" style="width: 42px; height: 100%;">
+                                            <span class="material-symbols-outlined fs-5">shopping_cart</span>
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
