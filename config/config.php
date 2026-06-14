@@ -10,5 +10,5 @@ define('DB_PASS', '');
 define('BASE_URL', '/GuitarX/');
 
 // Cấu hình SMTP Gửi Mail
-define('SMTP_USER', 'thangx122@gmail.com');
-define('SMTP_PASS', 'krdq fczs blst cvhx');
+define('SMTP_USER', 'tranthanhthang333@gmail.com');
+define('SMTP_PASS', 'kjpt qsfi rxzm wyig');

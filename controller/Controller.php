@@ -427,6 +427,7 @@ class MainController {
             'subTotal' => $subTotal,
             'discountPercent' => $discountPercent,
             'discountAmount' => $discountAmount,
+            'userRank' => isset($userRank) ? $userRank : null,
             'rankName' => $rankName,
             'paymentMethods' => $paymentMethods,
             'error' => $error
