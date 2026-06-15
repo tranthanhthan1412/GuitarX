@@ -33,7 +33,7 @@ class ChatModel {
             SELECT u.Ma_NguoiDung, u.TenNguoiDung, MAX(t.ThoiGian) as LastMessageTime,
                    (SELECT NoiDung FROM tinnhan WHERE User_ID = u.Ma_NguoiDung ORDER BY ThoiGian DESC LIMIT 1) as LastMessage,
                    (SELECT SUM(CASE WHEN TrangThaiDoc = 0 AND Is_Admin_Reply = 0 THEN 1 ELSE 0 END) FROM tinnhan WHERE User_ID = u.Ma_NguoiDung) as UnreadCount
-            FROM `nguoidung` u
+            FROM `NguoiDung` u
             JOIN `tinnhan` t ON u.Ma_NguoiDung = t.User_ID
             GROUP BY u.Ma_NguoiDung, u.TenNguoiDung
             ORDER BY LastMessageTime DESC
