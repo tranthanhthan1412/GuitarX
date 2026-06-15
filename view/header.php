@@ -314,35 +314,36 @@ if (isset($_SESSION['user_id'])) {
                     </div>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
-                <div class="offcanvas-body d-flex flex-column p-0">
+                
+                <div class="offcanvas-body p-0">
                     <div class="cat-links-mobile">
                         <?php if (!empty($categories)): ?>
                         <?php foreach ($categories as $cat): ?>
-                        <a class="cat-link text-decoration-none"
+                        <a class="cat-link text-decoration-none d-block"
                             href="<?= BASE_URL ?>index.php?act=sanpham&id=<?php echo $cat['Ma_DanhMuc']; ?>">
                             <?php echo htmlspecialchars($cat['TenDanhMuc']); ?>
                         </a>
                         <?php endforeach; ?>
                         <?php else: ?>
-                        <a class="cat-link text-decoration-none" href="#">ACOUSTIC GUITARS</a>
-                        <a class="cat-link text-decoration-none" href="#">ELECTRIC GUITARS</a>
-                        <a class="cat-link text-decoration-none" href="#">CLASSIC GUITARS</a>
-                        <a class="cat-link text-decoration-none" href="#">BASS GUITARS</a>
-                        <a class="cat-link text-decoration-none" href="#">UKULELE</a>
-                        <a class="cat-link text-decoration-none" href="#">PHỤ KIỆN</a>
+                        <a class="cat-link text-decoration-none d-block" href="#">ACOUSTIC GUITARS</a>
+                        <a class="cat-link text-decoration-none d-block" href="#">ELECTRIC GUITARS</a>
+                        <a class="cat-link text-decoration-none d-block" href="#">CLASSIC GUITARS</a>
+                        <a class="cat-link text-decoration-none d-block" href="#">BASS GUITARS</a>
+                        <a class="cat-link text-decoration-none d-block" href="#">UKULELE</a>
+                        <a class="cat-link text-decoration-none d-block" href="#">PHỤ KIỆN</a>
                         <?php endif; ?>
 
-                        <a class="cat-link text-decoration-none fw-bold text-warning mt-2"
+                        <a class="cat-link text-decoration-none d-block fw-bold text-warning mt-2"
                             href="<?= BASE_URL ?>index.php?act=sansale">SĂN SALE CHỚP NHOÁNG 🔥</a>
                     </div>
-                    
-                    <div class="cat-contact-mobile d-flex align-items-center gap-3 mt-auto">
-                        <span class="material-symbols-outlined"
-                            style="font-size:32px;color:#e63946;">support_agent</span>
-                        <div class="d-flex flex-column">
-                            <span style="font-size: 12px; opacity: 0.7; font-weight: 500;">Hotline hỗ trợ (24/7):</span>
-                            <strong style="font-size: 18px; color: #fff;">1800 6868</strong>
-                        </div>
+                </div>
+                
+                <!-- Chân Offcanvas: Cố định Hotline ở dưới cùng -->
+                <div class="cat-contact-mobile d-flex align-items-center gap-3 mt-auto p-3 flex-shrink-0" style="border-top: 1px solid rgba(255,255,255,0.05); background-color: rgba(0,0,0,0.2);">
+                    <span class="material-symbols-outlined" style="font-size:32px;color:#e63946;">support_agent</span>
+                    <div class="d-flex flex-column">
+                        <span style="font-size: 12px; opacity: 0.7; font-weight: 500;">Hotline hỗ trợ (24/7):</span>
+                        <strong style="font-size: 18px; color: #fff;">1800 6868</strong>
                     </div>
                 </div>
             </div>
