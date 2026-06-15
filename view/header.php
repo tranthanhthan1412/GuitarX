@@ -27,6 +27,120 @@ if (isset($_SESSION['user_id'])) {
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet" />
     <link href="<?= BASE_URL ?>view/css/theme.css" rel="stylesheet" />
+    <style>
+    /* Sửa lỗi tràn màn hình trên mobile */
+    html,
+    body {
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    /* 1. ĐỊNH DẠNG TRÊN PC */
+    .category-nav {
+        background-color: #ffffff !important;
+        border-bottom: 1px solid #eee;
+    }
+
+    .cat-all-btn {
+        background-color: #e63946 !important;
+        color: #ffffff !important;
+        border: none;
+        padding: 10px 20px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .cat-link {
+        color: #1a1a2e !important;
+        font-weight: 500;
+        font-size: 14px;
+        padding: 15px 12px !important;
+        text-transform: uppercase;
+    }
+
+    .cat-link:hover {
+        color: #e63946 !important;
+    }
+
+    .cat-link--hot {
+        color: #e63946 !important;
+        font-weight: 600;
+    }
+
+    /* 2. ĐỊNH DẠNG DI ĐỘNG (DƯỚI 768px) */
+    @media (max-width: 767.98px) {
+        .header-inner {
+            flex-wrap: wrap;
+            justify-content: space-between;
+            padding: 12px 0;
+            gap: 10px;
+        }
+
+        .mobile-menu-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .site-logo {
+            flex-grow: 1;
+            justify-content: center;
+        }
+
+        .header-search {
+            width: 100% !important;
+            margin-top: 5px;
+        }
+
+        .header-actions {
+            width: auto;
+            gap: 10px !important;
+        }
+
+        .hdr-cart-text, .hdr-action-label, .hdr-badge {
+            display: none !important;
+        }
+        
+        .hdr-cart-btn {
+            padding: 0.4rem 0.6rem;
+            margin-left: 0;
+        }
+        
+        .hdr-action-icon .material-symbols-outlined {
+            font-size: 22px;
+        }
+
+        /* Offcanvas Menu Mobile */
+        .offcanvas-custom {
+            background-color: #1a1a2e !important;
+            color: #fff;
+        }
+        .offcanvas-custom .offcanvas-header {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .cat-links-mobile .cat-link {
+            color: #ffffff !important;
+            padding: 15px 20px !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: left;
+            font-size: 14px;
+            display: block;
+        }
+        .cat-contact-mobile {
+            padding: 15px 20px;
+            color: #ffffff !important;
+            font-size: 14px;
+            background-color: rgba(255, 255, 255, 0.03);
+            margin-top: auto;
+        }
+    }
+    </style>
 </head>
 
 <body>
@@ -35,7 +149,12 @@ if (isset($_SESSION['user_id'])) {
         <div class="container-max-custom px-desktop-custom">
             <div class="header-inner">
 
-                <a class="site-logo" href="<?= BASE_URL ?>index.php">
+                <!-- Nút Hamburger Mobile (chỉ hiện trên mobile) -->
+                <button class="mobile-menu-btn d-md-none order-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenuOffcanvas" aria-controls="mobileMenuOffcanvas">
+                    <span class="material-symbols-outlined" style="font-size: 28px;">menu</span>
+                </button>
+
+                <a class="site-logo order-2 mx-auto mx-md-0 text-decoration-none" href="<?= BASE_URL ?>index.php">
                     <div class="logo-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44" width="44" height="44" fill="none">
                             <circle cx="22" cy="22" r="22" fill="#e63946" />
@@ -55,7 +174,7 @@ if (isset($_SESSION['user_id'])) {
                     </div>
                 </a>
 
-                <div class="header-search">
+                <div class="header-search order-4 order-md-2">
                     <form action="<?= BASE_URL ?>index.php" method="GET" class="search-wrap mb-0">
                         <input type="hidden" name="act" value="timkiem">
                         <span class="search-icon material-symbols-outlined">search</span>
@@ -67,7 +186,7 @@ if (isset($_SESSION['user_id'])) {
                     </form>
                 </div>
 
-                <div class="header-actions">
+                <div class="header-actions order-3 d-flex align-items-center gap-2 gap-md-3">
                     <a href="<?= BASE_URL ?>index.php?act=yeuthich" class="hdr-action-btn text-decoration-none"
                         title="Yêu thích">
                         <span class="hdr-action-icon">
@@ -155,9 +274,10 @@ if (isset($_SESSION['user_id'])) {
         </div>
     </header>
 
-    <nav class="category-nav d-none d-md-block">
+    <nav class="category-nav p-0">
         <div class="container-max-custom px-desktop-custom">
-            <div class="category-nav-inner">
+            
+            <div class="d-none d-md-flex align-items-center w-100 category-nav-inner">
                 <button class="cat-all-btn">
                     <span class="material-symbols-outlined">menu</span>
                     Danh mục
@@ -165,26 +285,68 @@ if (isset($_SESSION['user_id'])) {
                 <div class="cat-links">
                     <?php if (!empty($categories)): ?>
                     <?php foreach ($categories as $cat): ?>
-                    <a class="cat-link" href="<?= BASE_URL ?>index.php?act=sanpham&id=<?php echo $cat['Ma_DanhMuc']; ?>">
+                    <a class="cat-link text-decoration-none" href="<?= BASE_URL ?>index.php?act=sanpham&id=<?php echo $cat['Ma_DanhMuc']; ?>">
                         <?php echo htmlspecialchars($cat['TenDanhMuc']); ?>
                     </a>
                     <?php endforeach; ?>
                     <?php else: ?>
-                    <a class="cat-link" href="#">Acoustic Guitars</a>
-                    <a class="cat-link" href="#">Electric Guitars</a>
-                    <a class="cat-link" href="#">Classic Guitars</a>
-                    <a class="cat-link" href="#">Bass Guitars</a>
-                    <a class="cat-link" href="#">Ukulele</a>
-                    <a class="cat-link" href="#">Phụ kiện</a>
+                    <a class="cat-link text-decoration-none" href="#">Acoustic Guitars</a>
+                    <a class="cat-link text-decoration-none" href="#">Electric Guitars</a>
+                    <a class="cat-link text-decoration-none" href="#">Classic Guitars</a>
+                    <a class="cat-link text-decoration-none" href="#">Bass Guitars</a>
+                    <a class="cat-link text-decoration-none" href="#">Ukulele</a>
+                    <a class="cat-link text-decoration-none" href="#">Phụ kiện</a>
                     <?php endif; ?>
 
-                    <a class="cat-link cat-link--hot" href="<?= BASE_URL ?>index.php?act=sansale">Săn Sale chớp nhoáng 🔥</a>
+                    <a class="cat-link cat-link--hot text-decoration-none" href="<?= BASE_URL ?>index.php?act=sansale">Săn Sale chớp nhoáng 🔥</a>
                 </div>
-                <div class="cat-contact ms-auto">
+                <div class="cat-contact ms-auto text-dark d-flex align-items-center gap-1">
                     <span class="material-symbols-outlined" style="font-size:16px;color:#e63946;">call</span>
                     <span>Hotline: <strong>1800 6868</strong></span>
                 </div>
             </div>
+
+            <!-- Offcanvas Menu for Mobile -->
+            <div class="offcanvas offcanvas-start offcanvas-custom" tabindex="-1" id="mobileMenuOffcanvas" aria-labelledby="mobileMenuOffcanvasLabel">
+                <div class="offcanvas-header py-3">
+                    <div class="logo-name">
+                        <span class="logo-main" style="font-size: 1.2rem;">Guitar</span><span class="logo-accent" style="font-size: 1.2rem;">X</span>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body d-flex flex-column p-0">
+                    <div class="cat-links-mobile">
+                        <?php if (!empty($categories)): ?>
+                        <?php foreach ($categories as $cat): ?>
+                        <a class="cat-link text-decoration-none"
+                            href="<?= BASE_URL ?>index.php?act=sanpham&id=<?php echo $cat['Ma_DanhMuc']; ?>">
+                            <?php echo htmlspecialchars($cat['TenDanhMuc']); ?>
+                        </a>
+                        <?php endforeach; ?>
+                        <?php else: ?>
+                        <a class="cat-link text-decoration-none" href="#">ACOUSTIC GUITARS</a>
+                        <a class="cat-link text-decoration-none" href="#">ELECTRIC GUITARS</a>
+                        <a class="cat-link text-decoration-none" href="#">CLASSIC GUITARS</a>
+                        <a class="cat-link text-decoration-none" href="#">BASS GUITARS</a>
+                        <a class="cat-link text-decoration-none" href="#">UKULELE</a>
+                        <a class="cat-link text-decoration-none" href="#">PHỤ KIỆN</a>
+                        <?php endif; ?>
+
+                        <a class="cat-link text-decoration-none fw-bold text-warning mt-2"
+                            href="<?= BASE_URL ?>index.php?act=sansale">SĂN SALE CHỚP NHOÁNG 🔥</a>
+                    </div>
+                    
+                    <div class="cat-contact-mobile d-flex align-items-center gap-3 mt-auto">
+                        <span class="material-symbols-outlined"
+                            style="font-size:32px;color:#e63946;">support_agent</span>
+                        <div class="d-flex flex-column">
+                            <span style="font-size: 12px; opacity: 0.7; font-weight: 500;">Hotline hỗ trợ (24/7):</span>
+                            <strong style="font-size: 18px; color: #fff;">1800 6868</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
         </div>
     </nav>
 
