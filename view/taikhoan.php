@@ -2,13 +2,8 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-// Nếu đã đăng nhập thì không cho vào trang này nữa, đẩy về trang chủ hoặc admin
 if (isset($_SESSION['user_id'])) {
-    if ($_SESSION['role'] === 'admin') {
-        header("Location: " . BASE_URL . "admin/index.php");
-    } else {
-        header("Location: " . BASE_URL . "index.php");
-    }
+    header("Location: " . BASE_URL . "index.php");
     exit();
 }
 ?>

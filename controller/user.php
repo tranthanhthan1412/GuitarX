@@ -43,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         }
 
         // Điều hướng dựa trên quyền
-        if ($userData['VaiTro'] === 'admin') {
+        if ($isAdminLogin) {
             header("Location: ../admin/index.php");
         } else {
             header("Location: ../index.php");
