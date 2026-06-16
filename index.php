@@ -12,7 +12,7 @@ require_once 'model/database.php';
 $database = new Database();
 $db = $database->getConnection(); 
 
-// Gọi Controller (Đã được chuyển sang dạng Class OOP chuẩn MVC)
+// Gọi Controller 
 require_once 'controller/Controller.php';
 
 // Khởi tạo Controller và điều hướng Request

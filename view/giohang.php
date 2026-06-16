@@ -48,10 +48,10 @@
                                             <td class="text-center">
                                                 <form action="<?= BASE_URL ?>index.php?act=capnhatgiohang" method="POST" class="d-inline-flex align-items-center">
                                                     <input type="hidden" name="product_id" value="<?php echo $item['Ma_SanPham']; ?>">
-                                                    <div class="input-group input-group-sm" style="width: 100px;">
-                                                        <button class="btn btn-outline-secondary" type="submit" name="quantity" value="<?php echo $item['SoLuong'] - 1; ?>">-</button>
-                                                        <input type="number" class="form-control text-center px-1" value="<?php echo $item['SoLuong']; ?>" readonly>
-                                                        <button class="btn btn-outline-secondary" type="submit" name="quantity" value="<?php echo $item['SoLuong'] + 1; ?>" <?php echo ($item['SoLuong'] >= $item['MaxCount']) ? 'disabled' : ''; ?>>+</button>
+                                                    <div class="input-group input-group-sm" style="width: 110px;">
+                                                        <button class="btn btn-outline-secondary" type="button" onclick="this.parentNode.querySelector('input[type=number]').stepDown(); this.form.submit();">-</button>
+                                                        <input type="number" name="quantity" class="form-control text-center px-1" value="<?php echo $item['SoLuong']; ?>" min="0" max="<?php echo $item['MaxCount']; ?>" onchange="if(parseInt(this.value) > <?php echo $item['MaxCount']; ?>) this.value = <?php echo $item['MaxCount']; ?>; if(parseInt(this.value) < 0) this.value = 0; this.form.submit();">
+                                                        <button class="btn btn-outline-secondary" type="button" onclick="this.parentNode.querySelector('input[type=number]').stepUp(); this.form.submit();" <?php echo ($item['SoLuong'] >= $item['MaxCount']) ? 'disabled' : ''; ?>>+</button>
                                                     </div>
                                                 </form>
                                             </td>
