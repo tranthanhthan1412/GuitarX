@@ -461,7 +461,7 @@ class MainController {
                 header("Location: index.php?act=lichsudonhang");
                 exit();
             }
-            $this->renderView('lichsudonhang', ['viewMode' => 'detail', 'orderDetails' => $orderDetails]);
+            $this->renderView('lichsudonhang', ['viewMode' => 'detail', 'orderDetails' => $orderDetails, 'orderId' => $orderId]);
         } else {
             $ordersList = $orderModel->getOrdersByUserId($userId);
             $this->renderView('lichsudonhang', ['viewMode' => 'list', 'ordersList' => $ordersList]);

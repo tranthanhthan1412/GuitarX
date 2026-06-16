@@ -36,10 +36,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $category_id = trim($_POST['category_id'] ?? 0);
     $desc = trim($_POST['description'] ?? '');
     
-    // Đăng ký các định dạng ảnh được chấp nhận
     $allowedTypes = array('jpg', 'png', 'jpeg', 'gif', 'webp');
 
-    // 1. Upload Ảnh Đại Diện Chính
     $imageName = "";
     if (isset($_FILES["image"]) && $_FILES["image"]["error"] == 0) {
         $fileName = basename($_FILES["image"]["name"]);
@@ -58,18 +56,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // 2. Logic lưu thông tin sản phẩm và xử lý Album ảnh phụ kèm theo
     if (empty($error)) {
         if ($action === 'add') {
             if (empty($imageName)) {
                 $error = "Vui lòng chọn ảnh cho sản phẩm.";
             } else {
-                // Thêm sản phẩm chính để lấy ID tự tăng vừa sinh ra
                 if ($productModel->addProduct($name, $imageName, $desc, $price, $count, $brand, $category_id)) {
-                    $newProductId = $db->lastInsertId(); // Lấy ID của sản phẩm vừa thêm thành công
+                    $newProductId = $db->lastInsertId();
                     $message = "Đã thêm sản phẩm mới thành công.";
 
-                    // XỬ LÝ UPLOAD ALBUM ẢNH PHỤ (NẾU CÓ)
                     if (isset($_FILES['album']) && !empty($_FILES['album']['name'][0])) {
                         foreach ($_FILES['album']['name'] as $key => $val) {
                             if ($_FILES['album']['error'][$key] == 0) {
@@ -77,10 +72,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 $subFileType = strtolower(pathinfo($subFileName, PATHINFO_EXTENSION));
                                 $newSubName = time() . '_album_' . $key . '_' . preg_replace("/[^a-zA-Z0-9.]/", "_", $subFileName);
                                 $subTargetPath = $targetDir . $newSubName;
-
                                 if (in_array($subFileType, $allowedTypes)) {
                                     if (move_uploaded_file($_FILES['album']['tmp_name'][$key], $subTargetPath)) {
-                                        // Lưu vào bảng product_images
                                         $productModel->addProductImage($newProductId, $newSubName);
                                     }
                                 }
@@ -92,11 +85,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
         } elseif ($action === 'edit') {
-            // Cập nhật thông tin sản phẩm chính
             if ($productModel->updateProduct($id, $name, $imageName, $desc, $price, $count, $brand, $category_id)) {
                 $message = "Đã cập nhật thông tin sản phẩm thành công.";
-
-                // XỬ LÝ UPLOAD THÊM ẢNH PHỤ VÀO ALBUM KHI SỬA
                 if (isset($_FILES['album']) && !empty($_FILES['album']['name'][0])) {
                     foreach ($_FILES['album']['name'] as $key => $val) {
                         if ($_FILES['album']['error'][$key] == 0) {
@@ -104,10 +94,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $subFileType = strtolower(pathinfo($subFileName, PATHINFO_EXTENSION));
                             $newSubName = time() . '_album_edit_' . $key . '_' . preg_replace("/[^a-zA-Z0-9.]/", "_", $subFileName);
                             $subTargetPath = $targetDir . $newSubName;
-
                             if (in_array($subFileType, $allowedTypes)) {
                                 if (move_uploaded_file($_FILES['album']['tmp_name'][$key], $subTargetPath)) {
-                                    // Thêm ảnh phụ mới vào sản phẩm đang sửa
                                     $productModel->addProductImage($id, $newSubName);
                                 }
                             }
@@ -121,151 +109,130 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// === CÀI ĐẶT LOGIC PHÂN TRANG CHO ADMIN ===
-$limit = 6; // Hiện 6 cây mỗi trang
+$limit = 6;
 $currentPage = isset($_GET['page']) ? intval($_GET['page']) : 1;
 if ($currentPage < 1) $currentPage = 1;
 
-// Đếm tổng số sản phẩm hiện có
 $totalProducts = $productModel->countAllProducts();
 $totalPages = ceil($totalProducts / $limit);
 
-// Lấy sản phẩm theo trang
 if (method_exists($productModel, 'getAllProductsAdmin')) {
     $products = $productModel->getAllProductsAdmin($currentPage, $limit);
 } else {
-    $products = $productModel->getAllProducts($currentPage, $limit); 
+    $products = $productModel->getAllProducts($currentPage, $limit);
 }
-
 $categories = $productModel->getAllCategories();
 ?>
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="font-display-md m-0">Quản lý Sản Phẩm</h2>
-    <button class="btn btn-primary-custom d-flex align-items-center gap-2" data-bs-toggle="modal"
-        data-bs-target="#productModal">
+<!-- Alerts -->
+<?php if ($message): ?>
+<div class="admin-alert success">
+    <span class="material-symbols-outlined">check_circle</span>
+    <?= $message ?>
+    <button class="close-btn" onclick="this.closest('.admin-alert').remove()">✕</button>
+</div>
+<?php endif; ?>
+<?php if ($error): ?>
+<div class="admin-alert error">
+    <span class="material-symbols-outlined">error</span>
+    <?= $error ?>
+    <button class="close-btn" onclick="this.closest('.admin-alert').remove()">✕</button>
+</div>
+<?php endif; ?>
+
+<!-- Page Header -->
+<div class="page-header">
+    <div>
+        <div class="page-title">Quản lý Sản Phẩm</div>
+        <div class="page-subtitle">Tổng cộng <?= $totalProducts ?> sản phẩm trong kho</div>
+    </div>
+    <button class="btn-primary-admin" data-bs-toggle="modal" data-bs-target="#productModal" onclick="resetAddForm()">
         <span class="material-symbols-outlined">add</span> Thêm Sản Phẩm Mới
     </button>
 </div>
 
-<?php if ($message): ?>
-<div class="alert alert-success alert-dismissible fade show" role="alert">
-    <?= $message ?>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-<?php endif; ?>
+<!-- Products Table -->
+<div class="admin-card">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th style="padding-left:24px;width:60px">ID</th>
+                <th style="width:70px">Ảnh</th>
+                <th>Tên Sản Phẩm</th>
+                <th>Thương Hiệu</th>
+                <th>Danh Mục</th>
+                <th>Giá Bán</th>
+                <th>Tồn Kho</th>
+                <th style="text-align:right;padding-right:24px">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($products as $p): ?>
+            <tr>
+                <td style="padding-left:24px;font-weight:700;color:var(--text-muted)">#<?= $p['Ma_SanPham'] ?></td>
+                <td>
+                    <img src="../view/image/<?= htmlspecialchars($p['Anh']) ?>" alt="<?= htmlspecialchars($p['TenSanPham']) ?>"
+                        style="width:46px;height:46px;object-fit:cover;border-radius:10px;border:1.5px solid var(--border)">
+                </td>
+                <td>
+                    <span style="font-weight:600;color:var(--text-primary)"><?= htmlspecialchars($p['TenSanPham']) ?></span>
+                </td>
+                <td style="color:var(--text-muted)"><?= htmlspecialchars($p['ThuongHieu']) ?></td>
+                <td>
+                    <span style="background:#f1f5f9;color:#475569;padding:3px 10px;border-radius:6px;font-size:0.78rem;font-weight:600">
+                        <?= htmlspecialchars($p['TenDanhMuc'] ?? '') ?>
+                    </span>
+                </td>
+                <td style="font-weight:700;color:#e63946"><?= number_format($p['GiaTien'], 0, ',', '.') ?>₫</td>
+                <td>
+                    <?php if ($p['SoLuong'] > 10): ?>
+                        <span class="stock-badge stock-ok"><?= $p['SoLuong'] ?></span>
+                    <?php elseif ($p['SoLuong'] > 0): ?>
+                        <span class="stock-badge stock-low"><?= $p['SoLuong'] ?></span>
+                    <?php else: ?>
+                        <span class="stock-badge stock-out">Hết</span>
+                    <?php endif; ?>
+                </td>
+                <td style="text-align:right;padding-right:24px">
+                    <div style="display:inline-flex;gap:6px">
+                        <button class="btn-icon primary" onclick='openEditModal(<?= json_encode($p) ?>)' title="Sửa">
+                            <span class="material-symbols-outlined">edit</span>
+                        </button>
+                        <a href="index.php?act=quanlysanpham&delete_id=<?= $p['Ma_SanPham'] ?>"
+                            class="btn-icon danger"
+                            onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này không?')" title="Xóa" style="text-decoration:none">
+                            <span class="material-symbols-outlined">delete</span>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
 
-<?php if ($error): ?>
-<div class="alert alert-danger alert-dismissible fade show" role="alert">
-    <?= $error ?>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-<?php endif; ?>
-
-<div class="card shadow-sm border-0 mb-4">
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th class="ps-4">ID</th>
-                        <th>Hình Ảnh</th>
-                        <th>Tên Sản Phẩm</th>
-                        <th>Thương Hiệu</th>
-                        <th>Danh Mục</th>
-                        <th>Giá Bán</th>
-                        <th>Tồn Kho</th>
-                        <th class="text-end pe-4">Thao tác</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($products as $p): ?>
-                    <tr>
-                        <td class="ps-4 fw-bold text-muted">#<?= $p['Ma_SanPham'] ?></td>
-                        <td>
-                            <img src="../view/image/<?= $p['Anh'] ?>" alt="<?= htmlspecialchars($p['TenSanPham']) ?>"
-                                style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">
-                        </td>
-                        <td>
-                            <span class="fw-bold text-dark d-block"><?= htmlspecialchars($p['TenSanPham']) ?></span>
-                        </td>
-                        <td><?= htmlspecialchars($p['ThuongHieu']) ?></td>
-                        <td><?= htmlspecialchars($p['TenDanhMuc'] ?? '') ?></td>
-                        <td class="fw-bold text-primary-custom"><?= number_format($p['GiaTien'], 0, ',', '.') ?>₫</td>
-                        <td>
-                            <?php if ($p['SoLuong'] > 10): ?>
-                            <span
-                                class="badge bg-success bg-opacity-10 text-success border border-success"><?= $p['SoLuong'] ?></span>
-                            <?php elseif ($p['SoLuong'] > 0): ?>
-                            <span
-                                class="badge bg-warning bg-opacity-10 text-warning border border-warning"><?= $p['SoLuong'] ?></span>
-                            <?php else: ?>
-                            <span class="badge bg-danger bg-opacity-10 text-danger border border-danger">Hết hàng</span>
-                            <?php endif; ?>
-                        </td>
-                        <td class="text-end pe-4">
-                            <button class="btn btn-sm btn-outline-secondary me-1"
-                                onclick='openEditModal(<?= json_encode($p) ?>)' title="Sửa">
-                                <span class="material-symbols-outlined" style="font-size: 18px;">edit</span>
-                            </button>
-                            <a href="index.php?act=quanlysanpham&delete_id=<?= $p['Ma_SanPham'] ?>"
-                                class="btn btn-sm btn-outline-danger"
-                                onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này không?');" title="Xóa">
-                                <span class="material-symbols-outlined" style="font-size: 18px;">delete</span>
-                            </a>
-                        </td>
-                    </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
+    <!-- Pagination -->
+    <?php if ($totalPages > 1): ?>
+    <div class="admin-pagination">
+        <a class="page-btn <?= $currentPage <= 1 ? 'disabled' : '' ?>" href="index.php?act=quanlysanpham&page=<?= $currentPage - 1 ?>">
+            <span class="material-symbols-outlined" style="font-size:16px">chevron_left</span>
+        </a>
+        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+        <a class="page-btn <?= $currentPage == $i ? 'active' : '' ?>" href="index.php?act=quanlysanpham&page=<?= $i ?>"><?= $i ?></a>
+        <?php endfor; ?>
+        <a class="page-btn <?= $currentPage >= $totalPages ? 'disabled' : '' ?>" href="index.php?act=quanlysanpham&page=<?= $currentPage + 1 ?>">
+            <span class="material-symbols-outlined" style="font-size:16px">chevron_right</span>
+        </a>
     </div>
+    <?php endif; ?>
 </div>
 
-<?php if (isset($totalPages) && $totalPages > 1): ?>
-<div class="d-flex justify-content-center mt-4 mb-4">
-    <nav aria-label="Page navigation">
-        <ul class="pagination pagination-sm m-0">
-            <?php $prevDisabled = ($currentPage <= 1) ? 'disabled' : ''; ?>
-            <li class="page-item <?php echo $prevDisabled; ?>">
-                <a class="page-link border-0 bg-light text-dark rounded-3 me-2 px-3"
-                    href="index.php?act=quanlysanpham&page=<?= $currentPage - 1 ?>" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
-
-            <?php for ($i = 1; $i <= $totalPages; $i++): 
-                $itemActive = ($currentPage == $i) ? 'active' : '';
-                $linkClass = ($currentPage == $i) ? 'bg-dark text-white' : 'bg-light text-muted';
-            ?>
-            <li class="page-item <?php echo $itemActive; ?>">
-                <a class="page-link border-0 mx-1 rounded-3 fw-bold <?php echo $linkClass; ?>"
-                    href="index.php?act=quanlysanpham&page=<?= $i ?>"
-                    style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
-                    <?= $i ?>
-                </a>
-            </li>
-            <?php endfor; ?>
-
-            <?php $nextDisabled = ($currentPage >= $totalPages) ? 'disabled' : ''; ?>
-            <li class="page-item <?php echo $nextDisabled; ?>">
-                <a class="page-link border-0 bg-light text-dark rounded-3 ms-2 px-3"
-                    href="index.php?act=quanlysanpham&page=<?= $currentPage + 1 ?>" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-</div>
-<?php endif; ?>
-
+<!-- Modal Add/Edit Product -->
 <div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <form action="index.php?act=quanlysanpham&page=<?= $currentPage ?>" method="POST"
-                enctype="multipart/form-data">
+            <form action="index.php?act=quanlysanpham&page=<?= $currentPage ?>" method="POST" enctype="multipart/form-data">
                 <div class="modal-header">
-                    <h5 class="modal-title fw-bold" id="productModalLabel">Thêm Sản Phẩm</h5>
+                    <h5 class="modal-title" id="productModalLabel">Thêm Sản Phẩm Mới</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -274,56 +241,49 @@ $categories = $productModel->getAllCategories();
 
                     <div class="row g-3">
                         <div class="col-md-8">
-                            <label class="form-label fw-bold">Tên sản phẩm *</label>
-                            <input type="text" class="form-control" name="name" id="productName" required>
+                            <label class="form-label">Tên sản phẩm *</label>
+                            <input type="text" class="form-control" name="name" id="productName" required placeholder="Nhập tên sản phẩm...">
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label fw-bold">Thương hiệu *</label>
-                            <input type="text" class="form-control" name="brand" id="productBrand" required>
+                            <label class="form-label">Thương hiệu *</label>
+                            <input type="text" class="form-control" name="brand" id="productBrand" required placeholder="VD: Yamaha">
                         </div>
-
                         <div class="col-md-4">
-                            <label class="form-label fw-bold">Danh mục *</label>
+                            <label class="form-label">Danh mục *</label>
                             <select class="form-select" name="category_id" id="productCategory" required>
                                 <option value="">Chọn danh mục</option>
                                 <?php foreach($categories as $c): ?>
-                                <option value="<?= $c['Ma_DanhMuc'] ?>"><?= $c['TenDanhMuc'] ?></option>
+                                <option value="<?= $c['Ma_DanhMuc'] ?>"><?= htmlspecialchars($c['TenDanhMuc']) ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label fw-bold">Giá bán (VNĐ) *</label>
-                            <input type="number" class="form-control" name="price" id="productPrice" min="0" required>
+                            <label class="form-label">Giá bán (VNĐ) *</label>
+                            <input type="number" class="form-control" name="price" id="productPrice" min="0" required placeholder="0">
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label fw-bold">Số lượng tồn kho *</label>
-                            <input type="number" class="form-control" name="count" id="productCount" min="0" required>
+                            <label class="form-label">Số lượng tồn kho *</label>
+                            <input type="number" class="form-control" name="count" id="productCount" min="0" required placeholder="0">
                         </div>
-
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">Hình ảnh đại diện chính *</label>
+                            <label class="form-label">Hình ảnh đại diện chính *</label>
                             <input type="file" class="form-control" name="image" id="productImage" accept="image/*">
-                            <small class="text-muted" id="imageHelp">Chọn ảnh đại diện. Nếu sửa, để trống để giữ ảnh
-                                cũ.</small>
+                            <div style="font-size:0.78rem;color:var(--text-muted);margin-top:4px" id="imageHelp">Để trống khi sửa để giữ ảnh cũ.</div>
                         </div>
-
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">Album ảnh chi tiết phụ (Chọn nhiều ảnh)</label>
-                            <input type="file" class="form-control" name="album[]" id="productAlbum" accept="image/*"
-                                multiple>
-                            <small class="text-muted">Nhấn giữ Ctrl để chọn cùng lúc tối đa 3-4 ảnh phụ chi
-                                tiết.</small>
+                            <label class="form-label">Album ảnh phụ (Chọn nhiều)</label>
+                            <input type="file" class="form-control" name="album[]" id="productAlbum" accept="image/*" multiple>
+                            <div style="font-size:0.78rem;color:var(--text-muted);margin-top:4px">Giữ Ctrl để chọn nhiều ảnh.</div>
                         </div>
-
                         <div class="col-12">
-                            <label class="form-label fw-bold">Mô tả sản phẩm</label>
-                            <textarea class="form-control" name="description" id="productDesc" rows="4"></textarea>
+                            <label class="form-label">Mô tả sản phẩm</label>
+                            <textarea class="form-control" name="description" id="productDesc" rows="3" placeholder="Nhập mô tả..."></textarea>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer" style="gap:10px">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="submit" class="btn btn-primary-custom" id="btnSubmitForm">Thêm mới</button>
+                    <button type="submit" class="btn-primary-admin" id="btnSubmitForm">Thêm mới</button>
                 </div>
             </form>
         </div>
@@ -331,8 +291,7 @@ $categories = $productModel->getAllCategories();
 </div>
 
 <script>
-// Mở modal Thêm mới
-document.querySelector('[data-bs-target="#productModal"]').addEventListener('click', function() {
+function resetAddForm() {
     document.getElementById('productModalLabel').innerText = 'Thêm Sản Phẩm Mới';
     document.getElementById('formAction').value = 'add';
     document.getElementById('productId').value = '';
@@ -343,11 +302,10 @@ document.querySelector('[data-bs-target="#productModal"]').addEventListener('cli
     document.getElementById('productCount').value = '';
     document.getElementById('productDesc').value = '';
     document.getElementById('productImage').required = true;
-    document.getElementById('productAlbum').value = ''; // Reset album file
+    document.getElementById('productAlbum').value = '';
     document.getElementById('btnSubmitForm').innerText = 'Thêm mới';
-});
+}
 
-// Mở modal Chỉnh sửa
 function openEditModal(product) {
     document.getElementById('productModalLabel').innerText = 'Chỉnh Sửa Sản Phẩm';
     document.getElementById('formAction').value = 'edit';
@@ -359,10 +317,8 @@ function openEditModal(product) {
     document.getElementById('productCount').value = product.SoLuong;
     document.getElementById('productDesc').value = product.MoTa;
     document.getElementById('productImage').required = false;
-    document.getElementById('productAlbum').value = ''; // Reset album file khi bấm sửa cây khác
+    document.getElementById('productAlbum').value = '';
     document.getElementById('btnSubmitForm').innerText = 'Lưu thay đổi';
-
-    var myModal = new bootstrap.Modal(document.getElementById('productModal'));
-    myModal.show();
+    new bootstrap.Modal(document.getElementById('productModal')).show();
 }
 </script>

@@ -11,14 +11,10 @@ $error = '';
 // Xử lý Xóa Danh Mục
 if (isset($_GET['delete_id'])) {
     $deleteId = intval($_GET['delete_id']);
-    
-    // Gọi hàm deleteCategory đã được cập nhật logic kiểm tra sản phẩm
     $resultDelete = $categoryModel->deleteCategory($deleteId);
-    
     if ($resultDelete === true) {
         $message = "Đã xóa danh mục thành công.";
     } elseif ($resultDelete === false) {
-        // Trường hợp dính ràng buộc sản phẩm (Model trả về false)
         $error = "Không thể xóa! Danh mục này hiện đang có sản phẩm bên trong. Vui lòng xóa hoặc chuyển sản phẩm sang danh mục khác trước.";
     } else {
         $error = "Có lỗi xảy ra trong quá trình xử lý xóa danh mục.";
@@ -30,119 +26,118 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
     $id = $_POST['category_id'] ?? 0;
     $name = trim($_POST['name'] ?? '');
-
     if (empty($name)) {
         $error = "Tên danh mục không được để trống.";
     } else {
         if ($action === 'add') {
-            if ($categoryModel->addCategory($name)) {
-                $message = "Đã thêm danh mục mới thành công.";
-            } else {
-                $error = "Có lỗi xảy ra khi thêm danh mục.";
-            }
+            if ($categoryModel->addCategory($name)) $message = "Đã thêm danh mục mới thành công.";
+            else $error = "Có lỗi xảy ra khi thêm danh mục.";
         } elseif ($action === 'edit') {
-            if ($categoryModel->updateCategory($id, $name)) {
-                $message = "Đã cập nhật danh mục thành công.";
-            } else {
-                $error = "Có lỗi xảy ra khi cập nhật.";
-            }
+            if ($categoryModel->updateCategory($id, $name)) $message = "Đã cập nhật danh mục thành công.";
+            else $error = "Có lỗi xảy ra khi cập nhật.";
         }
     }
 }
 
-// Lấy danh sách hiển thị
 $categories = $categoryModel->getAllCategories();
 ?>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="font-display-md m-0">Quản lý Danh Mục</h2>
-    <button class="btn btn-primary-custom d-flex align-items-center gap-2" data-bs-toggle="modal"
-        data-bs-target="#categoryModal" onclick="openAddModal()">
+<!-- Alerts -->
+<?php if ($message): ?>
+<div class="admin-alert success">
+    <span class="material-symbols-outlined">check_circle</span>
+    <?= $message ?>
+    <button class="close-btn" onclick="this.closest('.admin-alert').remove()">✕</button>
+</div>
+<?php endif; ?>
+<?php if ($error): ?>
+<div class="admin-alert error">
+    <span class="material-symbols-outlined">error</span>
+    <?= $error ?>
+    <button class="close-btn" onclick="this.closest('.admin-alert').remove()">✕</button>
+</div>
+<?php endif; ?>
+
+<!-- Page Header -->
+<div class="page-header">
+    <div>
+        <div class="page-title">Quản lý Danh Mục</div>
+        <div class="page-subtitle">Tổng cộng <?= count($categories) ?> danh mục sản phẩm</div>
+    </div>
+    <button class="btn-primary-admin" data-bs-toggle="modal" data-bs-target="#categoryModal" onclick="openAddModal()">
         <span class="material-symbols-outlined">add</span> Thêm Danh Mục Mới
     </button>
 </div>
 
-<?php if ($message): ?>
-<div class="alert alert-success alert-dismissible fade show" role="alert">
-    <?= $message ?>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-<?php endif; ?>
-
-<?php if ($error): ?>
-<div class="alert alert-danger alert-dismissible fade show" role="alert">
-    <?= $error ?>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-<?php endif; ?>
-
-<div class="card shadow-sm border-0" style="max-width: 800px;">
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th class="ps-4" style="width: 15%">ID</th>
-                        <th style="width: 60%">Tên Danh Mục</th>
-                        <th class="text-end pe-4" style="width: 25%">Thao tác</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (empty($categories)): ?>
-                    <tr>
-                        <td colspan="3" class="text-center py-4 text-muted">Chưa có danh mục nào.</td>
-                    </tr>
-                    <?php else: ?>
-                    <?php foreach ($categories as $c): ?>
-                    <tr>
-                        <td class="ps-4 fw-bold text-muted">#<?= $c['Ma_DanhMuc'] ?></td>
-                        <td>
-                            <span class="fw-bold text-dark fs-5"><?= htmlspecialchars($c['TenDanhMuc']) ?></span>
-                        </td>
-                        <td class="text-end pe-4">
-                            <button class="btn btn-sm btn-outline-secondary me-2"
-                                onclick='openEditModal(<?= $c['Ma_DanhMuc'] ?>, <?= json_encode($c['TenDanhMuc']) ?>)'
-                                title="Sửa">
-                                <span class="material-symbols-outlined" style="font-size: 18px;">edit</span>
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-danger"
-                                onclick="confirmDelete(<?= $c['Ma_DanhMuc'] ?>, '<?= htmlspecialchars($c['TenDanhMuc'], ENT_QUOTES) ?>')"
-                                title="Xóa">
-                                <span class="material-symbols-outlined" style="font-size: 18px;">delete</span>
-                            </button>
-                        </td>
-                    </tr>
-                    <?php endforeach; ?>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
-    </div>
+<!-- Category Table -->
+<div class="admin-card" style="max-width:700px">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th style="padding-left:24px;width:80px">ID</th>
+                <th>Tên Danh Mục</th>
+                <th style="text-align:right;padding-right:24px">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if (empty($categories)): ?>
+            <tr>
+                <td colspan="3" style="text-align:center;padding:40px;color:var(--text-muted)">
+                    <span class="material-symbols-outlined" style="font-size:48px;display:block;margin-bottom:8px;opacity:0.3">category</span>
+                    Chưa có danh mục nào.
+                </td>
+            </tr>
+            <?php else: ?>
+            <?php foreach ($categories as $c): ?>
+            <tr>
+                <td style="padding-left:24px;font-weight:700;color:var(--text-muted)">#<?= $c['Ma_DanhMuc'] ?></td>
+                <td>
+                    <div style="display:flex;align-items:center;gap:10px">
+                        <div style="width:36px;height:36px;background:linear-gradient(135deg,#e63946,#c1121f);border-radius:8px;display:flex;align-items:center;justify-content:center">
+                            <span class="material-symbols-outlined" style="font-size:18px;color:#fff">category</span>
+                        </div>
+                        <span style="font-weight:600;font-size:0.95rem"><?= htmlspecialchars($c['TenDanhMuc']) ?></span>
+                    </div>
+                </td>
+                <td style="text-align:right;padding-right:24px">
+                    <div style="display:inline-flex;gap:6px">
+                        <button class="btn-icon primary" onclick='openEditModal(<?= $c["Ma_DanhMuc"] ?>, <?= json_encode($c["TenDanhMuc"]) ?>)' title="Sửa">
+                            <span class="material-symbols-outlined">edit</span>
+                        </button>
+                        <button class="btn-icon danger" onclick="confirmDelete(<?= $c['Ma_DanhMuc'] ?>, '<?= htmlspecialchars($c['TenDanhMuc'], ENT_QUOTES) ?>')" title="Xóa">
+                            <span class="material-symbols-outlined">delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+            <?php endif; ?>
+        </tbody>
+    </table>
 </div>
 
+<!-- Modal -->
 <div class="modal fade" id="categoryModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content border-0 shadow">
+        <div class="modal-content">
             <form action="index.php?act=quanlydanhmuc" method="POST">
-                <div class="modal-header bg-light">
-                    <h5 class="modal-title fw-bold" id="categoryModalLabel">Thêm Danh Mục</h5>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="categoryModalLabel">Thêm Danh Mục</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body p-4">
+                <div class="modal-body">
                     <input type="hidden" name="action" id="formAction" value="add">
                     <input type="hidden" name="category_id" id="categoryId" value="">
-
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Tên Danh Mục *</label>
-                        <input type="text" class="form-control form-control-lg" name="name" id="categoryName"
-                            placeholder="Nhập tên..." required>
+                    <div>
+                        <label class="form-label">Tên Danh Mục *</label>
+                        <input type="text" class="form-control form-control-lg" name="name" id="categoryName" placeholder="Nhập tên danh mục..." required>
                     </div>
                 </div>
-                <div class="modal-footer bg-light">
+                <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="submit" class="btn btn-primary-custom px-4" id="btnSubmitForm">Thêm mới</button>
+                    <button type="submit" class="btn-primary-admin" id="btnSubmitForm">Thêm mới</button>
                 </div>
             </form>
         </div>
@@ -157,34 +152,27 @@ function openAddModal() {
     document.getElementById('categoryName').value = '';
     document.getElementById('btnSubmitForm').innerText = 'Thêm mới';
 }
-
 function openEditModal(id, name) {
     document.getElementById('categoryModalLabel').innerText = 'Chỉnh Sửa Danh Mục';
     document.getElementById('formAction').value = 'edit';
     document.getElementById('categoryId').value = id;
     document.getElementById('categoryName').value = name;
     document.getElementById('btnSubmitForm').innerText = 'Lưu thay đổi';
-
-    var myModal = new bootstrap.Modal(document.getElementById('categoryModal'));
-    myModal.show();
+    new bootstrap.Modal(document.getElementById('categoryModal')).show();
 }
-
-// Hàm xử lý xác nhận xóa bằng SweetAlert2 cho mượt mà
 function confirmDelete(id, name) {
     Swal.fire({
-        title: 'Bạn có chắc chắn muốn xóa danh mục này?',
-        text: `Danh mục "${name}" sẽ bị xóa nếu không dính sản phẩm nào!`,
+        title: 'Xác nhận xóa?',
+        text: `Danh mục "${name}" sẽ bị xóa vĩnh viễn!`,
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Xác nhận xóa',
-        cancelButtonText: 'Hủy'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // Chuyển trang để chạy logic xóa ở Controller bên trên
-            window.location.href = `index.php?act=quanlydanhmuc&delete_id=${id}`;
-        }
+        confirmButtonColor: '#e63946',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Xóa',
+        cancelButtonText: 'Hủy',
+        borderRadius: '12px'
+    }).then(result => {
+        if (result.isConfirmed) window.location.href = `index.php?act=quanlydanhmuc&delete_id=${id}`;
     });
 }
 </script>

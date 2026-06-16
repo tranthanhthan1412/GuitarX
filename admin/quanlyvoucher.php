@@ -12,9 +12,7 @@ $error = '';
 if (isset($_GET['delete_id'])) {
     $deleteId = intval($_GET['delete_id']);
     try {
-        if ($voucherModel->deleteVoucher($deleteId)) {
-            $message = "Đã xóa mã giảm giá thành công.";
-        }
+        if ($voucherModel->deleteVoucher($deleteId)) $message = "Đã xóa mã giảm giá thành công.";
     } catch (Exception $e) {
         $error = "Không thể xóa mã giảm giá này vì nó đã được sử dụng trong hóa đơn.";
     }
@@ -34,151 +32,146 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         try {
             if ($action === 'add') {
-                if ($voucherModel->addVoucher($code, $value, $qty, $expiry)) {
-                    $message = "Đã thêm mã giảm giá mới thành công.";
-                }
+                if ($voucherModel->addVoucher($code, $value, $qty, $expiry)) $message = "Đã thêm mã giảm giá mới thành công.";
             } elseif ($action === 'edit') {
-                if ($voucherModel->updateVoucher($id, $code, $value, $qty, $expiry)) {
-                    $message = "Đã cập nhật mã giảm giá thành công.";
-                }
+                if ($voucherModel->updateVoucher($id, $code, $value, $qty, $expiry)) $message = "Đã cập nhật mã giảm giá thành công.";
             }
         } catch (PDOException $e) {
-            // Lỗi trùng lặp mã Code (UNIQUE constraint)
-            if ($e->getCode() == 23000) {
-                $error = "Mã giảm giá (Code) này đã tồn tại, vui lòng chọn mã khác.";
-            } else {
-                $error = "Lỗi thao tác cơ sở dữ liệu: " . $e->getMessage();
-            }
+            if ($e->getCode() == 23000) $error = "Mã giảm giá (Code) này đã tồn tại, vui lòng chọn mã khác.";
+            else $error = "Lỗi thao tác cơ sở dữ liệu: " . $e->getMessage();
         }
     }
 }
 
-// Lấy danh sách hiển thị
 $vouchers = $voucherModel->getAllVouchers();
 ?>
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="font-display-md m-0">Quản lý Voucher</h2>
-    <button class="btn btn-primary-custom d-flex align-items-center gap-2" onclick="openAddModal()">
+<!-- Alerts -->
+<?php if ($message): ?>
+<div class="admin-alert success">
+    <span class="material-symbols-outlined">check_circle</span>
+    <?= $message ?>
+    <button class="close-btn" onclick="this.closest('.admin-alert').remove()">✕</button>
+</div>
+<?php endif; ?>
+<?php if ($error): ?>
+<div class="admin-alert error">
+    <span class="material-symbols-outlined">error</span>
+    <?= $error ?>
+    <button class="close-btn" onclick="this.closest('.admin-alert').remove()">✕</button>
+</div>
+<?php endif; ?>
+
+<!-- Page Header -->
+<div class="page-header">
+    <div>
+        <div class="page-title">Quản lý Voucher</div>
+        <div class="page-subtitle">Tổng cộng <?= count($vouchers) ?> mã giảm giá</div>
+    </div>
+    <button class="btn-primary-admin" onclick="openAddModal()">
         <span class="material-symbols-outlined">add</span> Thêm Mã Mới
     </button>
 </div>
 
-<?php if ($message): ?>
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <?= $message ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-<?php endif; ?>
-
-<?php if ($error): ?>
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <?= $error ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-<?php endif; ?>
-
-<div class="card shadow-sm border-0">
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th class="ps-4">ID</th>
-                        <th>Mã Code</th>
-                        <th>Mức Giảm</th>
-                        <th>Số Lượng Tồn</th>
-                        <th>Ngày Hết Hạn</th>
-                        <th>Trạng Thái</th>
-                        <th class="text-end pe-4">Thao tác</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (empty($vouchers)): ?>
-                        <tr><td colspan="7" class="text-center py-4 text-muted">Chưa có mã giảm giá nào.</td></tr>
+<!-- Voucher Table -->
+<div class="admin-card">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th style="padding-left:24px;width:60px">ID</th>
+                <th>Mã Code</th>
+                <th>Mức Giảm</th>
+                <th>Số Lượng Tồn</th>
+                <th>Ngày Hết Hạn</th>
+                <th>Trạng Thái</th>
+                <th style="text-align:right;padding-right:24px">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if (empty($vouchers)): ?>
+            <tr>
+                <td colspan="7" style="text-align:center;padding:40px;color:var(--text-muted)">
+                    <span class="material-symbols-outlined" style="font-size:48px;display:block;margin-bottom:8px;opacity:0.3">local_offer</span>
+                    Chưa có mã giảm giá nào.
+                </td>
+            </tr>
+            <?php else: ?>
+            <?php foreach ($vouchers as $v): 
+                $isExpired = strtotime($v['NgayHetHan']) < strtotime(date('Y-m-d'));
+                $isOut = $v['SoLuong'] <= 0;
+            ?>
+            <tr>
+                <td style="padding-left:24px;font-weight:700;color:var(--text-muted)">#<?= $v['Ma_MaGiamGia'] ?></td>
+                <td>
+                    <span style="background:#0f172a;color:#e63946;padding:5px 14px;border-radius:6px;font-size:0.82rem;font-weight:800;letter-spacing:2px;font-family:monospace">
+                        <?= htmlspecialchars($v['Ma']) ?>
+                    </span>
+                </td>
+                <td style="font-weight:700;color:#10b981"><?= number_format($v['GiaTriGiam'], 0, ',', '.') ?>₫</td>
+                <td>
+                    <span style="font-weight:700;color:<?= $isOut ? '#e63946' : 'var(--text-primary)' ?>"><?= $v['SoLuong'] ?></span>
+                </td>
+                <td style="color:var(--text-muted)"><?= date('d/m/Y', strtotime($v['NgayHetHan'])) ?></td>
+                <td>
+                    <?php if ($isExpired): ?>
+                        <span class="status-badge cancelled">Hết hạn</span>
+                    <?php elseif ($isOut): ?>
+                        <span class="status-badge" style="background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0">Hết lượt</span>
                     <?php else: ?>
-                        <?php foreach ($vouchers as $v): ?>
-                            <?php 
-                                $isExpired = strtotime($v['NgayHetHan']) < strtotime(date('Y-m-d'));
-                                $isOut = $v['SoLuong'] <= 0;
-                            ?>
-                            <tr>
-                                <td class="ps-4 fw-bold text-muted">#<?= $v['Ma_MaGiamGia'] ?></td>
-                                <td>
-                                    <span class="badge bg-dark px-3 py-2 fs-6 text-uppercase" style="letter-spacing: 2px;">
-                                        <?= htmlspecialchars($v['Ma']) ?>
-                                    </span>
-                                </td>
-                                <td class="fw-bold text-primary-custom"><?= number_format($v['GiaTriGiam'], 0, ',', '.') ?>₫</td>
-                                <td><?= $v['SoLuong'] ?></td>
-                                <td><?= date('d/m/Y', strtotime($v['NgayHetHan'])) ?></td>
-                                <td>
-                                    <?php if ($isExpired): ?>
-                                        <span class="badge bg-danger bg-opacity-10 text-danger border border-danger">Hết hạn</span>
-                                    <?php elseif ($isOut): ?>
-                                        <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary">Hết lượt</span>
-                                    <?php else: ?>
-                                        <span class="badge bg-success bg-opacity-10 text-success border border-success">Đang hoạt động</span>
-                                    <?php endif; ?>
-                                </td>
-                                <td class="text-end pe-4">
-                                    <button class="btn btn-sm btn-outline-secondary me-2" 
-                                        onclick='openEditModal(<?= json_encode($v) ?>)'
-                                        title="Sửa">
-                                        <span class="material-symbols-outlined" style="font-size: 18px;">edit</span>
-                                    </button>
-                                    <a href="index.php?act=quanlyvoucher&delete_id=<?= $v['Ma_MaGiamGia'] ?>" 
-                                       class="btn btn-sm btn-outline-danger" 
-                                       onclick="return confirm('Bạn có chắc chắn muốn xóa mã giảm giá này không?');"
-                                       title="Xóa">
-                                        <span class="material-symbols-outlined" style="font-size: 18px;">delete</span>
-                                    </a>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
+                        <span class="status-badge active-badge">Đang hoạt động</span>
                     <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
-    </div>
+                </td>
+                <td style="text-align:right;padding-right:24px">
+                    <div style="display:inline-flex;gap:6px">
+                        <button class="btn-icon primary" onclick='openEditModal(<?= json_encode($v) ?>)' title="Sửa">
+                            <span class="material-symbols-outlined">edit</span>
+                        </button>
+                        <a href="index.php?act=quanlyvoucher&delete_id=<?= $v['Ma_MaGiamGia'] ?>"
+                            class="btn-icon danger"
+                            onclick="return confirm('Bạn có chắc chắn muốn xóa mã giảm giá này không?')" title="Xóa" style="text-decoration:none">
+                            <span class="material-symbols-outlined">delete</span>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+            <?php endif; ?>
+        </tbody>
+    </table>
 </div>
 
 <!-- Modal Add/Edit Voucher -->
 <div class="modal fade" id="voucherModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content border-0 shadow">
+        <div class="modal-content">
             <form action="index.php?act=quanlyvoucher" method="POST">
-                <div class="modal-header bg-light">
-                    <h5 class="modal-title fw-bold" id="voucherModalLabel">Thêm Mã Giảm Giá</h5>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="voucherModalLabel">Thêm Mã Giảm Giá</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body p-4">
+                <div class="modal-body">
                     <input type="hidden" name="action" id="formAction" value="add">
                     <input type="hidden" name="voucher_id" id="voucherId" value="">
-                    
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Mã Code (Chữ & Số) *</label>
-                        <input type="text" class="form-control text-uppercase" name="code" id="voucherCode" placeholder="VD: GUITAR2026" required>
+                        <label class="form-label">Mã Code (Chữ & Số) *</label>
+                        <input type="text" class="form-control text-uppercase" name="code" id="voucherCode" placeholder="VD: GUITAR2026" required style="font-family:monospace;font-weight:700;letter-spacing:2px">
                     </div>
-                    
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Mức Giảm Giá (VNĐ) *</label>
-                        <input type="number" class="form-control" name="value" id="voucherValue" min="0" required>
+                        <label class="form-label">Mức Giảm Giá (VNĐ) *</label>
+                        <input type="number" class="form-control" name="value" id="voucherValue" min="0" required placeholder="0">
                     </div>
-
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Số Lượng Có Sẵn *</label>
-                        <input type="number" class="form-control" name="quantity" id="voucherQty" min="0" required>
+                        <label class="form-label">Số Lượng Có Sẵn *</label>
+                        <input type="number" class="form-control" name="quantity" id="voucherQty" min="0" required placeholder="100">
                     </div>
-
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Ngày Hết Hạn *</label>
+                        <label class="form-label">Ngày Hết Hạn *</label>
                         <input type="date" class="form-control" name="expiry" id="voucherExpiry" required>
                     </div>
                 </div>
-                <div class="modal-footer bg-light">
+                <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="submit" class="btn btn-primary-custom px-4" id="btnSubmitForm">Lưu</button>
+                    <button type="submit" class="btn-primary-admin" id="btnSubmitForm">Lưu</button>
                 </div>
             </form>
         </div>
@@ -195,11 +188,8 @@ function openAddModal() {
     document.getElementById('voucherQty').value = '';
     document.getElementById('voucherExpiry').value = '';
     document.getElementById('btnSubmitForm').innerText = 'Thêm mới';
-    
-    var myModal = new bootstrap.Modal(document.getElementById('voucherModal'));
-    myModal.show();
+    new bootstrap.Modal(document.getElementById('voucherModal')).show();
 }
-
 function openEditModal(voucher) {
     document.getElementById('voucherModalLabel').innerText = 'Chỉnh Sửa Mã Giảm Giá';
     document.getElementById('formAction').value = 'edit';
@@ -209,8 +199,6 @@ function openEditModal(voucher) {
     document.getElementById('voucherQty').value = voucher.SoLuong;
     document.getElementById('voucherExpiry').value = voucher.NgayHetHan;
     document.getElementById('btnSubmitForm').innerText = 'Lưu thay đổi';
-    
-    var myModal = new bootstrap.Modal(document.getElementById('voucherModal'));
-    myModal.show();
+    new bootstrap.Modal(document.getElementById('voucherModal')).show();
 }
 </script>
