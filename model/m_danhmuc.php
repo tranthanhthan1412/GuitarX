@@ -37,9 +37,19 @@ class CategoryModel {
     }
 
     public function deleteCategory($id) {
-        // Xóa danh mục có thể ảnh hưởng đến sản phẩm.
-        // Trong database schema, khóa ngoại `Ma_DanhMuc` ở bảng SanPham có tùy chọn `ON DELETE SET NULL`.
-        // Do đó khi xóa danh mục, các sản phẩm thuộc danh mục này sẽ có Ma_DanhMuc = NULL.
+        // 1. Kiểm tra xem có sản phẩm nào đang thuộc danh mục này không
+        $checkQuery = "SELECT COUNT(*) AS total FROM `SanPham` WHERE `Ma_DanhMuc` = :id";
+        $checkStmt = $this->db->prepare($checkQuery);
+        $checkStmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $checkStmt->execute();
+        $result = $checkStmt->fetch(PDO::FETCH_ASSOC);
+
+        // Nếu số lượng sản phẩm lớn hơn 0 thì trả về false, chặn không cho xóa
+        if ($result && $result['total'] > 0) {
+            return false;
+        }
+
+        // 2. Nếu không còn sản phẩm nào thì tiến hành xóa bình thường
         $query = "DELETE FROM `DanhMuc` WHERE `Ma_DanhMuc` = :id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);

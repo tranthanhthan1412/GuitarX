@@ -20,6 +20,7 @@ if (isset($_SESSION['user_id'])) {
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>GuitarX</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
@@ -103,15 +104,17 @@ if (isset($_SESSION['user_id'])) {
             gap: 10px !important;
         }
 
-        .hdr-cart-text, .hdr-action-label, .hdr-badge {
+        .hdr-cart-text,
+        .hdr-action-label,
+        .hdr-badge {
             display: none !important;
         }
-        
+
         .hdr-cart-btn {
             padding: 0.4rem 0.6rem;
             margin-left: 0;
         }
-        
+
         .hdr-action-icon .material-symbols-outlined {
             font-size: 22px;
         }
@@ -121,9 +124,11 @@ if (isset($_SESSION['user_id'])) {
             background-color: #1a1a2e !important;
             color: #fff;
         }
+
         .offcanvas-custom .offcanvas-header {
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
+
         .cat-links-mobile .cat-link {
             color: #ffffff !important;
             padding: 15px 20px !important;
@@ -132,6 +137,7 @@ if (isset($_SESSION['user_id'])) {
             font-size: 14px;
             display: block;
         }
+
         .cat-contact-mobile {
             padding: 15px 20px;
             color: #ffffff !important;
@@ -149,8 +155,8 @@ if (isset($_SESSION['user_id'])) {
         <div class="container-max-custom px-desktop-custom">
             <div class="header-inner">
 
-                <!-- Nút Hamburger Mobile (chỉ hiện trên mobile) -->
-                <button class="mobile-menu-btn d-md-none order-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenuOffcanvas" aria-controls="mobileMenuOffcanvas">
+                <button class="mobile-menu-btn d-md-none order-1" type="button" data-bs-toggle="offcanvas"
+                    data-bs-target="#mobileMenuOffcanvas" aria-controls="mobileMenuOffcanvas">
                     <span class="material-symbols-outlined" style="font-size: 28px;">menu</span>
                 </button>
 
@@ -202,7 +208,7 @@ if (isset($_SESSION['user_id'])) {
                         <button class="hdr-action-btn border-0 bg-transparent p-0 d-flex flex-column align-items-center"
                             type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Tài khoản">
                             <span class="hdr-action-icon">
-                                <span class="material-symbols-outlined text-primary-custom">person</span>
+                                <span class="material-symbols-outlined">person</span>
                             </span>
                             <span class="hdr-action-label text-truncate" style="max-width: 80px;">
                                 <?php echo htmlspecialchars($_SESSION['username']); ?>
@@ -212,7 +218,8 @@ if (isset($_SESSION['user_id'])) {
                             <li>
                                 <div class="px-3 py-2">
                                     <div class="d-flex align-items-center gap-2 mb-1">
-                                        <span class="material-symbols-outlined text-muted" style="font-size:18px;">person</span>
+                                        <span class="material-symbols-outlined text-muted"
+                                            style="font-size:18px;">person</span>
                                         <strong><?php echo htmlspecialchars($_SESSION['username']); ?></strong>
                                     </div>
                                     <?php if (isset($rankInfo)): ?>
@@ -222,7 +229,9 @@ if (isset($_SESSION['user_id'])) {
                                     <?php endif; ?>
                                 </div>
                             </li>
-                            <li><hr class="dropdown-divider m-0"></li>
+                            <li>
+                                <hr class="dropdown-divider m-0">
+                            </li>
                             <?php if($_SESSION['role'] === 'admin'): ?>
                             <li><a class="dropdown-item" href="<?= BASE_URL ?>admin/index.php"><span
                                         class="material-symbols-outlined align-middle fs-5 me-2">admin_panel_settings</span>Trang
@@ -258,7 +267,8 @@ if (isset($_SESSION['user_id'])) {
                             }
                         }
                     ?>
-                    <a href="<?= BASE_URL ?>index.php?act=giohang" class="hdr-cart-btn text-decoration-none" title="Giỏ hàng">
+                    <a href="<?= BASE_URL ?>index.php?act=giohang" class="hdr-cart-btn text-decoration-none"
+                        title="Giỏ hàng">
                         <span class="hdr-action-icon">
                             <span class="material-symbols-outlined">shopping_cart</span>
                             <span class="hdr-badge hdr-badge--red"><?php echo $cartItemCount; ?></span>
@@ -276,7 +286,7 @@ if (isset($_SESSION['user_id'])) {
 
     <nav class="category-nav p-0">
         <div class="container-max-custom px-desktop-custom">
-            
+
             <div class="d-none d-md-flex align-items-center w-100 category-nav-inner">
                 <button class="cat-all-btn">
                     <span class="material-symbols-outlined">menu</span>
@@ -285,7 +295,8 @@ if (isset($_SESSION['user_id'])) {
                 <div class="cat-links">
                     <?php if (!empty($categories)): ?>
                     <?php foreach ($categories as $cat): ?>
-                    <a class="cat-link text-decoration-none" href="<?= BASE_URL ?>index.php?act=sanpham&id=<?php echo $cat['Ma_DanhMuc']; ?>">
+                    <a class="cat-link text-decoration-none"
+                        href="<?= BASE_URL ?>index.php?act=sanpham&id=<?php echo $cat['Ma_DanhMuc']; ?>">
                         <?php echo htmlspecialchars($cat['TenDanhMuc']); ?>
                     </a>
                     <?php endforeach; ?>
@@ -298,7 +309,8 @@ if (isset($_SESSION['user_id'])) {
                     <a class="cat-link text-decoration-none" href="#">Phụ kiện</a>
                     <?php endif; ?>
 
-                    <a class="cat-link cat-link--hot text-decoration-none" href="<?= BASE_URL ?>index.php?act=sansale">Săn Sale chớp nhoáng 🔥</a>
+                    <a class="cat-link cat-link--hot text-decoration-none"
+                        href="<?= BASE_URL ?>index.php?act=sansale">Săn Sale chớp nhoáng 🔥</a>
                 </div>
                 <div class="cat-contact ms-auto text-dark d-flex align-items-center gap-1">
                     <span class="material-symbols-outlined" style="font-size:16px;color:#e63946;">call</span>
@@ -306,15 +318,17 @@ if (isset($_SESSION['user_id'])) {
                 </div>
             </div>
 
-            <!-- Offcanvas Menu for Mobile -->
-            <div class="offcanvas offcanvas-start offcanvas-custom" tabindex="-1" id="mobileMenuOffcanvas" aria-labelledby="mobileMenuOffcanvasLabel">
+            <div class="offcanvas offcanvas-start offcanvas-custom" tabindex="-1" id="mobileMenuOffcanvas"
+                aria-labelledby="mobileMenuOffcanvasLabel">
                 <div class="offcanvas-header py-3">
                     <div class="logo-name">
-                        <span class="logo-main" style="font-size: 1.2rem;">Guitar</span><span class="logo-accent" style="font-size: 1.2rem;">X</span>
+                        <span class="logo-main" style="font-size: 1.2rem;">Guitar</span><span class="logo-accent"
+                            style="font-size: 1.2rem;">X</span>
                     </div>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+                        aria-label="Close"></button>
                 </div>
-                
+
                 <div class="offcanvas-body p-0">
                     <div class="cat-links-mobile">
                         <?php if (!empty($categories)): ?>
@@ -337,9 +351,9 @@ if (isset($_SESSION['user_id'])) {
                             href="<?= BASE_URL ?>index.php?act=sansale">SĂN SALE CHỚP NHOÁNG 🔥</a>
                     </div>
                 </div>
-                
-                <!-- Chân Offcanvas: Cố định Hotline ở dưới cùng -->
-                <div class="cat-contact-mobile d-flex align-items-center gap-3 mt-auto p-3 flex-shrink-0" style="border-top: 1px solid rgba(255,255,255,0.05); background-color: rgba(0,0,0,0.2);">
+
+                <div class="cat-contact-mobile d-flex align-items-center gap-3 mt-auto p-3 flex-shrink-0"
+                    style="border-top: 1px solid rgba(255,255,255,0.05); background-color: rgba(0,0,0,0.2);">
                     <span class="material-symbols-outlined" style="font-size:32px;color:#e63946;">support_agent</span>
                     <div class="d-flex flex-column">
                         <span style="font-size: 12px; opacity: 0.7; font-weight: 500;">Hotline hỗ trợ (24/7):</span>
@@ -347,7 +361,7 @@ if (isset($_SESSION['user_id'])) {
                     </div>
                 </div>
             </div>
-            
+
         </div>
     </nav>
 
@@ -386,3 +400,21 @@ if (isset($_SESSION['user_id'])) {
             .catch(err => console.error(err));
     }
     </script>
+
+    <?php if (isset($_SESSION['login_success'])): ?>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        Swal.fire({
+            title: 'Đăng nhập thành công!',
+            text: '<?php echo $_SESSION['login_success']; ?>',
+            icon: 'success',
+            timer: 2000,
+            showConfirmButton: false,
+            position: 'top-end',
+            toast: true,
+            timerProgressBar: true
+        });
+    });
+    </script>
+    <?php unset($_SESSION['login_success']); ?>
+    <?php endif; ?>

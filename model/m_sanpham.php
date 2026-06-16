@@ -165,7 +165,7 @@ class ProductModel {
 public function getAllProductsAdmin($page = 1, $limit = 6) {
     $offset = ($page - 1) * $limit;
     
-    // Admin thì cứ ID mới nhất xếp lên đầu cho dễ quản lý bro nhé
+    // Admin thì cứ ID mới nhất xếp lên đầu cho dễ quản lý
     $query = "SELECT * FROM `SanPham` ORDER BY `Ma_SanPham` DESC LIMIT :offset, :limit";
     
     $stmt = $this->db->prepare($query);

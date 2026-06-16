@@ -59,17 +59,17 @@ function getStatusLabel($status) {
 </div>
 
 <?php if ($message): ?>
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <?= $message ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <?= $message ?>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
 <?php endif; ?>
 
 <?php if ($error): ?>
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <?= $error ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <?= $error ?>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
 <?php endif; ?>
 
 <div class="card shadow-sm border-0">
@@ -88,38 +88,58 @@ function getStatusLabel($status) {
                 </thead>
                 <tbody>
                     <?php if (empty($orders)): ?>
-                        <tr><td colspan="6" class="text-center py-4 text-muted">Chưa có đơn hàng nào.</td></tr>
+                    <tr>
+                        <td colspan="6" class="text-center py-4 text-muted">Chưa có đơn hàng nào.</td>
+                    </tr>
                     <?php else: ?>
-                        <?php foreach ($orders as $o): ?>
-                            <tr>
-                                <td class="ps-4 fw-bold text-muted">#<?= $o['Ma_DonHang'] ?></td>
-                                <td><span class="fw-bold text-dark"><?= htmlspecialchars($o['CustomerName']) ?></span></td>
-                                <td><?= htmlspecialchars($o['PaymentName'] ?? 'Không rõ') ?></td>
-                                <td class="fw-bold text-primary-custom"><?= number_format($o['GrandTotal'], 0, ',', '.') ?>₫</td>
-                                <td>
-                                    <span class="badge <?= getStatusBadgeClass($o['TrangThai']) ?> px-2 py-1" style="font-size: 0.85rem;">
-                                        <?= getStatusLabel($o['TrangThai']) ?>
-                                    </span>
-                                </td>
-                                <td class="text-end pe-4 d-flex justify-content-end align-items-center gap-2">
-                                    <button class="btn btn-sm btn-outline-primary" onclick="viewOrderDetails(<?= $o['Ma_DonHang'] ?>)" title="Xem chi tiết">
-                                        <span class="material-symbols-outlined" style="font-size: 18px;">visibility</span>
-                                    </button>
-                                    
-                                    <form action="index.php?act=quanlydonhang" method="POST" class="d-flex align-items-center m-0">
-                                        <input type="hidden" name="action" value="update_status">
-                                        <input type="hidden" name="order_id" value="<?= $o['Ma_DonHang'] ?>">
-                                        <select name="status" class="form-select form-select-sm me-1" style="width: 140px;" <?= $o['TrangThai'] == 'Cancelled' ? 'disabled' : '' ?>>
-                                            <option value="Pending" <?= $o['TrangThai'] == 'Pending' ? 'selected' : '' ?>>Đang xử lý</option>
-                                            <option value="Shipping" <?= $o['TrangThai'] == 'Shipping' ? 'selected' : '' ?>>Đang giao hàng</option>
-                                            <option value="Completed" <?= $o['TrangThai'] == 'Completed' ? 'selected' : '' ?>>Hoàn thành</option>
-                                            <option value="Cancelled" <?= $o['TrangThai'] == 'Cancelled' ? 'selected' : '' ?>>Hủy đơn</option>
-                                        </select>
-                                        <button type="submit" class="btn btn-sm btn-secondary-custom" <?= $o['TrangThai'] == 'Cancelled' ? 'disabled' : '' ?>>Lưu</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
+                    <?php foreach ($orders as $o): ?>
+                    <tr>
+                        <td class="ps-4 fw-bold text-muted">#<?= $o['Ma_DonHang'] ?></td>
+                        <td><span class="fw-bold text-dark"><?= htmlspecialchars($o['CustomerName']) ?></span></td>
+                        <td><?= htmlspecialchars($o['PaymentName'] ?? 'Không rõ') ?></td>
+                        <td class="fw-bold text-primary-custom"><?= number_format($o['GrandTotal'], 0, ',', '.') ?>₫
+                        </td>
+                        <td>
+                            <span class="badge <?= getStatusBadgeClass($o['TrangThai']) ?> px-2 py-1"
+                                style="font-size: 0.85rem;">
+                                <?= getStatusLabel($o['TrangThai']) ?>
+                            </span>
+                        </td>
+                        <td class="text-end pe-4 d-flex justify-content-end align-items-center gap-2">
+                            <button class="btn btn-sm btn-outline-primary"
+                                onclick="viewOrderDetails(<?= $o['Ma_DonHang'] ?>)" title="Xem chi tiết">
+                                <span class="material-symbols-outlined" style="font-size: 18px;">visibility</span>
+                            </button>
+
+                            <form action="index.php?act=quanlydonhang" method="POST"
+                                class="d-flex align-items-center m-0">
+                                <input type="hidden" name="action" value="update_status">
+                                <input type="hidden" name="order_id" value="<?= $o['Ma_DonHang'] ?>">
+
+                                <select name="status" class="form-select form-select-sm me-1" style="width: 140px;"
+                                    <?= ($o['TrangThai'] == 'Completed' || $o['TrangThai'] == 'Cancelled') ? 'disabled' : '' ?>>
+
+                                    <option value="Pending" <?= $o['TrangThai'] == 'Pending' ? 'selected' : '' ?>
+                                        <?= ($o['TrangThai'] == 'Shipping') ? 'disabled class="text-muted bg-light"' : '' ?>>
+                                        Đang xử lý
+                                    </option>
+
+                                    <option value="Shipping" <?= $o['TrangThai'] == 'Shipping' ? 'selected' : '' ?>>Đang
+                                        giao hàng</option>
+                                    <option value="Completed" <?= $o['TrangThai'] == 'Completed' ? 'selected' : '' ?>>
+                                        Hoàn thành</option>
+                                    <option value="Cancelled" <?= $o['TrangThai'] == 'Cancelled' ? 'selected' : '' ?>>
+                                        Hủy đơn</option>
+                                </select>
+
+                                <button type="submit" class="btn btn-sm btn-secondary-custom"
+                                    <?= ($o['TrangThai'] == 'Completed' || $o['TrangThai'] == 'Cancelled') ? 'disabled style="opacity: 0.6; cursor: not-allowed;"' : '' ?>>
+                                    Lưu
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
                     <?php endif; ?>
                 </tbody>
             </table>
@@ -127,13 +147,13 @@ function getStatusLabel($status) {
     </div>
 </div>
 
-<!-- Modal Chi tiết đơn hàng -->
 <div class="modal fade" id="orderDetailModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content border-0 shadow-lg">
             <div class="modal-header bg-dark text-white">
                 <h5 class="modal-title fw-bold" id="orderModalTitle">Chi tiết đơn hàng</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
             </div>
             <div class="modal-body p-4 bg-light">
                 <div id="orderLoading" class="text-center py-4">
@@ -141,12 +161,13 @@ function getStatusLabel($status) {
                         <span class="visually-hidden">Loading...</span>
                     </div>
                 </div>
-                
+
                 <div id="orderContent" style="display: none;">
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <div class="card h-100 border-0 shadow-sm">
-                                <div class="card-header bg-white fw-bold text-uppercase" style="font-size: 0.85rem; letter-spacing: 1px;">Thông tin Khách Hàng</div>
+                                <div class="card-header bg-white fw-bold text-uppercase"
+                                    style="font-size: 0.85rem; letter-spacing: 1px;">Thông tin Khách Hàng</div>
                                 <div class="card-body">
                                     <p class="mb-1"><strong>Tên:</strong> <span id="detailName"></span></p>
                                     <p class="mb-1"><strong>Email:</strong> <span id="detailEmail"></span></p>
@@ -156,7 +177,8 @@ function getStatusLabel($status) {
                         </div>
                         <div class="col-md-6">
                             <div class="card h-100 border-0 shadow-sm">
-                                <div class="card-header bg-white fw-bold text-uppercase" style="font-size: 0.85rem; letter-spacing: 1px;">Thông tin Giao Hàng</div>
+                                <div class="card-header bg-white fw-bold text-uppercase"
+                                    style="font-size: 0.85rem; letter-spacing: 1px;">Thông tin Giao Hàng</div>
                                 <div class="card-body">
                                     <p class="mb-1"><strong>Địa chỉ:</strong> <span id="detailAddress"></span></p>
                                     <p class="mb-0"><strong>Thành phố:</strong> <span id="detailCity"></span></p>
@@ -164,9 +186,10 @@ function getStatusLabel($status) {
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="card border-0 shadow-sm">
-                        <div class="card-header bg-white fw-bold text-uppercase" style="font-size: 0.85rem; letter-spacing: 1px;">Danh Sách Sản Phẩm</div>
+                        <div class="card-header bg-white fw-bold text-uppercase"
+                            style="font-size: 0.85rem; letter-spacing: 1px;">Danh Sách Sản Phẩm</div>
                         <div class="table-responsive">
                             <table class="table mb-0 align-middle">
                                 <thead class="table-light">
@@ -177,7 +200,6 @@ function getStatusLabel($status) {
                                     </tr>
                                 </thead>
                                 <tbody id="detailItemsTable">
-                                    <!-- Rows injected via JS -->
                                 </tbody>
                             </table>
                         </div>
@@ -196,16 +218,16 @@ function viewOrderDetails(orderId) {
     document.getElementById('orderModalTitle').innerText = 'Chi tiết Đơn hàng #' + orderId;
     document.getElementById('orderLoading').style.display = 'block';
     document.getElementById('orderContent').style.display = 'none';
-    
+
     var myModal = new bootstrap.Modal(document.getElementById('orderDetailModal'));
     myModal.show();
-    
+
     fetch('quanlydonhang.php?ajax=get_details&order_id=' + orderId)
         .then(response => response.json())
         .then(data => {
             document.getElementById('orderLoading').style.display = 'none';
             document.getElementById('orderContent').style.display = 'block';
-            
+
             // Render Info
             const info = data.info;
             document.getElementById('detailName').innerText = info.TenNguoiDung;
@@ -213,7 +235,7 @@ function viewOrderDetails(orderId) {
             document.getElementById('detailPhone').innerText = info.SDT || 'N/A';
             document.getElementById('detailAddress').innerText = info.DiaChi || 'N/A';
             document.getElementById('detailCity').innerText = info.ThanhPho || 'N/A';
-            
+
             // Render Items
             const itemsTbody = document.getElementById('detailItemsTable');
             itemsTbody.innerHTML = '';
@@ -231,7 +253,8 @@ function viewOrderDetails(orderId) {
             });
         })
         .catch(error => {
-            document.getElementById('orderLoading').innerHTML = '<div class="alert alert-danger m-0">Lỗi khi tải chi tiết đơn hàng!</div>';
+            document.getElementById('orderLoading').innerHTML =
+                '<div class="alert alert-danger m-0">Lỗi khi tải chi tiết đơn hàng!</div>';
         });
 }
 </script>

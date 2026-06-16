@@ -28,13 +28,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
     $userData = $userModel->checkLogin($username, $password);
 
     if ($userData) {
-        // Đăng nhập thành công
+        
+        // 🛑 BƯỚC KIỂM TRA TÀI KHOẢN BỊ KHÓA (BAN)
+        if ($userData['VaiTro'] === 'banned') {
+            session_unset();
+            if (session_status() == PHP_SESSION_ACTIVE) {
+                session_destroy();
+            }
+            // Đá ngược về kèm thông báo lỗi bị khóa tài khoản
+            header("Location: " . $redirectOnFail . "banned");
+            exit();
+        }
+
+        // Đăng nhập thành công (Không bị khóa)
         $_SESSION['user_id'] = $userData['Ma_NguoiDung'];
         $_SESSION['username'] = $userData['TenNguoiDung'];
         $_SESSION['email'] = $userData['Email'] ?? '';
         $_SESSION['role'] = $userData['VaiTro'];
 
-        // Nếu đăng nhập từ form admin mà không phải admin thì từ chối (hoặc có thể vẫn cho vào nhưng ở trang index)
+        // 🟢 Tạo thông báo chào mừng
+        $_SESSION['login_success'] = "Chào mừng " . $userData['TenNguoiDung'] . " đã quay trở lại!";
+
+        // Nếu đăng nhập từ form admin mà không phải admin thì từ chối
         if ($isAdminLogin && $userData['VaiTro'] !== 'admin') {
             session_unset();
             session_destroy();
@@ -76,6 +91,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
             $_SESSION['username'] = $userData['TenNguoiDung'];
             $_SESSION['email'] = $userData['Email'] ?? '';
             $_SESSION['role'] = $userData['VaiTro'];
+            
+            $_SESSION['login_success'] = "Đăng ký và đăng nhập thành công! Chào mừng " . $userData['TenNguoiDung'] . ".";
         }
         header("Location: ../index.php");
         exit();
@@ -85,6 +102,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         exit();
     }
 }
+
 // Xử lý logic Đăng xuất
 if (isset($_GET['act']) && $_GET['act'] == 'logout') {
     session_unset();

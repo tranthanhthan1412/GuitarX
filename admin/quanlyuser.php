@@ -8,36 +8,46 @@ $userModel = new UserModel($db);
 $message = '';
 $error = '';
 
-// Xử lý Thay đổi Quyền
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'change_role') {
-    $userId = intval($_POST['user_id'] ?? 0);
-    $newRole = trim($_POST['role'] ?? '');
-    
-    // Không cho phép tự đổi quyền của chính mình (nếu đang đăng nhập)
+// Xử lý Khóa / Mở Khóa tài khoản qua phương thức GET để đồng bộ với SweetAlert2
+if (isset($_GET['action']) && isset($_GET['user_id'])) {
+    $userId = intval($_GET['user_id']);
+    $action = trim($_GET['action']);
+
+    // Không cho phép tự khóa chính mình
     if ($userId === $_SESSION['user_id']) {
-        $error = "Bạn không thể tự thay đổi quyền của chính mình!";
-    } elseif ($userId > 0 && in_array($newRole, ['customer', 'admin', 'banned'])) {
-        if ($userModel->changeUserRole($userId, $newRole)) {
-            $message = "Đã cập nhật quyền của người dùng thành công.";
-        } else {
-            $error = "Có lỗi xảy ra khi cập nhật.";
+        $error = "Bạn không thể tự khóa tài khoản của chính mình!";
+    } elseif ($userId > 0) {
+        if ($action === 'lock') {
+            // Gọi hàm đổi vai trò/trạng thái thành 'banned'
+            if ($userModel->changeUserRole($userId, 'banned')) {
+                $message = "Đã khóa tài khoản thành công.";
+            } else {
+                $error = "Có lỗi xảy ra khi khóa tài khoản.";
+            }
+        } elseif ($action === 'unlock') {
+            // Mở khóa thì trả về quyền mặc định là 'customer'
+            if ($userModel->changeUserRole($userId, 'customer')) {
+                $message = "Đã mở khóa tài khoản thành công.";
+            } else {
+                $error = "Có lỗi xảy ra khi mở khóa tài khoản.";
+            }
         }
     }
 }
 
-// Lấy danh sách users (Lưu ý: Đảm bảo hàm getAllUsers() trong m_user.php đã được LEFT JOIN với bảng customer_rank như tao chỉ lúc nãy nhé)
+// Lấy danh sách users
 $users = $userModel->getAllUsers();
 
 function getRoleBadge($role) {
     switch ($role) {
         case 'admin': return '<span class="badge bg-danger">Quản Trị Viên</span>';
         case 'banned': return '<span class="badge bg-dark">Đã Khóa</span>';
-        default: return '<span class="badge bg-secondary">Khách Hàng</span>';
+        default: return '<span class="badge bg-success">Hoạt Động</span>';
     }
 }
-
-// Đã xóa hàm getRankBadge cũ, giờ dùng trực tiếp class từ m_user.php
 ?>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="font-display-md m-0">Quản lý Người Dùng</h2>
@@ -68,7 +78,7 @@ function getRoleBadge($role) {
                         <th>Email</th>
                         <th>Số Điện Thoại</th>
                         <th>Ngày Đăng Ký</th>
-                        <th>Phân Quyền</th>
+                        <th>Trạng Thái</th>
                         <th>Hạng Thành Viên</th>
                         <th class="text-end pe-4">Thao tác</th>
                     </tr>
@@ -88,25 +98,26 @@ function getRoleBadge($role) {
                         <td><?= date('d/m/Y H:i', strtotime($u['NgayKhoiTao'])) ?></td>
                         <td><?= getRoleBadge($u['VaiTro']) ?></td>
 
-                        <td><span class="<?= htmlspecialchars($u['RankClass'] ?? 'rank-badge rank-new') ?>"><?= htmlspecialchars($u['TenXepHang'] ?? '🌱 Thành viên mới') ?></span></td>
+                        <td><span
+                                class="<?= htmlspecialchars($u['RankClass'] ?? 'rank-badge rank-new') ?>"><?= htmlspecialchars($u['TenXepHang'] ?? '🌱 Thành viên mới') ?></span>
+                        </td>
 
                         <td class="text-end pe-4">
-                            <form action="index.php?act=quanlyuser" method="POST"
-                                class="d-flex align-items-center justify-content-end m-0">
-                                <input type="hidden" name="action" value="change_role">
-                                <input type="hidden" name="user_id" value="<?= $u['Ma_NguoiDung'] ?>">
-                                <select name="role" class="form-select form-select-sm me-2" style="width: 130px;"
-                                    <?= $u['Ma_NguoiDung'] === $_SESSION['user_id'] ? 'disabled' : '' ?>>
-                                    <option value="customer" <?= $u['VaiTro'] == 'customer' ? 'selected' : '' ?>>Khách
-                                        Hàng</option>
-                                    <option value="admin" <?= $u['VaiTro'] == 'admin' ? 'selected' : '' ?>>Quản Trị Viên
-                                    </option>
-                                    <option value="banned" <?= $u['VaiTro'] == 'banned' ? 'selected' : '' ?>>Khóa (Ban)
-                                    </option>
-                                </select>
-                                <button type="submit" class="btn btn-sm btn-secondary-custom"
-                                    <?= $u['Ma_NguoiDung'] === $_SESSION['user_id'] ? 'disabled' : '' ?>>Lưu</button>
-                            </form>
+                            <?php if ($u['Ma_NguoiDung'] !== $_SESSION['user_id'] && $u['VaiTro'] !== 'admin'): ?>
+                            <?php if ($u['VaiTro'] === 'banned'): ?>
+                            <a href="index.php?act=quanlyuser&action=unlock&user_id=<?= $u['Ma_NguoiDung'] ?>"
+                                class="btn btn-sm btn-outline-success fw-bold px-3">
+                                Mở Khóa
+                            </a>
+                            <?php else: ?>
+                            <button type="button" class="btn btn-sm btn-outline-danger fw-bold px-3"
+                                onclick="confirmLock(<?= $u['Ma_NguoiDung'] ?>, '<?= htmlspecialchars($u['TenNguoiDung'], ENT_QUOTES) ?>')">
+                                Khóa tài khoản
+                            </button>
+                            <?php endif; ?>
+                            <?php else: ?>
+                            <span class="text-muted small italic">Không thể tác động</span>
+                            <?php endif; ?>
                         </td>
                     </tr>
                     <?php endforeach; ?>
@@ -116,3 +127,24 @@ function getRoleBadge($role) {
         </div>
     </div>
 </div>
+
+<script>
+// Hàm xác nhận khóa tài khoản bằng SweetAlert2
+function confirmLock(id, username) {
+    Swal.fire({
+        title: 'Xác nhận khóa tài khoản?',
+        text: `Bạn có chắc chắn muốn khóa tài khoản của "${username}" không?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Xác nhận khóa',
+        cancelButtonText: 'Hủy'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Chuyển trang thực hiện logic khóa ở Controller bên trên
+            window.location.href = `index.php?act=quanlyuser&action=lock&user_id=${id}`;
+        }
+    });
+}
+</script>
