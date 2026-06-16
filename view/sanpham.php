@@ -57,37 +57,35 @@
                 <!-- Bộ lọc & Sắp xếp -->
                 <div class="d-flex justify-content-between align-items-center mb-4 bg-white p-3 rounded-3 shadow-sm">
                     <p class="text-muted mb-0 font-body-md">
-                        Tìm thấy <strong class="text-dark"><?php echo count($productsList); ?></strong> sản phẩm
+                        <?php if (isset($totalFound)): ?>
+                            Tìm thấy <strong class="text-dark"><?= $totalFound ?></strong> sản phẩm
+                            <?php if (!empty($keyword)): ?>
+                                cho từ khóa <strong class="text-danger-custom">"<?= htmlspecialchars($keyword) ?>"</strong>
+                            <?php endif; ?>
+                        <?php else: ?>
+                            Hiển thị <strong class="text-dark"><?php echo count($productsList); ?></strong> sản phẩm
+                        <?php endif; ?>
                     </p>
                     <div class="d-flex align-items-center gap-2">
                         <span class="text-muted font-label-md text-nowrap">Sắp xếp:</span>
                         <select class="form-select form-select-sm border-0 bg-light fw-semibold text-dark"
                             style="width: auto;" id="sortProduct" onchange="changeSort(this)">
-                            <option value="new" <?= isset($_GET['sort']) && $_GET['sort'] == 'new' ? 'selected' : '' ?>>
-                                Mới nhất</option>
-                            <option value="price-asc"
-                                <?= isset($_GET['sort']) && $_GET['sort'] == 'price-asc' ? 'selected' : '' ?>>Giá tăng
-                                dần</option>
-                            <option value="price-desc"
-                                <?= isset($_GET['sort']) && $_GET['sort'] == 'price-desc' ? 'selected' : '' ?>>Giá giảm
-                                dần</option>
+                            <option value="new" <?= (isset($_GET['sort']) && $_GET['sort'] == 'new') ? 'selected' : '' ?>>Mới nhất</option>
+                            <option value="price-asc" <?= (isset($_GET['sort']) && $_GET['sort'] == 'price-asc') ? 'selected' : '' ?>>Giá tăng dần</option>
+                            <option value="price-desc" <?= (isset($_GET['sort']) && $_GET['sort'] == 'price-desc') ? 'selected' : '' ?>>Giá giảm dần</option>
                         </select>
 
                         <script>
                         function changeSort(selectElement) {
-                            let sortValue = selectElement.value;
-
-                            // Lấy id danh mục hiện tại trên URL (nếu có)
+                            const sortValue = selectElement.value;
                             const urlParams = new URLSearchParams(window.location.search);
-                            let catId = urlParams.get('id');
+                            const catId   = urlParams.get('id');
+                            const keyword = urlParams.get('keyword');
+                            const act     = urlParams.get('act') || 'sanpham';
 
-                            // Tạo đường dẫn mới quay về index.php chính
-                            let newUrl = "index.php?act=sanpham&sort=" + sortValue;
-
-                            // Nếu đang ở trong một danh mục, đính kèm lại id danh mục để lọc không bị nhảy ra ngoài
-                            if (catId) {
-                                newUrl += "&id=" + catId;
-                            }
+                            let newUrl = 'index.php?act=' + act + '&sort=' + sortValue;
+                            if (catId)   newUrl += '&id='      + catId;
+                            if (keyword) newUrl += '&keyword=' + encodeURIComponent(keyword);
 
                             window.location.href = newUrl;
                         }
@@ -182,13 +180,18 @@
                             <ul class="pagination pagination-sm m-0 d-flex justify-content-center align-items-center">
 
                                 <?php 
-                $prevDisabled = ($currentPage <= 1) ? 'disabled' : ''; 
-                // Giữ lại id danh mục nếu có để phân trang không bị mất lọc
-                $catParam = isset($_GET['id']) ? '&id=' . intval($_GET['id']) : '';
+                $prevDisabled = ($currentPage <= 1) ? 'disabled' : '';
+                // Xây dựng chuỗi tham số chung (giữ danh mục, keyword, sort)
+                $extraParams = '';
+                if (isset($_GET['id']))      $extraParams .= '&id='      . intval($_GET['id']);
+                if (!empty($keyword))        $extraParams .= '&keyword=' . urlencode($keyword);
+                if (!empty($sort) && $sort !== 'new') $extraParams .= '&sort=' . urlencode($sort);
+                // Xác định act hiện tại (sanpham hoặc timkiem)
+                $paginationAct = !empty($keyword) ? 'timkiem' : 'sanpham';
             ?>
                                 <li class="page-item <?= $prevDisabled ?>">
                                     <a class="page-link border-0 bg-light text-dark rounded-3 me-2 px-3 d-flex align-items-center justify-content-center"
-                                        href="index.php?act=sanpham&page=<?= $currentPage - 1 ?><?= $catParam ?>"
+                                        href="index.php?act=<?= $paginationAct ?>&page=<?= $currentPage - 1 ?><?= $extraParams ?>"
                                         aria-label="Previous" style="height: 36px;">
                                         <span aria-hidden="true">&laquo;</span>
                                     </a>
@@ -196,11 +199,11 @@
 
                                 <?php for ($i = 1; $i <= $totalPages; $i++): 
                 $itemActive = ($currentPage == $i) ? 'active' : '';
-                $linkClass = ($currentPage == $i) ? 'bg-dark text-white' : 'bg-light text-muted';
+                $linkClass  = ($currentPage == $i) ? 'bg-dark text-white' : 'bg-light text-muted';
             ?>
                                 <li class="page-item <?= $itemActive ?>">
                                     <a class="page-link border-0 mx-1 rounded-3 fw-bold <?= $linkClass ?>"
-                                        href="index.php?act=sanpham&page=<?= $i ?><?= $catParam ?>"
+                                        href="index.php?act=<?= $paginationAct ?>&page=<?= $i ?><?= $extraParams ?>"
                                         style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
                                         <?= $i ?>
                                     </a>
@@ -210,7 +213,7 @@
                                 <?php $nextDisabled = ($currentPage >= $totalPages) ? 'disabled' : ''; ?>
                                 <li class="page-item <?= $nextDisabled ?>">
                                     <a class="page-link border-0 bg-light text-dark rounded-3 ms-2 px-3 d-flex align-items-center justify-content-center"
-                                        href="index.php?act=sanpham&page=<?= $currentPage + 1 ?><?= $catParam ?>"
+                                        href="index.php?act=<?= $paginationAct ?>&page=<?= $currentPage + 1 ?><?= $extraParams ?>"
                                         aria-label="Next" style="height: 36px;">
                                         <span aria-hidden="true">&raquo;</span>
                                     </a>

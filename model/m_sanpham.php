@@ -84,14 +84,44 @@ class ProductModel {
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-    // Tìm kiếm sản phẩm theo tên
+    // Tìm kiếm sản phẩm theo tên (có phân trang + sắp xếp)
     public function searchProducts($keyword) {
-        $query = "SELECT * FROM `SanPham` WHERE `TenSanPham` LIKE :keyword ORDER BY `Ma_SanPham` DESC";
+        $query = "SELECT * FROM `SanPham` WHERE `TenSanPham` LIKE :keyword OR `ThuongHieu` LIKE :keyword ORDER BY `Ma_SanPham` DESC";
         $stmt = $this->db->prepare($query);
         $searchTerm = "%" . $keyword . "%";
         $stmt->bindParam(":keyword", $searchTerm, PDO::PARAM_STR);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Tìm kiếm có phân trang và sort
+    public function searchProductsPaged($keyword, $sortType = 'new', $page = 1, $limit = 6) {
+        $offset = ($page - 1) * $limit;
+        $query = "SELECT * FROM `SanPham` WHERE `TenSanPham` LIKE :keyword OR `ThuongHieu` LIKE :keyword";
+        switch ($sortType) {
+            case 'price-asc':  $query .= " ORDER BY `GiaTien` ASC"; break;
+            case 'price-desc': $query .= " ORDER BY `GiaTien` DESC"; break;
+            default:           $query .= " ORDER BY `Ma_SanPham` DESC"; break;
+        }
+        $query .= " LIMIT :offset, :limit";
+        $stmt = $this->db->prepare($query);
+        $searchTerm = "%" . $keyword . "%";
+        $stmt->bindParam(":keyword", $searchTerm, PDO::PARAM_STR);
+        $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+        $stmt->bindValue(':limit',  (int)$limit,  PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Đếm tổng kết quả tìm kiếm (dùng cho phân trang)
+    public function countSearchProducts($keyword) {
+        $query = "SELECT COUNT(*) as total FROM `SanPham` WHERE `TenSanPham` LIKE :keyword OR `ThuongHieu` LIKE :keyword";
+        $stmt = $this->db->prepare($query);
+        $searchTerm = "%" . $keyword . "%";
+        $stmt->bindParam(":keyword", $searchTerm, PDO::PARAM_STR);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row['total'];
     }
 
     // --- ADMIN CRUD METHODS ---

@@ -368,25 +368,25 @@
                 <div class="col">
                     <div class="bg-white border rounded d-flex align-items-center justify-content-center p-4 grayscale-img"
                         style="height: 128px;">
-                        <img alt="Yamaha" class="img-fluid max-h-100" src="<?= BASE_URL ?>view/image/yamaha.jpg" />
+                        <img alt="Yamaha" class="img-fluid max-h-100" src="<?= BASE_URL ?>view/image/Yamaha.jpg" />
                     </div>
                 </div>
                 <div class="col">
                     <div class="bg-white border rounded d-flex align-items-center justify-content-center p-4 grayscale-img"
                         style="height: 128px;">
-                        <img alt="Fender" class="img-fluid max-h-100" src="<?= BASE_URL ?>view/image/fender.jpg" />
+                        <img alt="Fender" class="img-fluid max-h-100" src="<?= BASE_URL ?>view/image/Fender.jpg" />
                     </div>
                 </div>
                 <div class="col">
                     <div class="bg-white border rounded d-flex align-items-center justify-content-center p-4 grayscale-img"
                         style="height: 128px;">
-                        <img alt="Gibson" class="img-fluid max-h-100" src="<?= BASE_URL ?>view/image/gibson.jpg" />
+                        <img alt="Gibson" class="img-fluid max-h-100" src="<?= BASE_URL ?>view/image/Gibson.jpg" />
                     </div>
                 </div>
                 <div class="col">
                     <div class="bg-white border rounded d-flex align-items-center justify-content-center p-4 grayscale-img"
                         style="height: 128px;">
-                        <img alt="Taylor" class="img-fluid max-h-100" src="<?= BASE_URL ?>view/image/taylor.jpg" />
+                        <img alt="Taylor" class="img-fluid max-h-100" src="<?= BASE_URL ?>view/image/Taylor.jpg" />
                     </div>
                 </div>
                 <div class="col">

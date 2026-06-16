@@ -164,15 +164,31 @@ class MainController {
         require_once __DIR__ . "/../model/m_sanpham.php";
         $productModel = new ProductModel($this->db);
 
-        $keyword = isset($_GET['keyword']) ? trim($_GET['keyword']) : '';
-        $productsList = $productModel->searchProducts($keyword);
-        $titleName = "Kết quả tìm kiếm: " . htmlspecialchars($keyword);
+        $keyword     = isset($_GET['keyword']) ? trim($_GET['keyword']) : '';
+        $sort        = isset($_GET['sort'])    ? $_GET['sort']          : 'new';
+        $limit       = 6;
+        $currentPage = isset($_GET['page'])    ? intval($_GET['page'])  : 1;
+        if ($currentPage < 1) $currentPage = 1;
+
+        $totalProducts = $productModel->countSearchProducts($keyword);
+        $totalPages    = $totalProducts > 0 ? ceil($totalProducts / $limit) : 1;
+        $productsList  = $productModel->searchProductsPaged($keyword, $sort, $currentPage, $limit);
+
+        $titleName = empty($keyword)
+            ? "Tìm kiếm sản phẩm"
+            : "Kết quả tìm kiếm: \"" . htmlspecialchars($keyword) . "\"";
 
         $this->renderView('sanpham', [
             'productsList' => $productsList,
-            'titleName' => $titleName
+            'titleName'    => $titleName,
+            'totalPages'   => $totalPages,
+            'currentPage'  => $currentPage,
+            'sort'         => $sort,
+            'keyword'      => $keyword,
+            'totalFound'   => $totalProducts,
         ]);
     }
+
 
     public function yeuthich() {
         if (!isset($_SESSION['user_id'])) {
