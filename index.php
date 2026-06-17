@@ -18,4 +18,4 @@ require_once 'controller/Controller.php';
 // Khởi tạo Controller và điều hướng Request
 $controller = new MainController($db);
 $controller->handleRequest();
-?>
+?> 

@@ -296,8 +296,6 @@
                         <div class="product-card h-100 position-relative d-flex flex-column justify-content-between">
                             <?php if (isset($prod['PhanTramGiamGia']) && $prod['PhanTramGiamGia'] > 0): ?>
                                 <span class="sale-badge">-<?php echo $prod['PhanTramGiamGia']; ?>%</span>
-                            <?php elseif ($prod['Ma_SanPham'] % 2 == 0): ?>
-                                <span class="position-absolute top-0 end-0 m-3 badge bg-secondary-custom text-white px-2 py-1 font-label-sm rounded-1 z-1">BEST SELLER</span>
                             <?php endif; ?>
                             
                             <?php 

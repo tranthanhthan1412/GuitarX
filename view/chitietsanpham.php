@@ -305,8 +305,6 @@ if (!isset($album) && isset($product['Ma_SanPham'])) {
                         class="product-card h-100 position-relative d-flex flex-column justify-content-between shadow-sm">
                         <?php if (isset($related['PhanTramGiamGia']) && $related['PhanTramGiamGia'] > 0): ?>
                             <span class="sale-badge">-<?php echo $related['PhanTramGiamGia']; ?>%</span>
-                        <?php elseif ($related['Ma_SanPham'] % 2 == 0): ?>
-                            <span class="position-absolute top-0 end-0 m-3 badge bg-secondary-custom text-white px-2 py-1 font-label-sm rounded-1 z-1">BEST SELLER</span>
                         <?php endif; ?>
                         <?php 
                                 $isFavRelated = isset($userFavorites) && in_array($related['Ma_SanPham'], $userFavorites); 

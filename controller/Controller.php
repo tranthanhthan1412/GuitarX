@@ -33,8 +33,8 @@ class MainController {
             case 'camon': $this->camon(); break;
             case 'lichsudonhang': $this->lichsudonhang(); break;
             case 'sansale': $this->sansale(); break;
-            case 'chat_api_get': $this->chatApiGet(); break;
-            case 'chat_api_send': $this->chatApiSend(); break;
+            case 'chat_api_get': $this->chatApiGet(); break; // API ajax lấy tin nhắn từ admin gửi tới user
+            case 'chat_api_send': $this->chatApiSend(); break; // API ajax gửi tin nhắn từ user tới admin và lưu vào csdl
             case 'home':
             default: $this->home(); break;
         }
